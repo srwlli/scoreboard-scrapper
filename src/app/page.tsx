@@ -1,33 +1,16 @@
-import { ScoreboardClient } from '@/components/scoreboard/ScoreboardClient'
-import {
-  getTeams,
-  getAvailableSeasons,
-  getGamesForWeek,
-  getMaxWeekForSeason,
-} from '@/lib/queries/scoreboard-queries'
-import { getCurrentWeek } from '@/types/game'
+import { DashboardCard } from '@/components/dashboard-card'
 
-export default async function ScoreboardPage() {
-  // Fetch initial data
-  const [teams, seasons] = await Promise.all([
-    getTeams(),
-    getAvailableSeasons(),
-  ])
-
-  const currentSeason = seasons[0] || 2025
-  const currentWeek = getCurrentWeek(currentSeason)
-  const maxWeek = await getMaxWeekForSeason(currentSeason)
-  const games = await getGamesForWeek(currentSeason, currentWeek)
-
+export default function DashboardPage() {
   return (
-    <ScoreboardClient
-      initialTeams={teams}
-      initialSeasons={seasons}
-      initialGames={games}
-      initialSeason={currentSeason}
-      initialWeek={currentWeek}
-      initialTeamId={null}
-      initialMaxWeek={maxWeek}
-    />
+    <main className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <DashboardCard
+          title="Scoreboard"
+          description="View NFL scores and schedules"
+          href="/scoreboard"
+        />
+      </div>
+    </main>
   )
 }

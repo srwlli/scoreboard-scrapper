@@ -26,7 +26,7 @@ function formatGameDate(dateStr: string): string {
 export function GameHeader({ game, homeTeam, awayTeam }: GameHeaderProps) {
   const isFinal = game.status === 'final'
   const isLive = game.status === 'in_progress'
-  const hasOT = game.home_ot_score !== null || game.away_ot_score !== null
+  const hasOT = game.overtime === true
 
   const awayWon = isFinal && (game.away_score ?? 0) > (game.home_score ?? 0)
   const homeWon = isFinal && (game.home_score ?? 0) > (game.away_score ?? 0)

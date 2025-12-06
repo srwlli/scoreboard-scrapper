@@ -4,7 +4,7 @@ import type { Game, Team } from '@/types/game'
 
 interface ScoreBugProps {
   game: Pick<Game,
-    'game_id' | 'game_date' | 'game_time' | 'status' | 'broadcast_network' |
+    'game_id' | 'game_date' | 'game_time' | 'status' | 'broadcast_network' | 'overtime' |
     'home_score' | 'away_score' |
     'home_q1_score' | 'home_q2_score' | 'home_q3_score' | 'home_q4_score' | 'home_ot_score' |
     'away_q1_score' | 'away_q2_score' | 'away_q3_score' | 'away_q4_score' | 'away_ot_score'
@@ -20,7 +20,7 @@ function getTeamLogoUrl(teamId: string): string {
 export function ScoreBug({ game, homeTeam, awayTeam }: ScoreBugProps) {
   const isFinal = game.status === 'final'
   const isLive = game.status === 'in_progress'
-  const hasOT = game.home_ot_score !== null || game.away_ot_score !== null
+  const hasOT = game.overtime === true
 
   const awayWon = isFinal && (game.away_score ?? 0) > (game.home_score ?? 0)
   const homeWon = isFinal && (game.home_score ?? 0) > (game.away_score ?? 0)
