@@ -43,6 +43,7 @@ function formatGameTime(dateStr: string, timeStr: string | null): string {
 export function GameCard({ game, homeTeam, awayTeam, showWeek = false }: GameCardProps) {
   const isFinal = game.status === 'final'
   const isLive = game.status === 'in_progress'
+  const isScheduled = !isFinal && !isLive
 
   const awayWon = isFinal && (game.away_score ?? 0) > (game.home_score ?? 0)
   const homeWon = isFinal && (game.home_score ?? 0) > (game.away_score ?? 0)
@@ -76,7 +77,7 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false }: GameCar
 
             {/* Away Score */}
             <span className={`font-bold text-2xl w-10 text-center tabular-nums ${awayWon ? '' : isFinal ? 'text-muted-foreground' : ''}`}>
-              {game.away_score ?? '-'}
+              {isScheduled ? '-' : (game.away_score ?? '-')}
             </span>
 
             {/* Status */}
@@ -103,7 +104,7 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false }: GameCar
 
             {/* Home Score */}
             <span className={`font-bold text-2xl w-10 text-center tabular-nums ${homeWon ? '' : isFinal ? 'text-muted-foreground' : ''}`}>
-              {game.home_score ?? '-'}
+              {isScheduled ? '-' : (game.home_score ?? '-')}
             </span>
 
             {/* Home Team */}

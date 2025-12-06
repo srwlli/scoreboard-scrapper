@@ -586,6 +586,53 @@ export interface TeamScheduleData {
 }
 
 // ============================================================================
+// STANDINGS DATA
+// ============================================================================
+
+/**
+ * Team season stats from `team_season_stats` table
+ */
+export interface TeamSeasonStats {
+  team_id: string
+  season: number
+  games_played: number
+  wins: number
+  losses: number
+  ties: number
+  win_percentage: number
+  points_for: number
+  points_against: number
+  point_differential: number
+  division_rank: number
+  conference_rank: number
+}
+
+/**
+ * Standing with team info joined
+ */
+export interface TeamStanding extends TeamSeasonStats {
+  team: Team
+}
+
+/**
+ * Standings grouped by division
+ */
+export interface DivisionStandings {
+  conference: 'AFC' | 'NFC'
+  division: 'North' | 'South' | 'East' | 'West'
+  teams: TeamStanding[]
+}
+
+/**
+ * All standings data
+ */
+export interface StandingsData {
+  season: number
+  afc: DivisionStandings[]
+  nfc: DivisionStandings[]
+}
+
+// ============================================================================
 // UTILITY FUNCTIONS
 // ============================================================================
 

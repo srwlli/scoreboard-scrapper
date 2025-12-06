@@ -10,6 +10,11 @@ export default function DashboardPage() {
           description="View NFL scores and schedules"
           href="/scoreboard"
         />
+        <DashboardCard
+          title="Standings"
+          description="Division and conference standings"
+          href="/standings"
+        />
       </div>
     </main>
   )

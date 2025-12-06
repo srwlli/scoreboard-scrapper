@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { Menu, Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -11,18 +12,26 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { useHeader } from '@/components/header-context'
 
 const navItems = [
   { href: '/', label: 'Dashboard' },
   { href: '/scoreboard', label: 'Scoreboard' },
+  { href: '/standings', label: 'Standings' },
 ]
 
 export function SiteHeader() {
   const pathname = usePathname()
+  const { config } = useHeader()
+  const { theme, setTheme } = useTheme()
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
+      <div className="container mx-auto px-4 flex h-14 items-center">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="mr-2">
@@ -30,7 +39,7 @@ export function SiteHeader() {
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[240px]">
+          <SheetContent side="left" className="w-[240px] flex flex-col">
             <SheetHeader>
               <SheetTitle>NFL Stats</SheetTitle>
             </SheetHeader>
@@ -49,11 +58,29 @@ export function SiteHeader() {
                 </Link>
               ))}
             </nav>
+
+            <div className="mt-auto pt-4 border-t">
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2"
+                onClick={toggleTheme}
+              >
+                <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+              </Button>
+            </div>
           </SheetContent>
         </Sheet>
-        <Link href="/" className="font-semibold">
-          NFL Stats
-        </Link>
+
+        <span className="font-semibold">{config.title}</span>
+
+        {/* Custom content slot (right side) */}
+        {config.customContent && (
+          <div className="ml-auto flex items-center gap-2">
+            {config.customContent}
+          </div>
+        )}
       </div>
     </header>
   )

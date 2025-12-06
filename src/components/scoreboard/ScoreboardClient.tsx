@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { GameCard } from './GameCard'
 import { SeasonSelector } from './SeasonSelector'
 import { WeekSelector } from './WeekSelector'
@@ -9,8 +8,8 @@ import { TeamFilter } from './TeamFilter'
 import { TeamScheduleHeader } from './TeamScheduleHeader'
 import { ScoreboardSkeleton } from './ScoreboardSkeleton'
 import { createClient } from '@/lib/supabase/client'
+import { useHeader } from '@/components/header-context'
 import type { Team, ScoreboardGame, Game } from '@/types/game'
-import { getCurrentWeek } from '@/types/game'
 
 interface ScoreboardClientProps {
   initialTeams: Team[]
@@ -31,7 +30,7 @@ export function ScoreboardClient({
   initialTeamId,
   initialMaxWeek,
 }: ScoreboardClientProps) {
-  const router = useRouter()
+  const { setHeader } = useHeader()
   const [season, setSeason] = useState(initialSeason)
   const [week, setWeek] = useState(initialWeek)
   const [teamId, setTeamId] = useState<string | null>(initialTeamId)
@@ -50,6 +49,60 @@ export function ScoreboardClient({
       window.location.hash = `${s}-week${w}`
     }
   }, [])
+
+  // Handle season change
+  const handleSeasonChange = (newSeason: number) => {
+    setSeason(newSeason)
+    setWeek(1)
+    updateHash(newSeason, 1, teamId)
+  }
+
+  // Handle week change
+  const handleWeekChange = (newWeek: number) => {
+    setWeek(newWeek)
+    updateHash(season, newWeek, teamId)
+  }
+
+  // Handle team filter change
+  const handleTeamChange = (newTeamId: string | null) => {
+    setTeamId(newTeamId)
+    updateHash(season, week, newTeamId)
+  }
+
+  // Set header with dropdowns
+  useEffect(() => {
+    setHeader({
+      title: 'Scoreboard',
+      customContent: (
+        <div className="flex flex-wrap gap-2">
+          <SeasonSelector
+            value={season}
+            onChange={handleSeasonChange}
+            availableSeasons={initialSeasons}
+          />
+          {!isTeamView && (
+            <WeekSelector
+              value={week}
+              onChange={handleWeekChange}
+              maxWeek={maxWeek}
+            />
+          )}
+          <TeamFilter
+            value={teamId}
+            onChange={handleTeamChange}
+            teams={initialTeams}
+          />
+        </div>
+      ),
+    })
+  }, [season, week, teamId, isTeamView, maxWeek, initialSeasons, initialTeams, setHeader])
+
+  // Cleanup: reset header only when unmounting (navigating away)
+  useEffect(() => {
+    return () => {
+      setHeader({ title: 'NFL Stats' })
+    }
+  }, [setHeader])
 
   // Fetch games when season/week/team changes
   const fetchGames = useCallback(async () => {
@@ -96,28 +149,8 @@ export function ScoreboardClient({
     }
   }, [season, week, teamId])
 
-  // Handle season change
-  const handleSeasonChange = (newSeason: number) => {
-    setSeason(newSeason)
-    setWeek(1) // Reset to week 1 when season changes
-    updateHash(newSeason, 1, teamId)
-  }
-
-  // Handle week change
-  const handleWeekChange = (newWeek: number) => {
-    setWeek(newWeek)
-    updateHash(season, newWeek, teamId)
-  }
-
-  // Handle team filter change
-  const handleTeamChange = (newTeamId: string | null) => {
-    setTeamId(newTeamId)
-    updateHash(season, week, newTeamId)
-  }
-
   // Fetch games when filters change (but not on initial load)
   useEffect(() => {
-    // Skip initial fetch since we have initialGames
     if (
       season !== initialSeason ||
       week !== initialWeek ||
@@ -129,7 +162,7 @@ export function ScoreboardClient({
 
   // Parse hash on mount
   useEffect(() => {
-    const hash = window.location.hash.slice(1) // Remove #
+    const hash = window.location.hash.slice(1)
     if (hash) {
       const teamMatch = hash.match(/^(\d+)-team-(\w+)$/)
       const weekMatch = hash.match(/^(\d+)-week(\d+)$/)
@@ -154,34 +187,6 @@ export function ScoreboardClient({
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="border-b bg-background sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h1 className="text-xl font-bold">NFL Scoreboard</h1>
-            <div className="flex flex-wrap gap-2">
-              <SeasonSelector
-                value={season}
-                onChange={handleSeasonChange}
-                availableSeasons={initialSeasons}
-              />
-              {!isTeamView && (
-                <WeekSelector
-                  value={week}
-                  onChange={handleWeekChange}
-                  maxWeek={maxWeek}
-                />
-              )}
-              <TeamFilter
-                value={teamId}
-                onChange={handleTeamChange}
-                teams={initialTeams}
-              />
-            </div>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-4 py-6">
         {loading ? (
