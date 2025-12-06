@@ -71,7 +71,7 @@ export function ScoringPlays({ plays, teams }: ScoringPlaysProps) {
             <div className="space-y-3">
               {playsByQuarter[quarter].map((play) => {
                 const team = teams[play.team_id]
-                const badgeInfo = getPlayTypeBadge(play.play_type)
+                const badgeInfo = getPlayTypeBadge(play.scoring_type)
 
                 return (
                   <div

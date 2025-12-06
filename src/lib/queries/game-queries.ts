@@ -117,7 +117,7 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
       .select('*')
       .eq('game_id', gameId)
       .order('quarter')
-      .order('game_seconds_remaining', { ascending: false }),
+      .order('time_remaining_seconds', { ascending: false }),
 
     // Snap counts (uses nflverse game_id)
     supabase
@@ -131,31 +131,35 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
       .select('*')
       .eq('game_id', nflverseGameId)
       .order('quarter')
-      .order('game_seconds_remaining', { ascending: false }),
+      .order('time_remaining_seconds', { ascending: false }),
 
-    // NGS Passing
+    // NGS Passing (query by season/week, filter by teams in component)
     supabase
       .from('ngs_passing')
       .select('*')
-      .eq('game_id', nflverseGameId),
+      .eq('season', game.season)
+      .eq('week', game.week),
 
     // NGS Rushing
     supabase
       .from('ngs_rushing')
       .select('*')
-      .eq('game_id', nflverseGameId),
+      .eq('season', game.season)
+      .eq('week', game.week),
 
     // NGS Receiving
     supabase
       .from('ngs_receiving')
       .select('*')
-      .eq('game_id', nflverseGameId),
+      .eq('season', game.season)
+      .eq('week', game.week),
 
     // Advanced stats
     supabase
-      .from('advanced_stats')
+      .from('player_stats_advanced')
       .select('*')
-      .eq('game_id', nflverseGameId)
+      .eq('season', game.season)
+      .eq('week', game.week)
   ])
 
   return {

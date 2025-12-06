@@ -89,7 +89,7 @@ export default async function GamePage({ params }: GamePageProps) {
             />
           </div>
           <div className="space-y-4">
-            {stadium && <VenueCard stadium={stadium} />}
+            {stadium && <VenueCard stadium={stadium} attendance={game.attendance} />}
             {weather && <WeatherCard weather={weather} />}
           </div>
         </div>

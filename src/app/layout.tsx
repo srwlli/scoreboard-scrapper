@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 import { HeaderProvider } from '@/components/header-context'
@@ -15,6 +15,14 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#0a0a0a',
+}
+
 export const metadata: Metadata = {
   title: {
     default: 'NFL Stats Platform',
@@ -22,6 +30,11 @@ export const metadata: Metadata = {
   },
   description: 'Comprehensive NFL statistics, game scores, and advanced analytics.',
   keywords: ['NFL', 'football', 'statistics', 'scores', 'analytics', 'next gen stats'],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'NFL Stats',
+  },
 }
 
 export default function RootLayout({

@@ -268,11 +268,10 @@ export interface ScoringPlay {
   scoring_play_id: number
   game_id: string
   season: number
-  week: number
   quarter: number
   time_remaining_seconds: number
   team_id: string
-  play_type: string
+  scoring_type: string
   points: number
   description: string
 }
@@ -312,11 +311,11 @@ export interface PlayByPlay {
   game_date: string | null
 
   quarter: number
-  game_seconds_remaining: number
+  time_remaining_seconds: number
   play_description: string
 
-  posteam: string
-  defteam: string
+  possession_team_id: string
+  defensive_team_id: string
 
   play_type: string
   yards_gained: number

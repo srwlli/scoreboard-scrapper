@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { MapPin, Users, Ruler } from 'lucide-react'
 import type { Stadium } from '@/types/game'
 
 interface VenueCardProps {
@@ -15,7 +14,7 @@ export function VenueCard({ stadium, attendance }: VenueCardProps) {
           <CardTitle className="text-lg">Venue</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">Venue information unavailable</p>
+          <p className="text-muted-foreground">No venue data</p>
         </CardContent>
       </Card>
     )
@@ -26,38 +25,25 @@ export function VenueCard({ stadium, attendance }: VenueCardProps) {
       <CardHeader>
         <CardTitle className="text-lg">Venue</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-start gap-2">
-          <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
+      <CardContent className="space-y-2">
+        <p className="font-bold">{stadium.stadium_name || '--'}</p>
+        <p className="text-sm text-muted-foreground">
+          {stadium.city || ''}{stadium.state ? `, ${stadium.state}` : ''}
+        </p>
+        <div className="grid grid-cols-2 gap-2 text-sm mt-3">
           <div>
-            <p className="font-medium">{stadium.stadium_name}</p>
-            <p className="text-sm text-muted-foreground">
-              {stadium.city}{stadium.state ? `, ${stadium.state}` : ''}
-            </p>
+            <span className="text-muted-foreground">Attendance:</span>{' '}
+            {attendance?.toLocaleString() || '--'}
+          </div>
+          <div>
+            <span className="text-muted-foreground">Surface:</span>{' '}
+            {stadium.surface_type || '--'}
+          </div>
+          <div>
+            <span className="text-muted-foreground">Roof:</span>{' '}
+            {stadium.roof_type || '--'}
           </div>
         </div>
-
-        {attendance && (
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">
-              {attendance.toLocaleString()} attendance
-            </span>
-          </div>
-        )}
-
-        <div className="flex items-center gap-2">
-          <Ruler className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm">
-            {stadium.surface_type} • {stadium.roof_type}
-          </span>
-        </div>
-
-        {stadium.capacity && (
-          <p className="text-xs text-muted-foreground">
-            Capacity: {stadium.capacity.toLocaleString()}
-          </p>
-        )}
       </CardContent>
     </Card>
   )
