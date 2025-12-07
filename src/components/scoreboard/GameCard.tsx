@@ -42,6 +42,18 @@ function formatGameTime(dateStr: string, timeStr: string | null): string {
   }) + ' ET'
 }
 
+function formatQuarter(period: number | null): string {
+  if (!period) return ''
+  if (period === 5) return 'OT'
+  return `Q${period}`
+}
+
+function formatDown(down: number | null, yardsToGo: number | null): string {
+  if (!down) return ''
+  const suffix = down === 1 ? 'st' : down === 2 ? 'nd' : down === 3 ? 'rd' : 'th'
+  return `${down}${suffix}${yardsToGo ? ` & ${yardsToGo}` : ''}`
+}
+
 export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecord, awayRecord }: GameCardProps) {
   const isFinal = game.status === 'final'
   const isLive = game.status === 'in_progress'
@@ -98,7 +110,35 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecor
                   </p>
                 </div>
               ) : isLive ? (
-                <Badge variant="destructive" className="animate-pulse">LIVE</Badge>
+                <div className="flex flex-col items-center gap-0.5">
+                  <Badge variant="destructive" className="animate-pulse text-xs">LIVE</Badge>
+                  {game.current_period && game.game_clock && (
+                    <span className="text-sm font-medium">
+                      {formatQuarter(game.current_period)} {game.game_clock}
+                    </span>
+                  )}
+                  {game.current_down && (
+                    <span className="text-xs text-muted-foreground">
+                      {formatDown(game.current_down, game.yards_to_go)}
+                    </span>
+                  )}
+                  {game.field_position && (
+                    <span className="text-[10px] text-muted-foreground">
+                      at {game.field_position}
+                    </span>
+                  )}
+                  {game.possession_team_id && (
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <img
+                        className="h-3 w-3"
+                        alt="possession"
+                        src={getTeamLogoUrl(game.possession_team_id)}
+                        onError={handleImageError}
+                      />
+                      <span className="text-[10px] text-muted-foreground">has ball</span>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div>
                   <p className="text-sm font-medium">{formatGameDate(game.game_date)}</p>

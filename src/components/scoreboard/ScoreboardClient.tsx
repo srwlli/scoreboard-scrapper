@@ -118,7 +118,7 @@ export function ScoreboardClient({
         `)
         .eq('season', season)
         .eq('status', 'final')
-      setAllSeasonGames((data || []) as ScoreboardGame[])
+      setAllSeasonGames((data || []) as unknown as ScoreboardGame[])
     }
     fetchAllSeasonGames()
   }, [season])

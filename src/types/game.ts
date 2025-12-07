@@ -47,6 +47,18 @@ export interface Game {
   overtime: boolean
   duration_minutes: number | null
 
+  // Live game state (populated during in_progress games)
+  game_clock: string | null
+  current_period: number | null
+  possession_team_id: string | null
+  current_down: number | null
+  yards_to_go: number | null
+  field_position: string | null
+  last_play_text: string | null
+  home_win_probability: number | null
+  away_win_probability: number | null
+  live_updated_at: string | null
+
   // Joined relations
   home_team?: Team
   away_team?: Team

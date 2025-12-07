@@ -317,11 +317,11 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
     fields: [
       { field: 'player_id', type: 'string', nullable: true, key: 'FK', fkRef: 'players.player_id', example: 'espn-3139477', description: 'Player reference' },
       { field: 'offense_snaps', type: 'number', nullable: true, example: '65', description: 'Offensive snaps' },
-      { field: 'offense_pct', type: 'number', nullable: true, example: '0.92', description: 'Offensive snap %' },
+      { field: 'offense_pct', type: 'number', nullable: true, example: '0.92', description: 'Offensive snap % (0-1 scale, multiply ×100 for display)' },
       { field: 'defense_snaps', type: 'number', nullable: true, example: '0', description: 'Defensive snaps' },
-      { field: 'defense_pct', type: 'number', nullable: true, example: '0.00', description: 'Defensive snap %' },
+      { field: 'defense_pct', type: 'number', nullable: true, example: '0.00', description: 'Defensive snap % (0-1 scale)' },
       { field: 'st_snaps', type: 'number', nullable: true, example: '5', description: 'Special teams snaps' },
-      { field: 'st_pct', type: 'number', nullable: true, example: '0.25', description: 'ST snap %' },
+      { field: 'st_pct', type: 'number', nullable: true, example: '0.19', description: 'ST snap % (0-1 scale)' },
     ],
   },
   {

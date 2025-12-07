@@ -88,7 +88,7 @@ export function GameRosterCard({
   // Group PLAYED players by position for depth chart
   const positionGroups = new Map<string, GameRoster[]>()
   for (const player of playedPlayers) {
-    const pos = normalizePosition(player.position || player.player?.primary_position)
+    const pos = normalizePosition(player.position || player.player?.primary_position || null)
     if (!positionGroups.has(pos)) {
       positionGroups.set(pos, [])
     }
@@ -224,8 +224,8 @@ export function GameRosterCard({
             </h4>
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
               {dnpPlayers
-                .sort((a, b) => getPositionOrder(a.position || a.player?.primary_position) -
-                               getPositionOrder(b.position || b.player?.primary_position))
+                .sort((a, b) => getPositionOrder(a.position || a.player?.primary_position || null) -
+                               getPositionOrder(b.position || b.player?.primary_position || null))
                 .map((player, idx) => {
                   const pos = player.position || player.player?.primary_position || ''
                   return (
@@ -250,8 +250,8 @@ export function GameRosterCard({
             </h4>
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
               {inactivePlayers
-                .sort((a, b) => getPositionOrder(a.position || a.player?.primary_position) -
-                               getPositionOrder(b.position || b.player?.primary_position))
+                .sort((a, b) => getPositionOrder(a.position || a.player?.primary_position || null) -
+                               getPositionOrder(b.position || b.player?.primary_position || null))
                 .map((player, idx) => {
                   const pos = player.position || player.player?.primary_position || ''
                   return (

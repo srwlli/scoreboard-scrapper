@@ -1,0 +1,388 @@
+{
+  "META_DOCUMENTATION": {
+    "feature_name": "v2-scraper-ui",
+    "schema_version": "1.0.0",
+    "version": "1.0.0",
+    "status": "complete",
+    "generated_by": "Claude Code",
+    "generated_at": "2025-12-07T18:45:00Z",
+    "has_context": true,
+    "has_analysis": true
+  },
+  "UNIVERSAL_PLANNING_STRUCTURE": {
+    "0_preparation": {
+      "foundation_docs_reviewed": [
+        "coderef/foundation-docs/ARCHITECTURE.md",
+        "coderef/foundation-docs/API.md",
+        "coderef/foundation-docs/COMPONENTS.md",
+        "coderef/foundation-docs/SCHEMA.md",
+        "README.md"
+      ],
+      "reference_components": [
+        "src/components/game/TopEPAPlays.tsx",
+        "src/components/game/ScoringPlays.tsx",
+        "src/components/game/GameHeader.tsx",
+        "src/components/game/PlayerStatsCard.tsx"
+      ],
+      "key_patterns": [
+        "Server-side data fetching via src/lib/queries/",
+        "TypeScript interfaces in src/types/game.ts",
+        "shadcn/ui Card, Badge, Avatar components",
+        "Server Components as default, Client Components for interactivity",
+        "Tailwind CSS with muted/50 backgrounds and space-y-* spacing"
+      ],
+      "existing_files_to_modify": [
+        "src/lib/queries/game-queries.ts",
+        "src/types/game.ts",
+        "src/app/game/[gameId]/page.tsx"
+      ],
+      "technology_stack": {
+        "framework": "Next.js 16 (App Router)",
+        "ui_library": "shadcn/ui",
+        "styling": "Tailwind CSS",
+        "database": "Supabase (PostgreSQL)",
+        "language": "TypeScript"
+      }
+    },
+    "1_executive_summary": {
+      "feature_name": "V2 Scraper UI Components",
+      "description": "Add Win Probability Chart and Live Plays Feed components to the existing game detail page, integrating data from the new win_probability and live_plays tables created by the live-scraper-v2 backend",
+      "goal": "Display all 180+ live game data points captured by the v2 scraper in the existing Next.js game detail page UI, maintaining consistent styling with existing components",
+      "scope": {
+        "in_scope": [
+          "WinProbabilityChart component - SVG line chart for 180+ WP data points",
+          "LivePlaysCard component - scrollable play-by-play feed",
+          "Database queries for win_probability and live_plays tables",
+          "TypeScript interfaces for new data types",
+          "GameHeader updates for live game state display"
+        ],
+        "out_of_scope": [
+          "Creating new design system or themes",
+          "Real-time WebSocket updates",
+          "Backend scraper modifications",
+          "Betting/odds integration"
+        ]
+      },
+      "estimated_complexity": "medium",
+      "estimated_tasks": 12
+    },
+    "2_risk_assessment": {
+      "risks": [
+        {
+          "risk": "Win probability chart performance with 180+ data points",
+          "severity": "medium",
+          "mitigation": "Use SVG path rendering with data point reduction for smaller screens"
+        },
+        {
+          "risk": "Database queries returning large datasets",
+          "severity": "low",
+          "mitigation": "Limit live_plays to most recent 50, order by sequence for WP"
+        },
+        {
+          "risk": "Style inconsistency with existing components",
+          "severity": "medium",
+          "mitigation": "Reference TopEPAPlays.tsx and ScoringPlays.tsx as style templates"
+        },
+        {
+          "risk": "Missing win_probability or live_plays data for older games",
+          "severity": "low",
+          "mitigation": "Add conditional rendering to hide components when no data"
+        }
+      ],
+      "complexity_factors": [
+        "SVG chart rendering requires careful coordinate calculation",
+        "Live plays feed needs proper scrolling and auto-scroll behavior",
+        "GameHeader live state requires careful status detection"
+      ]
+    },
+    "3_current_state_analysis": {
+      "files_to_create": [
+        {
+          "path": "src/components/game/WinProbabilityChart.tsx",
+          "purpose": "SVG line chart component displaying win probability over time"
+        },
+        {
+          "path": "src/components/game/LivePlaysCard.tsx",
+          "purpose": "Scrollable play-by-play feed component"
+        }
+      ],
+      "files_to_modify": [
+        {
+          "path": "src/lib/queries/game-queries.ts",
+          "changes": "Add getWinProbability() and getLivePlays() query functions"
+        },
+        {
+          "path": "src/types/game.ts",
+          "changes": "Add WinProbability and LivePlay TypeScript interfaces"
+        },
+        {
+          "path": "src/app/game/[gameId]/page.tsx",
+          "changes": "Import and render new components, update data fetching"
+        },
+        {
+          "path": "src/components/game/GameHeader.tsx",
+          "changes": "Add live game state display (clock, possession, down/distance)"
+        }
+      ],
+      "dependencies": {
+        "internal": [
+          "src/lib/supabase.ts - Supabase client",
+          "src/components/ui/card.tsx - Card component",
+          "src/components/ui/badge.tsx - Badge component"
+        ],
+        "external": []
+      }
+    },
+    "4_key_features": {
+      "features": [
+        {
+          "id": "FEAT-001",
+          "name": "Win Probability Chart",
+          "description": "Interactive SVG line chart showing home team win probability (0-100%) over the course of the game with 180+ data points",
+          "acceptance_criteria": [
+            "Displays home/away team win probability as line chart",
+            "Shows quarter markers (Q1, Q2, Q3, Q4, OT)",
+            "Tooltips show exact WP value and game context on hover",
+            "Responsive sizing for mobile/desktop",
+            "Uses team colors for visual distinction"
+          ]
+        },
+        {
+          "id": "FEAT-002",
+          "name": "Live Plays Feed",
+          "description": "Scrollable card showing recent plays with down, distance, result, and score changes",
+          "acceptance_criteria": [
+            "Displays play text, down/distance, yards gained",
+            "Highlights scoring plays and turnovers",
+            "Shows play-by-play in chronological order (newest at top)",
+            "Limited to 50 most recent plays",
+            "Matches existing ScoringPlays component styling"
+          ]
+        },
+        {
+          "id": "FEAT-003",
+          "name": "Live Game Header State",
+          "description": "Enhanced GameHeader that shows live game information when game is in progress",
+          "acceptance_criteria": [
+            "Shows game clock and current quarter",
+            "Displays possession indicator",
+            "Shows current down and distance",
+            "Animates/pulses for live games",
+            "Gracefully hides for completed games"
+          ]
+        },
+        {
+          "id": "FEAT-004",
+          "name": "Data Layer Integration",
+          "description": "Supabase query functions and TypeScript types for new tables",
+          "acceptance_criteria": [
+            "TypeScript interfaces match database schema exactly",
+            "Query functions follow existing patterns in game-queries.ts",
+            "Handles null/empty data gracefully",
+            "Server-side fetching only (no client-side queries)"
+          ]
+        }
+      ]
+    },
+    "5_task_id_system": {
+      "workorder": {
+        "id": "WO-V2-SCRAPER-UI-001",
+        "name": "V2 Scraper UI Components",
+        "feature_dir": "coderef/working/v2-scraper-ui"
+      },
+      "tasks": [
+        {
+          "id": "TYPES-001",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Add WinProbability interface to game.ts",
+          "file": "src/types/game.ts",
+          "dependencies": [],
+          "estimated_lines": 15
+        },
+        {
+          "id": "TYPES-002",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Add LivePlay interface to game.ts",
+          "file": "src/types/game.ts",
+          "dependencies": [],
+          "estimated_lines": 25
+        },
+        {
+          "id": "QUERY-001",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Add getWinProbability() query function",
+          "file": "src/lib/queries/game-queries.ts",
+          "dependencies": ["TYPES-001"],
+          "estimated_lines": 25
+        },
+        {
+          "id": "QUERY-002",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Add getLivePlays() query function",
+          "file": "src/lib/queries/game-queries.ts",
+          "dependencies": ["TYPES-002"],
+          "estimated_lines": 30
+        },
+        {
+          "id": "QUERY-003",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Update GameDetailData interface to include new data",
+          "file": "src/lib/queries/game-queries.ts",
+          "dependencies": ["QUERY-001", "QUERY-002"],
+          "estimated_lines": 5
+        },
+        {
+          "id": "COMP-001",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Create WinProbabilityChart component",
+          "file": "src/components/game/WinProbabilityChart.tsx",
+          "dependencies": ["TYPES-001"],
+          "estimated_lines": 180
+        },
+        {
+          "id": "COMP-002",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Create LivePlaysCard component",
+          "file": "src/components/game/LivePlaysCard.tsx",
+          "dependencies": ["TYPES-002"],
+          "estimated_lines": 120
+        },
+        {
+          "id": "COMP-003",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Update GameHeader with live game state",
+          "file": "src/components/game/GameHeader.tsx",
+          "dependencies": ["TYPES-002"],
+          "estimated_lines": 50
+        },
+        {
+          "id": "PAGE-001",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Update page.tsx to fetch new data",
+          "file": "src/app/game/[gameId]/page.tsx",
+          "dependencies": ["QUERY-003"],
+          "estimated_lines": 15
+        },
+        {
+          "id": "PAGE-002",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Add WinProbabilityChart to page layout",
+          "file": "src/app/game/[gameId]/page.tsx",
+          "dependencies": ["COMP-001", "PAGE-001"],
+          "estimated_lines": 10
+        },
+        {
+          "id": "PAGE-003",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Add LivePlaysCard to page layout",
+          "file": "src/app/game/[gameId]/page.tsx",
+          "dependencies": ["COMP-002", "PAGE-001"],
+          "estimated_lines": 10
+        },
+        {
+          "id": "PAGE-004",
+          "workorder_id": "WO-V2-SCRAPER-UI-001",
+          "description": "Pass live state props to GameHeader",
+          "file": "src/app/game/[gameId]/page.tsx",
+          "dependencies": ["COMP-003", "PAGE-001"],
+          "estimated_lines": 5
+        }
+      ]
+    },
+    "6_implementation_phases": {
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Data Layer Foundation",
+          "description": "Add TypeScript interfaces and Supabase query functions",
+          "tasks": ["TYPES-001", "TYPES-002", "QUERY-001", "QUERY-002", "QUERY-003"],
+          "deliverables": [
+            "WinProbability and LivePlay TypeScript interfaces",
+            "getWinProbability() and getLivePlays() query functions",
+            "Updated GameDetailData interface"
+          ]
+        },
+        {
+          "phase": 2,
+          "name": "Component Development",
+          "description": "Create new UI components matching existing style patterns",
+          "tasks": ["COMP-001", "COMP-002", "COMP-003"],
+          "deliverables": [
+            "WinProbabilityChart.tsx - SVG line chart component",
+            "LivePlaysCard.tsx - Play feed component",
+            "GameHeader.tsx updates for live state"
+          ]
+        },
+        {
+          "phase": 3,
+          "name": "Page Integration",
+          "description": "Integrate components into game detail page",
+          "tasks": ["PAGE-001", "PAGE-002", "PAGE-003", "PAGE-004"],
+          "deliverables": [
+            "Data fetching in page.tsx",
+            "Component placement in layout",
+            "Props wiring for all new components"
+          ]
+        }
+      ]
+    },
+    "7_testing_strategy": {
+      "manual_testing": [
+        "View game page with WP data - verify chart renders correctly",
+        "View game page with live_plays data - verify plays feed shows",
+        "View game page with no WP data - verify graceful empty state",
+        "View live game page - verify GameHeader shows live state",
+        "Test on mobile viewport - verify responsive behavior",
+        "Test chart tooltip interaction on hover"
+      ],
+      "test_data": {
+        "games_with_wp_data": "195 completed games with 34,990 WP data points",
+        "games_with_plays": "Check live_plays table for populated games",
+        "live_game_test": "Use in-progress game status to test live features"
+      }
+    },
+    "8_success_criteria": {
+      "functional": [
+        "WinProbabilityChart displays all WP data points as smooth line",
+        "LivePlaysCard shows most recent 50 plays with proper formatting",
+        "GameHeader shows clock/possession for in-progress games",
+        "All components render without errors",
+        "Empty states handled gracefully"
+      ],
+      "style": [
+        "Components use shadcn/ui Card, Badge patterns",
+        "Tailwind classes match existing components",
+        "Color scheme consistent with TopEPAPlays.tsx",
+        "Mobile responsive at 768px and 480px breakpoints"
+      ],
+      "performance": [
+        "Chart renders in <100ms",
+        "Page load time not significantly impacted",
+        "No unnecessary re-renders"
+      ]
+    },
+    "9_implementation_checklist": {
+      "phase_1_checklist": [
+        "[ ] Add WinProbability interface to src/types/game.ts",
+        "[ ] Add LivePlay interface to src/types/game.ts",
+        "[ ] Add getWinProbability() to game-queries.ts",
+        "[ ] Add getLivePlays() to game-queries.ts",
+        "[ ] Update GameDetailData interface"
+      ],
+      "phase_2_checklist": [
+        "[ ] Create WinProbabilityChart.tsx with SVG rendering",
+        "[ ] Add tooltip interaction to chart",
+        "[ ] Create LivePlaysCard.tsx with scrollable feed",
+        "[ ] Add scoring play highlighting in LivePlaysCard",
+        "[ ] Update GameHeader.tsx with live state display"
+      ],
+      "phase_3_checklist": [
+        "[ ] Update page.tsx data fetching",
+        "[ ] Add WinProbabilityChart to page layout",
+        "[ ] Add LivePlaysCard to page layout",
+        "[ ] Wire GameHeader live state props",
+        "[ ] Test all components with real data"
+      ]
+    }
+  }
+}
