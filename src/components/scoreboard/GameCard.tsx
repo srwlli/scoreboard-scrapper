@@ -68,7 +68,7 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecor
 
   return (
     <Link href={`/game/${game.game_id.replace('espn-', '')}`}>
-      <Card className="hover:bg-accent/50 transition-colors cursor-pointer">
+      <Card className={`hover:bg-accent/50 transition-colors cursor-pointer ${isLive ? 'border-2 border-red-500' : ''}`}>
         {showWeek && (
           <div className="px-4 pt-3 pb-1 border-b text-xs text-muted-foreground">
             Week {game.week} • {formatGameDate(game.game_date)} • {formatGameTime(game.game_date, game.game_time)}
@@ -111,12 +111,13 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecor
                 </div>
               ) : isLive ? (
                 <div className="flex flex-col items-center gap-0.5">
-                  <Badge variant="destructive" className="animate-pulse text-xs">LIVE</Badge>
-                  {game.current_period && game.game_clock && (
+                  {game.current_period === 2 && game.game_clock === '0:00' ? (
+                    <span className="text-sm font-semibold text-orange-500">Halftime</span>
+                  ) : game.current_period && game.game_clock ? (
                     <span className="text-sm font-medium">
                       {formatQuarter(game.current_period)} {game.game_clock}
                     </span>
-                  )}
+                  ) : null}
                   {game.current_down && (
                     <span className="text-xs text-muted-foreground">
                       {formatDown(game.current_down, game.yards_to_go)}
@@ -126,17 +127,6 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecor
                     <span className="text-[10px] text-muted-foreground">
                       at {game.field_position}
                     </span>
-                  )}
-                  {game.possession_team_id && (
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <img
-                        className="h-3 w-3"
-                        alt="possession"
-                        src={getTeamLogoUrl(game.possession_team_id)}
-                        onError={handleImageError}
-                      />
-                      <span className="text-[10px] text-muted-foreground">has ball</span>
-                    </div>
                   )}
                 </div>
               ) : (

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { GameCard } from './GameCard'
 import { SeasonSelector } from './SeasonSelector'
 import { WeekSelector } from './WeekSelector'
@@ -199,6 +199,32 @@ export function ScoreboardClient({
     }
   }, [])
 
+  // Auto-refresh every 30 seconds when there are live games
+  useEffect(() => {
+    const hasLiveGames = games.some(g => g.status === 'in_progress')
+    if (!hasLiveGames) return
+
+    const interval = setInterval(() => {
+      fetchGames()
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(interval)
+  }, [games, fetchGames])
+
+  // Sort games: live first, then scheduled, then completed
+  const sortedGames = useMemo(() => {
+    const statusOrder = { 'in_progress': 0, 'scheduled': 1, 'final': 2 }
+    return [...games].sort((a, b) => {
+      const orderA = statusOrder[a.status as keyof typeof statusOrder] ?? 1
+      const orderB = statusOrder[b.status as keyof typeof statusOrder] ?? 1
+      if (orderA !== orderB) return orderA - orderB
+      // Within same status, sort by game time
+      const timeA = `${a.game_date}T${a.game_time || '00:00'}`
+      const timeB = `${b.game_date}T${b.game_time || '00:00'}`
+      return timeA.localeCompare(timeB)
+    })
+  }, [games])
+
   const gameCount = games.length
   const footerText = isTeamView
     ? `${selectedTeam?.team_name} | ${season} Season | ${gameCount} Games`
@@ -271,7 +297,7 @@ export function ScoreboardClient({
             ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
             : "flex flex-col gap-4 max-w-2xl mx-auto"
           }>
-            {games.map((game) => (
+            {sortedGames.map((game) => (
               <GameCard
                 key={game.game_id}
                 game={game}
@@ -281,7 +307,7 @@ export function ScoreboardClient({
                 awayRecord={calculateTeamRecord(game.away_team_id, game.week)}
               />
             ))}
-            {games.length === 0 && (
+            {sortedGames.length === 0 && (
               <div className="col-span-full flex flex-col items-center justify-center py-12">
                 <p className="text-muted-foreground">No games scheduled for this week</p>
               </div>
