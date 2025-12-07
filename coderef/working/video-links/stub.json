@@ -1,0 +1,28 @@
+{
+  "feature_name": "video-links",
+  "description": "Add video links (YouTube highlights, etc.) to game details",
+  "category": "feature",
+  "priority": "medium",
+  "created": "2025-12-06T00:00:00.000Z",
+  "status": "stub",
+  "implementation_notes": {
+    "approach": "YouTube Data API v3 scraper",
+    "api_quota": "10,000 units/day free tier (~100 searches)",
+    "search_patterns": [
+      "{AwayTeam} vs {HomeTeam} highlights {year}",
+      "NFL Week {week} {AwayTeam} {HomeTeam} {year}",
+      "{PlayerName} {GameDate} touchdown"
+    ],
+    "video_types": ["highlights", "condensed_game", "full_game", "key_plays"],
+    "data_structure": {
+      "table": "game_videos",
+      "columns": ["game_id", "video_type", "youtube_id", "title", "thumbnail_url", "duration", "scraped_at"]
+    },
+    "ui_location": "Game details page - new VideoCard component",
+    "official_sources": [
+      "NFL YouTube channel",
+      "Team official channels",
+      "ESPN/sports networks"
+    ]
+  }
+}

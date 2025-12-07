@@ -4,27 +4,36 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Badge } from '@/components/ui/badge'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import type { GameRosterCardProps, GameRoster } from '@/types/game'
 
-// Position sort order for display
+// Position groups for depth chart display
+const POSITION_GROUPS = [
+  { label: 'Offense', positions: ['QB', 'RB', 'FB', 'WR', 'TE', 'OT', 'OG', 'C', 'OL', 'T', 'G'] },
+  { label: 'Defense', positions: ['DE', 'DT', 'NT', 'DL', 'LB', 'OLB', 'ILB', 'MLB', 'CB', 'S', 'FS', 'SS', 'DB'] },
+  { label: 'Special Teams', positions: ['K', 'P', 'LS'] },
+]
+
+// Canonical position order within each group
 const POSITION_ORDER: Record<string, number> = {
   'QB': 1,
-  'RB': 2, 'FB': 2,
-  'WR': 3,
-  'TE': 4,
-  'OT': 5, 'OG': 5, 'C': 5, 'OL': 5, 'T': 5, 'G': 5,
-  'DE': 6, 'DT': 6, 'NT': 6, 'DL': 6,
-  'LB': 7, 'OLB': 7, 'ILB': 7, 'MLB': 7,
-  'CB': 8, 'S': 8, 'FS': 8, 'SS': 8, 'DB': 8,
-  'K': 9, 'P': 10, 'LS': 11
+  'RB': 2, 'FB': 3,
+  'WR': 4,
+  'TE': 5,
+  'OT': 6, 'T': 6, 'OG': 7, 'G': 7, 'C': 8, 'OL': 9,
+  'DE': 10, 'DT': 11, 'NT': 12, 'DL': 13,
+  'LB': 14, 'OLB': 15, 'ILB': 16, 'MLB': 17,
+  'CB': 18, 'S': 19, 'FS': 20, 'SS': 21, 'DB': 22,
+  'K': 23, 'P': 24, 'LS': 25
+}
+
+// Normalize position to canonical form
+function normalizePosition(pos: string | null): string {
+  if (!pos) return 'UNKNOWN'
+  const upper = pos.toUpperCase()
+  // Map common variations
+  if (upper === 'T') return 'OT'
+  if (upper === 'G') return 'OG'
+  return upper
 }
 
 function getPositionOrder(position: string | null): number {
@@ -32,14 +41,15 @@ function getPositionOrder(position: string | null): number {
   return POSITION_ORDER[position.toUpperCase()] || 50
 }
 
-function sortByPosition(a: GameRoster, b: GameRoster): number {
-  const orderA = getPositionOrder(a.position || a.player?.primary_position)
-  const orderB = getPositionOrder(b.position || b.player?.primary_position)
-  if (orderA !== orderB) return orderA - orderB
-  // Secondary sort by jersey number
-  const jerseyA = a.jersey_number ?? a.player?.jersey_number ?? 99
-  const jerseyB = b.jersey_number ?? b.player?.jersey_number ?? 99
-  return jerseyA - jerseyB
+function getPositionGroup(position: string | null): string {
+  if (!position) return 'Other'
+  const upper = position.toUpperCase()
+  for (const group of POSITION_GROUPS) {
+    if (group.positions.includes(upper)) {
+      return group.label
+    }
+  }
+  return 'Other'
 }
 
 export function GameRosterCard({
@@ -55,7 +65,7 @@ export function GameRosterCard({
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Game Roster</CardTitle>
+          <CardTitle className="text-lg">Game Day Depth Chart</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">No roster data available</p>
@@ -67,17 +77,69 @@ export function GameRosterCard({
   // Filter by selected team
   const teamRosters = rosters.filter(r => r.team_id === selectedTeam)
 
-  // Separate active and inactive
-  const activePlayers = teamRosters.filter(r => r.active).sort(sortByPosition)
-  const inactivePlayers = teamRosters.filter(r => !r.active).sort(sortByPosition)
+  // Separate into 3 categories:
+  // 1. Played (played=true) - actually got on field
+  // 2. DNP (played=false, active=true) - dressed but did not play
+  // 3. Inactive (active=false) - declared inactive before game
+  const playedPlayers = teamRosters.filter(r => r.played === true)
+  const dnpPlayers = teamRosters.filter(r => r.played === false && r.active === true)
+  const inactivePlayers = teamRosters.filter(r => r.active === false)
+
+  // Group PLAYED players by position for depth chart
+  const positionGroups = new Map<string, GameRoster[]>()
+  for (const player of playedPlayers) {
+    const pos = normalizePosition(player.position || player.player?.primary_position)
+    if (!positionGroups.has(pos)) {
+      positionGroups.set(pos, [])
+    }
+    positionGroups.get(pos)!.push(player)
+  }
+
+  // Sort positions by order, then sort players within each position by jersey number
+  const sortedPositions = Array.from(positionGroups.keys()).sort(
+    (a, b) => getPositionOrder(a) - getPositionOrder(b)
+  )
+
+  // Sort players within each position group by jersey number
+  for (const pos of sortedPositions) {
+    positionGroups.get(pos)!.sort((a, b) => {
+      const jerseyA = a.jersey_number ?? a.player?.jersey_number ?? 99
+      const jerseyB = b.jersey_number ?? b.player?.jersey_number ?? 99
+      return jerseyA - jerseyB
+    })
+  }
+
+  // Group positions by unit (Offense, Defense, Special Teams)
+  const unitGroups = new Map<string, string[]>()
+  for (const pos of sortedPositions) {
+    const unit = getPositionGroup(pos)
+    if (!unitGroups.has(unit)) {
+      unitGroups.set(unit, [])
+    }
+    unitGroups.get(unit)!.push(pos)
+  }
 
   const selectedTeamData = selectedTeam === homeTeamId ? homeTeam : awayTeam
+
+  // Helper to format player display
+  const formatPlayer = (roster: GameRoster): string => {
+    const jersey = roster.jersey_number ?? roster.player?.jersey_number
+    const name = roster.player?.full_name ?? `Player ${roster.player_id.replace('espn-', '')}`
+    // Shorten name: "First Last" -> "F. Last"
+    const parts = name.split(' ')
+    if (parts.length >= 2) {
+      const firstName = parts[0]
+      const lastName = parts.slice(1).join(' ')
+      return jersey ? `#${jersey} ${firstName[0]}. ${lastName}` : `${firstName[0]}. ${lastName}`
+    }
+    return jersey ? `#${jersey} ${name}` : name
+  }
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Game Roster</CardTitle>
+          <CardTitle className="text-lg">Game Day Depth Chart</CardTitle>
           <ToggleGroup
             type="single"
             value={selectedTeam}
@@ -95,86 +157,113 @@ export function GameRosterCard({
           <span>{selectedTeamData.team_name}</span>
           <span>•</span>
           <Badge variant="secondary" className="text-xs">
-            {activePlayers.length} Active
+            {playedPlayers.length} Played
           </Badge>
+          {dnpPlayers.length > 0 && (
+            <Badge variant="outline" className="text-xs text-amber-600">
+              {dnpPlayers.length} DNP
+            </Badge>
+          )}
           {inactivePlayers.length > 0 && (
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-xs text-muted-foreground">
               {inactivePlayers.length} Inactive
             </Badge>
           )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Active Players */}
-        {activePlayers.length > 0 && (
-          <div>
-            <h4 className="text-sm font-medium text-muted-foreground mb-2">
-              Active ({activePlayers.length})
+        {/* Depth Chart by Unit */}
+        {['Offense', 'Defense', 'Special Teams', 'Other'].map(unit => {
+          const positions = unitGroups.get(unit)
+          if (!positions || positions.length === 0) return null
+
+          return (
+            <div key={unit}>
+              <h4 className="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wide">
+                {unit}
+              </h4>
+              <div className="space-y-1.5">
+                {positions.map(pos => {
+                  const players = positionGroups.get(pos) || []
+                  if (players.length === 0) return null
+
+                  return (
+                    <div key={pos} className="flex items-start gap-2">
+                      <Badge
+                        variant="outline"
+                        className="text-xs font-mono w-10 justify-center shrink-0"
+                      >
+                        {pos}
+                      </Badge>
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-sm">
+                        {players.map((player, idx) => (
+                          <span
+                            key={player.game_roster_id}
+                            className="text-foreground whitespace-nowrap"
+                          >
+                            {formatPlayer(player)}
+                            {idx < players.length - 1 && (
+                              <span className="text-muted-foreground ml-1">•</span>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
+
+        {/* Did Not Play - Dressed but didn't see field */}
+        {dnpPlayers.length > 0 && (
+          <div className="pt-2 border-t">
+            <h4 className="text-sm font-semibold text-amber-600 mb-2 uppercase tracking-wide">
+              Did Not Play
             </h4>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-12">#</TableHead>
-                    <TableHead>Player</TableHead>
-                    <TableHead className="w-16 text-right">Pos</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {activePlayers.map((roster) => (
-                    <TableRow key={roster.game_roster_id}>
-                      <TableCell className="tabular-nums text-muted-foreground">
-                        {roster.jersey_number ?? roster.player?.jersey_number ?? '-'}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {roster.player?.full_name ?? `Player ${roster.player_id}`}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Badge variant="outline" className="text-xs">
-                          {roster.position || roster.player?.primary_position || '-'}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
+              {dnpPlayers
+                .sort((a, b) => getPositionOrder(a.position || a.player?.primary_position) -
+                               getPositionOrder(b.position || b.player?.primary_position))
+                .map((player, idx) => {
+                  const pos = player.position || player.player?.primary_position || ''
+                  return (
+                    <span key={player.game_roster_id} className="whitespace-nowrap">
+                      {formatPlayer(player)}
+                      {pos && <span className="text-xs ml-1">({pos})</span>}
+                      {idx < dnpPlayers.length - 1 && (
+                        <span className="ml-1">•</span>
+                      )}
+                    </span>
+                  )
+                })}
             </div>
           </div>
         )}
 
-        {/* Inactive Players */}
+        {/* Inactive Players - Declared inactive before game */}
         {inactivePlayers.length > 0 && (
-          <div>
-            <h4 className="text-sm font-medium text-muted-foreground mb-2">
-              Inactive ({inactivePlayers.length})
+          <div className="pt-2 border-t">
+            <h4 className="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wide">
+              Inactive
             </h4>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-12">#</TableHead>
-                    <TableHead>Player</TableHead>
-                    <TableHead className="w-16 text-right">Pos</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {inactivePlayers.map((roster) => (
-                    <TableRow key={roster.game_roster_id} className="text-muted-foreground">
-                      <TableCell className="tabular-nums">
-                        {roster.jersey_number ?? roster.player?.jersey_number ?? '-'}
-                      </TableCell>
-                      <TableCell>
-                        {roster.player?.full_name ?? `Player ${roster.player_id}`}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Badge variant="outline" className="text-xs">
-                          {roster.position || roster.player?.primary_position || '-'}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
+              {inactivePlayers
+                .sort((a, b) => getPositionOrder(a.position || a.player?.primary_position) -
+                               getPositionOrder(b.position || b.player?.primary_position))
+                .map((player, idx) => {
+                  const pos = player.position || player.player?.primary_position || ''
+                  return (
+                    <span key={player.game_roster_id} className="whitespace-nowrap">
+                      {formatPlayer(player)}
+                      {pos && <span className="text-xs ml-1">({pos})</span>}
+                      {idx < inactivePlayers.length - 1 && (
+                        <span className="ml-1">•</span>
+                      )}
+                    </span>
+                  )
+                })}
             </div>
           </div>
         )}

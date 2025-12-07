@@ -14,6 +14,8 @@ import {
   STANDINGS_SECTIONS,
   SOURCE_COLORS,
   SCHEDULE_COLORS,
+  DATA_TYPE_COLORS,
+  DATA_TYPE_LABELS,
   getScheduleType,
 } from './data-maps-config'
 
@@ -57,7 +59,10 @@ export function StandingsTab() {
                 </div>
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-                <span>Table: <code className="bg-muted px-1 rounded">{section.table}</code></span>
+                <Badge variant="outline" className={DATA_TYPE_COLORS[section.dataType]}>
+                  {DATA_TYPE_LABELS[section.dataType]}
+                </Badge>
+                <span><code className="bg-muted px-1 rounded">{section.table}</code></span>
                 <span>|</span>
                 <span>PK: <code className="bg-muted px-1 rounded">{section.primaryKey}</code></span>
                 {section.recordCount && (

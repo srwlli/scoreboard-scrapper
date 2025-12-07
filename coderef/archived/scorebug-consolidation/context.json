@@ -1,0 +1,27 @@
+{
+  "feature_name": "scorebug-consolidation",
+  "description": "Remove duplicate ScoreBug component from game details page and consolidate to 2 score display components: GameCard for scoreboard lists/grids and GameHeader for game details page hero",
+  "goal": "Eliminate UI redundancy where both GameHeader and ScoreBug display the same information (team logos, scores, status, quarter scores) on the game details page",
+  "requirements": [
+    "Delete ScoreBug.tsx component file",
+    "Remove ScoreBug import and usage from game page.tsx",
+    "Keep GameCard unchanged (scoreboard lists)",
+    "Keep GameHeader unchanged (game details hero)"
+  ],
+  "out_of_scope": [
+    "Modifying GameCard component",
+    "Modifying GameHeader component",
+    "Adding new features to either component"
+  ],
+  "constraints": [
+    "Must not break game details page layout",
+    "Must maintain existing visual hierarchy"
+  ],
+  "decisions": {},
+  "success_criteria": {},
+  "_metadata": {
+    "workorder_id": "WO-SCOREBUG-CONSOLIDATION-001",
+    "workorder_assigned_at": "2025-12-06T22:57:37.975050+00:00",
+    "workorder_assigned_by": "gather_context"
+  }
+}

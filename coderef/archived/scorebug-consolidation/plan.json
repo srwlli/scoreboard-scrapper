@@ -1,0 +1,211 @@
+{
+  "META_DOCUMENTATION": {
+    "feature_name": "scorebug-consolidation",
+    "schema_version": "1.0.0",
+    "version": "1.0.0",
+    "status": "complete",
+    "generated_by": "Claude Code",
+    "has_context": true,
+    "has_analysis": true
+  },
+  "UNIVERSAL_PLANNING_STRUCTURE": {
+    "0_preparation": {
+      "foundation_docs_available": ["README.md"],
+      "foundation_docs_missing": ["API.md", "ARCHITECTURE.md", "COMPONENTS.md"],
+      "coding_standards": "None established",
+      "reference_components": {
+        "GameHeader": "src/components/game/GameHeader.tsx",
+        "ScoreBug": "src/components/game/ScoreBug.tsx",
+        "GameCard": "src/components/scoreboard/GameCard.tsx"
+      },
+      "technology_stack": {
+        "language": "TypeScript",
+        "framework": "Next.js 14",
+        "ui_library": "shadcn/ui",
+        "styling": "Tailwind CSS"
+      }
+    },
+    "1_executive_summary": {
+      "feature_name": "scorebug-consolidation",
+      "description": "Remove duplicate ScoreBug component from game details page and consolidate to 2 score display components",
+      "goal": "Eliminate UI redundancy where both GameHeader and ScoreBug display the same information on the game details page",
+      "scope": "Delete ScoreBug.tsx and remove its usage from game page",
+      "estimated_complexity": "Low",
+      "estimated_tasks": 3
+    },
+    "2_risk_assessment": {
+      "complexity_level": "Low",
+      "risks": [
+        {
+          "risk": "Layout shift after removing ScoreBug",
+          "likelihood": "Low",
+          "impact": "Medium",
+          "mitigation": "GameHeader already handles all score display; grid layout will adjust automatically"
+        }
+      ],
+      "dependencies": [],
+      "blockers": []
+    },
+    "3_current_state_analysis": {
+      "files_to_modify": [
+        {
+          "path": "src/app/game/[gameId]/page.tsx",
+          "changes": "Remove ScoreBug import and usage (lines 5, 83-90)"
+        }
+      ],
+      "files_to_create": [],
+      "files_to_delete": [
+        {
+          "path": "src/components/game/ScoreBug.tsx",
+          "purpose": "Redundant component - GameHeader provides same functionality"
+        }
+      ],
+      "current_component_structure": {
+        "GameHeader": "Full-featured hero with large logos, scores, quarter table - KEEP",
+        "ScoreBug": "Smaller duplicate with same info - DELETE",
+        "GameCard": "Compact card for scoreboard lists - KEEP (unchanged)"
+      }
+    },
+    "4_key_features": {
+      "features": [
+        {
+          "id": "CLEANUP-001",
+          "name": "Remove ScoreBug from game page",
+          "description": "Remove import statement and JSX usage from page.tsx",
+          "priority": "High"
+        },
+        {
+          "id": "CLEANUP-002",
+          "name": "Delete ScoreBug component",
+          "description": "Remove the redundant ScoreBug.tsx file",
+          "priority": "High"
+        },
+        {
+          "id": "VERIFY-001",
+          "name": "Verify layout integrity",
+          "description": "Ensure game details page displays correctly after removal",
+          "priority": "Medium"
+        }
+      ]
+    },
+    "5_task_id_system": {
+      "workorder": {
+        "id": "WO-SCOREBUG-CONSOLIDATION-001",
+        "name": "Scorebug Consolidation",
+        "feature_dir": "coderef/working/scorebug-consolidation"
+      },
+      "tasks": [
+        {
+          "id": "CLEANUP-001",
+          "workorder_id": "WO-SCOREBUG-CONSOLIDATION-001",
+          "description": "Remove ScoreBug import from page.tsx line 5",
+          "file": "src/app/game/[gameId]/page.tsx",
+          "type": "modify",
+          "estimated_effort": "5 minutes"
+        },
+        {
+          "id": "CLEANUP-002",
+          "workorder_id": "WO-SCOREBUG-CONSOLIDATION-001",
+          "description": "Remove ScoreBug JSX usage from page.tsx lines 83-90",
+          "file": "src/app/game/[gameId]/page.tsx",
+          "type": "modify",
+          "estimated_effort": "5 minutes"
+        },
+        {
+          "id": "CLEANUP-003",
+          "workorder_id": "WO-SCOREBUG-CONSOLIDATION-001",
+          "description": "Delete ScoreBug.tsx component file",
+          "file": "src/components/game/ScoreBug.tsx",
+          "type": "delete",
+          "estimated_effort": "1 minute"
+        },
+        {
+          "id": "VERIFY-001",
+          "workorder_id": "WO-SCOREBUG-CONSOLIDATION-001",
+          "description": "Test game details page renders correctly",
+          "file": null,
+          "type": "verify",
+          "estimated_effort": "5 minutes"
+        }
+      ]
+    },
+    "6_implementation_phases": {
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Remove Usage",
+          "description": "Remove ScoreBug import and JSX from game page",
+          "tasks": ["CLEANUP-001", "CLEANUP-002"],
+          "deliverables": ["Updated page.tsx without ScoreBug"]
+        },
+        {
+          "phase": 2,
+          "name": "Delete Component",
+          "description": "Delete the redundant ScoreBug.tsx file",
+          "tasks": ["CLEANUP-003"],
+          "deliverables": ["ScoreBug.tsx removed from codebase"]
+        },
+        {
+          "phase": 3,
+          "name": "Verification",
+          "description": "Verify game details page works correctly",
+          "tasks": ["VERIFY-001"],
+          "deliverables": ["Confirmed working game details page"]
+        }
+      ]
+    },
+    "7_testing_strategy": {
+      "manual_testing": [
+        "Navigate to any game details page (e.g., /game/401772510)",
+        "Verify GameHeader displays with scores, logos, quarter table",
+        "Verify no duplicate score display exists",
+        "Verify page layout is intact (VenueCard, WeatherCard still visible)"
+      ],
+      "automated_testing": [],
+      "edge_cases": [
+        "Games with OT (overtime) should still display correctly",
+        "Live games should show LIVE badge in GameHeader",
+        "Scheduled games should show date/time"
+      ]
+    },
+    "8_success_criteria": {
+      "criteria": [
+        {
+          "id": "SC-001",
+          "description": "ScoreBug.tsx file no longer exists in codebase",
+          "verification": "File not found at src/components/game/ScoreBug.tsx"
+        },
+        {
+          "id": "SC-002",
+          "description": "Game details page renders without errors",
+          "verification": "No console errors, page loads successfully"
+        },
+        {
+          "id": "SC-003",
+          "description": "Only one score display (GameHeader) on game details page",
+          "verification": "Visual inspection shows single score area"
+        },
+        {
+          "id": "SC-004",
+          "description": "GameCard on scoreboard unchanged",
+          "verification": "Scoreboard page renders correctly"
+        }
+      ]
+    },
+    "9_implementation_checklist": {
+      "phase_1_checklist": [
+        "[ ] Remove ScoreBug import from page.tsx",
+        "[ ] Remove ScoreBug JSX block from page.tsx",
+        "[ ] Adjust grid layout if needed (remove lg:col-span-2 wrapper)"
+      ],
+      "phase_2_checklist": [
+        "[ ] Delete src/components/game/ScoreBug.tsx"
+      ],
+      "phase_3_checklist": [
+        "[ ] Test game details page with final game",
+        "[ ] Test game details page with scheduled game",
+        "[ ] Verify scoreboard page still works"
+      ]
+    }
+  }
+}

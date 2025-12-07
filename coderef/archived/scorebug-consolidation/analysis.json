@@ -1,0 +1,83 @@
+{
+  "foundation_docs": {
+    "available": [
+      "README.md (root)"
+    ],
+    "missing": [
+      "API.md",
+      "ARCHITECTURE.md",
+      "COMPONENTS.md",
+      "SCHEMA.md",
+      "USER-GUIDE.md"
+    ]
+  },
+  "foundation_doc_content": {
+    "README.md": {
+      "location": "root",
+      "preview": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).\n\n## Getting Started\n\nFirst, run the development server:\n\n```bash\nnpm run dev\n# or\nyarn dev\n# or\npnpm dev\n# or\nbun dev\n```\n\nOpen [http://localhost:3000](http://localhost:3000) with your browser to see the result.\n\nYou can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.\n\nThis project uses [`next/font`](",
+      "headers": [
+        "Getting Started",
+        "or",
+        "or",
+        "or",
+        "Learn More",
+        "Deploy on Vercel"
+      ],
+      "size": 1450
+    }
+  },
+  "inventory_data": {
+    "available": [],
+    "missing": [
+      "Run /quick-inventory to generate inventory data"
+    ]
+  },
+  "coding_standards": {
+    "available": [],
+    "missing": [
+      "BEHAVIOR-STANDARDS.md",
+      "COMPONENT-PATTERN.md",
+      "UI-STANDARDS.md",
+      "UX-PATTERNS.md",
+      "COMPONENT-INDEX.md"
+    ]
+  },
+  "reference_components": {
+    "primary": null,
+    "secondary": [],
+    "note": "Reference component matching requires feature name - not yet implemented"
+  },
+  "key_patterns_identified": [],
+  "technology_stack": {
+    "language": "JavaScript/TypeScript",
+    "framework": "React",
+    "database": "unknown",
+    "testing": "unknown",
+    "build": "npm scripts"
+  },
+  "project_structure": {
+    "main_directories": [
+      "src\\components\\game",
+      "src\\components\\ui"
+    ],
+    "file_counts": {
+      "src\\components\\game": 12,
+      "src\\components\\ui": 12,
+      "public": 8,
+      "src\\components\\scoreboard": 8,
+      "src\\app": 6,
+      "src\\components": 4,
+      "src\\app\\game\\[gameId]": 4,
+      "src\\components\\standings": 3,
+      "src\\lib\\queries": 3,
+      "src\\lib\\supabase": 2
+    },
+    "organization_pattern": "component-based"
+  },
+  "gaps_and_risks": [
+    "Missing foundation docs: API.md, ARCHITECTURE.md, COMPONENTS.md",
+    "No coding standards directory found (coderef/standards/)",
+    "No test directory found (tests/, test/, or __tests__/)",
+    "No CI configuration found (.github/workflows/, .gitlab-ci.yml, etc.)"
+  ]
+}

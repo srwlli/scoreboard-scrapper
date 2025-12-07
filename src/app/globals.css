@@ -127,21 +127,7 @@ html {
 }
 
 body {
-  padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
-}
-
-/* Fixed cover for notch area to prevent scroll bleed */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: env(safe-area-inset-top);
-  background-color: var(--background);
-  z-index: 9999;
-  pointer-events: none;
 }

@@ -1,0 +1,288 @@
+{
+  "project_name": "scrapper",
+  "project_path": "C:\\Users\\willh\\Desktop\\scrapper",
+  "generated_at": "2025-12-06T18:36:54.414956",
+  "package_managers": [
+    "npm"
+  ],
+  "dependencies": {
+    "npm": {
+      "direct": [
+        {
+          "name": "@radix-ui/react-avatar",
+          "version": "1.1.11",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "1.1.11",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "@radix-ui/react-dialog",
+          "version": "1.1.15",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "1.1.15",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "@radix-ui/react-select",
+          "version": "2.2.6",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "2.2.6",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "@radix-ui/react-separator",
+          "version": "1.1.8",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "1.1.8",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "@radix-ui/react-slot",
+          "version": "1.2.4",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "1.2.4",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "@radix-ui/react-tabs",
+          "version": "1.1.13",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "1.1.13",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "@radix-ui/react-toggle",
+          "version": "1.1.10",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "1.1.10",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "@radix-ui/react-toggle-group",
+          "version": "1.1.11",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "1.1.11",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "@supabase/ssr",
+          "version": "0.8.0",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "0.8.0",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "@supabase/supabase-js",
+          "version": "2.86.2",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "2.86.2",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "class-variance-authority",
+          "version": "0.7.1",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "0.7.1",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "clsx",
+          "version": "2.1.1",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "2.1.1",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "lucide-react",
+          "version": "0.556.0",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "0.556.0",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "next",
+          "version": "16.1.0-canary.15",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "16.0.7",
+          "outdated": true,
+          "fix_command": "npm install next@16.0.7"
+        },
+        {
+          "name": "next-themes",
+          "version": "0.4.6",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "0.4.6",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "react",
+          "version": "19.2.1",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "19.2.1",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "react-dom",
+          "version": "19.2.1",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "19.2.1",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "tailwind-merge",
+          "version": "3.4.0",
+          "type": "direct",
+          "ecosystem": "npm",
+          "latest_version": "3.4.0",
+          "outdated": false,
+          "fix_command": null
+        }
+      ],
+      "dev": [
+        {
+          "name": "@tailwindcss/postcss",
+          "version": "4",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "4.1.17",
+          "outdated": true,
+          "fix_command": "npm install @tailwindcss/postcss@4.1.17"
+        },
+        {
+          "name": "@types/node",
+          "version": "20",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "24.10.1",
+          "outdated": true,
+          "fix_command": "npm install @types/node@24.10.1"
+        },
+        {
+          "name": "@types/react",
+          "version": "19",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "19.2.7",
+          "outdated": true,
+          "fix_command": "npm install @types/react@19.2.7"
+        },
+        {
+          "name": "@types/react-dom",
+          "version": "19",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "19.2.3",
+          "outdated": true,
+          "fix_command": "npm install @types/react-dom@19.2.3"
+        },
+        {
+          "name": "babel-plugin-react-compiler",
+          "version": "1.0.0",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "1.0.0",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "eslint",
+          "version": "9",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "9.39.1",
+          "outdated": true,
+          "fix_command": "npm install eslint@9.39.1"
+        },
+        {
+          "name": "eslint-config-next",
+          "version": "16.1.0-canary.15",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "16.0.7",
+          "outdated": true,
+          "fix_command": "npm install eslint-config-next@16.0.7"
+        },
+        {
+          "name": "tailwindcss",
+          "version": "4",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "4.1.17",
+          "outdated": true,
+          "fix_command": "npm install tailwindcss@4.1.17"
+        },
+        {
+          "name": "tw-animate-css",
+          "version": "1.4.0",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "1.4.0",
+          "outdated": false,
+          "fix_command": null
+        },
+        {
+          "name": "typescript",
+          "version": "5",
+          "type": "dev",
+          "ecosystem": "npm",
+          "latest_version": "5.9.3",
+          "outdated": true,
+          "fix_command": "npm install typescript@5.9.3"
+        }
+      ],
+      "peer": [],
+      "transitive": []
+    }
+  },
+  "vulnerabilities": [],
+  "metrics": {
+    "total_dependencies": 28,
+    "direct_count": 18,
+    "dev_count": 10,
+    "peer_count": 0,
+    "transitive_count": 0,
+    "outdated_count": 9,
+    "vulnerable_count": 0,
+    "critical_vulnerabilities": 0,
+    "high_vulnerabilities": 0,
+    "medium_vulnerabilities": 0,
+    "low_vulnerabilities": 0,
+    "license_breakdown": {},
+    "ecosystem_breakdown": {
+      "npm": 28
+    }
+  }
+}

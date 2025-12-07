@@ -456,7 +456,10 @@ export interface AdvancedStats {
 
 /**
  * Game roster entry from `game_rosters` table
- * Tracks who played (active/inactive) in each game
+ * Tracks who played in each game with 3 categories:
+ *   - played=true, active=true  → Actually played (got on field, ~47/team)
+ *   - played=false, active=true → Dressed but DNP (~10-17/team)
+ *   - active=false              → Declared inactive (~7/team)
  */
 export interface GameRoster {
   game_roster_id: number
@@ -467,6 +470,7 @@ export interface GameRoster {
   position: string | null
   jersey_number: number | null
   active: boolean
+  played: boolean // Actually got on the field (had stats)
   status: string | null
   // Joined relation
   player?: Player

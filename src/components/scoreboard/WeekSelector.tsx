@@ -22,7 +22,7 @@ export function WeekSelector({ value, onChange, maxWeek }: WeekSelectorProps) {
       value={value.toString()}
       onValueChange={(v) => onChange(parseInt(v, 10))}
     >
-      <SelectTrigger className="w-[120px]">
+      <SelectTrigger className="flex-1 min-w-0">
         <SelectValue placeholder="Week" />
       </SelectTrigger>
       <SelectContent>

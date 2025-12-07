@@ -1,0 +1,1164 @@
+{
+  "project_name": "scrapper",
+  "project_path": "C:\\Users\\willh\\Desktop\\scrapper",
+  "generated_at": "2025-12-06T18:36:39.963491",
+  "analysis_depth": "standard",
+  "metrics": {
+    "total_files": 87,
+    "total_size": 570161,
+    "total_lines": 16545,
+    "file_categories": {
+      "core": 0,
+      "source": 58,
+      "template": 0,
+      "config": 6,
+      "test": 0,
+      "docs": 6,
+      "unknown": 17
+    },
+    "risk_distribution": {
+      "low": 78,
+      "medium": 7,
+      "high": 1,
+      "critical": 1
+    },
+    "language_breakdown": {
+      "JSON": 10,
+      "TypeScript": 57,
+      "Markdown": 6,
+      "CSS": 1
+    }
+  },
+  "files": [
+    {
+      "path": ".env.local",
+      "name": ".env.local",
+      "extension": ".local",
+      "size": 446,
+      "lines": 8,
+      "last_modified": "2025-12-05T22:52:40.575946",
+      "category": "config",
+      "risk_level": "critical",
+      "dependencies": []
+    },
+    {
+      "path": ".gitignore",
+      "name": ".gitignore",
+      "extension": "",
+      "size": 480,
+      "lines": 41,
+      "last_modified": "2025-12-05T19:38:02.913940",
+      "category": "config",
+      "risk_level": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "components.json",
+      "name": "components.json",
+      "extension": ".json",
+      "size": 451,
+      "lines": 22,
+      "last_modified": "2025-12-05T22:44:45.686669",
+      "category": "config",
+      "risk_level": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "eslint.config.mjs",
+      "name": "eslint.config.mjs",
+      "extension": ".mjs",
+      "size": 465,
+      "lines": 18,
+      "last_modified": "2025-12-05T19:38:03.055455",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "next-env.d.ts",
+      "name": "next-env.d.ts",
+      "extension": ".ts",
+      "size": 251,
+      "lines": 6,
+      "last_modified": "2025-12-06T11:41:35.553194",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "next.config.ts",
+      "name": "next.config.ts",
+      "extension": ".ts",
+      "size": 156,
+      "lines": 8,
+      "last_modified": "2025-12-05T22:43:49.950187",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "next"
+      ]
+    },
+    {
+      "path": "package-lock.json",
+      "name": "package-lock.json",
+      "extension": ".json",
+      "size": 294455,
+      "lines": 8344,
+      "last_modified": "2025-12-05T23:33:10.776790",
+      "category": "config",
+      "risk_level": "high",
+      "dependencies": []
+    },
+    {
+      "path": "package.json",
+      "name": "package.json",
+      "extension": ".json",
+      "size": 1184,
+      "lines": 43,
+      "last_modified": "2025-12-05T23:33:10.658164",
+      "category": "config",
+      "risk_level": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "postcss.config.mjs",
+      "name": "postcss.config.mjs",
+      "extension": ".mjs",
+      "size": 94,
+      "lines": 7,
+      "last_modified": "2025-12-05T19:38:03.068185",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "README.md",
+      "name": "README.md",
+      "extension": ".md",
+      "size": 4406,
+      "lines": 182,
+      "last_modified": "2025-12-06T18:29:27.659350",
+      "category": "docs",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "tsconfig.json",
+      "name": "tsconfig.json",
+      "extension": ".json",
+      "size": 670,
+      "lines": 34,
+      "last_modified": "2025-12-05T22:43:49.951187",
+      "category": "config",
+      "risk_level": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/foundation-docs/API.md",
+      "name": "API.md",
+      "extension": ".md",
+      "size": 7968,
+      "lines": 382,
+      "last_modified": "2025-12-06T18:31:39.640040",
+      "category": "docs",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/foundation-docs/ARCHITECTURE.md",
+      "name": "ARCHITECTURE.md",
+      "extension": ".md",
+      "size": 11322,
+      "lines": 280,
+      "last_modified": "2025-12-06T18:30:34.542041",
+      "category": "docs",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/foundation-docs/COMPONENTS.md",
+      "name": "COMPONENTS.md",
+      "extension": ".md",
+      "size": 10137,
+      "lines": 539,
+      "last_modified": "2025-12-06T18:32:56.248716",
+      "category": "docs",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/foundation-docs/SCHEMA.md",
+      "name": "SCHEMA.md",
+      "extension": ".md",
+      "size": 14611,
+      "lines": 655,
+      "last_modified": "2025-12-06T18:34:21.122287",
+      "category": "docs",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/working/2-scorebugs/stub.json",
+      "name": "stub.json",
+      "extension": ".json",
+      "size": 251,
+      "lines": 8,
+      "last_modified": "2025-12-06T17:34:54.808013",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/working/mobile-dropdown-fix/stub.json",
+      "name": "stub.json",
+      "extension": ".json",
+      "size": 291,
+      "lines": 8,
+      "last_modified": "2025-12-06T15:29:51.362917",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/working/scorebug-consolidation/analysis.json",
+      "name": "analysis.json",
+      "extension": ".json",
+      "size": 2598,
+      "lines": 83,
+      "last_modified": "2025-12-06T17:58:18.896731",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/working/scorebug-consolidation/context.json",
+      "name": "context.json",
+      "extension": ".json",
+      "size": 1168,
+      "lines": 27,
+      "last_modified": "2025-12-06T17:57:37.975414",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/working/scorebug-consolidation/DELIVERABLES.md",
+      "name": "DELIVERABLES.md",
+      "extension": ".md",
+      "size": 2134,
+      "lines": 97,
+      "last_modified": "2025-12-06T18:06:58.701564",
+      "category": "docs",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/working/scorebug-consolidation/plan.json",
+      "name": "plan.json",
+      "extension": ".json",
+      "size": 7573,
+      "lines": 211,
+      "last_modified": "2025-12-06T18:06:51.430090",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "coderef/working/video-links/stub.json",
+      "name": "stub.json",
+      "extension": ".json",
+      "size": 1013,
+      "lines": 28,
+      "last_modified": "2025-12-06T17:51:03.076262",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "public/apple-touch-icon.png",
+      "name": "apple-touch-icon.png",
+      "extension": ".png",
+      "size": 355,
+      "lines": 5,
+      "last_modified": "2025-12-06T12:24:27.545652",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "public/file.svg",
+      "name": "file.svg",
+      "extension": ".svg",
+      "size": 391,
+      "lines": 1,
+      "last_modified": "2025-12-05T19:38:03.074185",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "public/globe.svg",
+      "name": "globe.svg",
+      "extension": ".svg",
+      "size": 1035,
+      "lines": 1,
+      "last_modified": "2025-12-05T19:38:03.080785",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "public/icon-192.png",
+      "name": "icon-192.png",
+      "extension": ".png",
+      "size": 355,
+      "lines": 5,
+      "last_modified": "2025-12-06T12:22:42.267173",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "public/icon-512.png",
+      "name": "icon-512.png",
+      "extension": ".png",
+      "size": 355,
+      "lines": 5,
+      "last_modified": "2025-12-06T12:23:05.486241",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "public/next.svg",
+      "name": "next.svg",
+      "extension": ".svg",
+      "size": 1375,
+      "lines": 1,
+      "last_modified": "2025-12-05T19:38:03.089081",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "public/vercel.svg",
+      "name": "vercel.svg",
+      "extension": ".svg",
+      "size": 128,
+      "lines": 1,
+      "last_modified": "2025-12-05T19:38:03.095684",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "public/window.svg",
+      "name": "window.svg",
+      "extension": ".svg",
+      "size": 385,
+      "lines": 1,
+      "last_modified": "2025-12-05T19:38:03.102351",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "src/app/favicon.ico",
+      "name": "favicon.ico",
+      "extension": ".ico",
+      "size": 25931,
+      "lines": 77,
+      "last_modified": "2025-12-05T19:38:02.957653",
+      "category": "unknown",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "src/app/globals.css",
+      "name": "globals.css",
+      "extension": ".css",
+      "size": 4523,
+      "lines": 133,
+      "last_modified": "2025-12-06T12:28:21.468975",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "name": "layout.tsx",
+      "extension": ".tsx",
+      "size": 1675,
+      "lines": 64,
+      "last_modified": "2025-12-06T12:18:48.875168",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "next"
+      ]
+    },
+    {
+      "path": "src/app/loading.tsx",
+      "name": "loading.tsx",
+      "extension": ".tsx",
+      "size": 223,
+      "lines": 9,
+      "last_modified": "2025-12-06T00:31:51.863317",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components"
+      ]
+    },
+    {
+      "path": "src/app/manifest.ts",
+      "name": "manifest.ts",
+      "extension": ".ts",
+      "size": 741,
+      "lines": 31,
+      "last_modified": "2025-12-06T12:18:13.703436",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "next"
+      ]
+    },
+    {
+      "path": "src/app/page.tsx",
+      "name": "page.tsx",
+      "extension": ".tsx",
+      "size": 628,
+      "lines": 21,
+      "last_modified": "2025-12-06T01:35:50.831845",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components"
+      ]
+    },
+    {
+      "path": "src/app/game/[gameId]/error.tsx",
+      "name": "error.tsx",
+      "extension": ".tsx",
+      "size": 2002,
+      "lines": 54,
+      "last_modified": "2025-12-05T23:04:24.847401",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "lucide-react",
+        "next",
+        "react"
+      ]
+    },
+    {
+      "path": "src/app/game/[gameId]/loading.tsx",
+      "name": "loading.tsx",
+      "extension": ".tsx",
+      "size": 7902,
+      "lines": 213,
+      "last_modified": "2025-12-05T23:04:08.506843",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components"
+      ]
+    },
+    {
+      "path": "src/app/game/[gameId]/not-found.tsx",
+      "name": "not-found.tsx",
+      "extension": ".tsx",
+      "size": 1559,
+      "lines": 38,
+      "last_modified": "2025-12-05T23:04:33.597647",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "lucide-react",
+        "next"
+      ]
+    },
+    {
+      "path": "src/app/game/[gameId]/page.tsx",
+      "name": "page.tsx",
+      "extension": ".tsx",
+      "size": 4995,
+      "lines": 164,
+      "last_modified": "2025-12-06T18:19:43.358102",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/lib",
+        "next"
+      ]
+    },
+    {
+      "path": "src/app/scoreboard/page.tsx",
+      "name": "page.tsx",
+      "extension": ".tsx",
+      "size": 931,
+      "lines": 33,
+      "last_modified": "2025-12-05T23:41:33.413733",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/app/standings/page.tsx",
+      "name": "page.tsx",
+      "extension": ".tsx",
+      "size": 830,
+      "lines": 24,
+      "last_modified": "2025-12-06T01:34:19.913210",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/lib"
+      ]
+    },
+    {
+      "path": "src/components/dashboard-card.tsx",
+      "name": "dashboard-card.tsx",
+      "extension": ".tsx",
+      "size": 646,
+      "lines": 23,
+      "last_modified": "2025-12-05T23:43:42.101147",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "next"
+      ]
+    },
+    {
+      "path": "src/components/header-context.tsx",
+      "name": "header-context.tsx",
+      "extension": ".tsx",
+      "size": 1296,
+      "lines": 47,
+      "last_modified": "2025-12-05T23:48:41.808118",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/site-header.tsx",
+      "name": "site-header.tsx",
+      "extension": ".tsx",
+      "size": 3021,
+      "lines": 87,
+      "last_modified": "2025-12-06T12:28:06.272234",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "lucide-react",
+        "next",
+        "next-themes"
+      ]
+    },
+    {
+      "path": "src/components/theme-provider.tsx",
+      "name": "theme-provider.tsx",
+      "extension": ".tsx",
+      "size": 306,
+      "lines": 11,
+      "last_modified": "2025-12-05T23:04:58.286521",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "next-themes",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/game/AdvancedStatsCard.tsx",
+      "name": "AdvancedStatsCard.tsx",
+      "extension": ".tsx",
+      "size": 3598,
+      "lines": 96,
+      "last_modified": "2025-12-05T23:00:49.833679",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/game/DataSourceFooter.tsx",
+      "name": "DataSourceFooter.tsx",
+      "extension": ".tsx",
+      "size": 992,
+      "lines": 33,
+      "last_modified": "2025-12-05T22:58:07.524151",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components"
+      ]
+    },
+    {
+      "path": "src/components/game/GameHeader.tsx",
+      "name": "GameHeader.tsx",
+      "extension": ".tsx",
+      "size": 6212,
+      "lines": 141,
+      "last_modified": "2025-12-05T23:26:08.744524",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/components/game/NGSStatsCard.tsx",
+      "name": "NGSStatsCard.tsx",
+      "extension": ".tsx",
+      "size": 7385,
+      "lines": 170,
+      "last_modified": "2025-12-05T23:00:47.389455",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/game/PlayerStatsCard.tsx",
+      "name": "PlayerStatsCard.tsx",
+      "extension": ".tsx",
+      "size": 13129,
+      "lines": 269,
+      "last_modified": "2025-12-05T23:00:43.369773",
+      "category": "source",
+      "risk_level": "medium",
+      "dependencies": [
+        "@/components",
+        "@/types",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/game/ScoringPlays.tsx",
+      "name": "ScoringPlays.tsx",
+      "extension": ".tsx",
+      "size": 4018,
+      "lines": 113,
+      "last_modified": "2025-12-06T02:29:55.687418",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/components/game/SnapCountsCard.tsx",
+      "name": "SnapCountsCard.tsx",
+      "extension": ".tsx",
+      "size": 6471,
+      "lines": 168,
+      "last_modified": "2025-12-05T23:00:45.214353",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/game/TeamStatsCard.tsx",
+      "name": "TeamStatsCard.tsx",
+      "extension": ".tsx",
+      "size": 4766,
+      "lines": 135,
+      "last_modified": "2025-12-05T22:59:20.997307",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/components/game/TopEPAPlays.tsx",
+      "name": "TopEPAPlays.tsx",
+      "extension": ".tsx",
+      "size": 3035,
+      "lines": 87,
+      "last_modified": "2025-12-06T02:30:15.694452",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/components/game/VenueCard.tsx",
+      "name": "VenueCard.tsx",
+      "extension": ".tsx",
+      "size": 1547,
+      "lines": 50,
+      "last_modified": "2025-12-06T03:34:57.175714",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/components/game/WeatherCard.tsx",
+      "name": "WeatherCard.tsx",
+      "extension": ".tsx",
+      "size": 1911,
+      "lines": 60,
+      "last_modified": "2025-12-05T22:58:05.526947",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types",
+        "lucide-react"
+      ]
+    },
+    {
+      "path": "src/components/scoreboard/GameCard.tsx",
+      "name": "GameCard.tsx",
+      "extension": ".tsx",
+      "size": 5180,
+      "lines": 135,
+      "last_modified": "2025-12-06T12:49:52.584987",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types",
+        "next"
+      ]
+    },
+    {
+      "path": "src/components/scoreboard/index.ts",
+      "name": "index.ts",
+      "extension": ".ts",
+      "size": 298,
+      "lines": 6,
+      "last_modified": "2025-12-05T22:56:06.154704",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "src/components/scoreboard/ScoreboardClient.tsx",
+      "name": "ScoreboardClient.tsx",
+      "extension": ".tsx",
+      "size": 9927,
+      "lines": 301,
+      "last_modified": "2025-12-06T13:03:51.139962",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/lib",
+        "@/types",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/scoreboard/ScoreboardSkeleton.tsx",
+      "name": "ScoreboardSkeleton.tsx",
+      "extension": ".tsx",
+      "size": 1435,
+      "lines": 39,
+      "last_modified": "2025-12-05T22:55:51.164261",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components"
+      ]
+    },
+    {
+      "path": "src/components/scoreboard/SeasonSelector.tsx",
+      "name": "SeasonSelector.tsx",
+      "extension": ".tsx",
+      "size": 834,
+      "lines": 35,
+      "last_modified": "2025-12-06T12:43:08.166372",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "src/components/scoreboard/TeamFilter.tsx",
+      "name": "TeamFilter.tsx",
+      "extension": ".tsx",
+      "size": 1060,
+      "lines": 42,
+      "last_modified": "2025-12-06T12:43:16.908025",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/components/scoreboard/TeamScheduleHeader.tsx",
+      "name": "TeamScheduleHeader.tsx",
+      "extension": ".tsx",
+      "size": 1752,
+      "lines": 55,
+      "last_modified": "2025-12-05T22:55:49.054507",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/components/scoreboard/WeekSelector.tsx",
+      "name": "WeekSelector.tsx",
+      "extension": ".tsx",
+      "size": 858,
+      "lines": 37,
+      "last_modified": "2025-12-06T12:43:12.875861",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "src/components/standings/DivisionTable.tsx",
+      "name": "DivisionTable.tsx",
+      "extension": ".tsx",
+      "size": 3135,
+      "lines": 63,
+      "last_modified": "2025-12-06T01:40:06.607936",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/components/standings/index.ts",
+      "name": "index.ts",
+      "extension": ".ts",
+      "size": 102,
+      "lines": 2,
+      "last_modified": "2025-12-06T01:35:39.594270",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": []
+    },
+    {
+      "path": "src/components/standings/StandingsClient.tsx",
+      "name": "StandingsClient.tsx",
+      "extension": ".tsx",
+      "size": 14688,
+      "lines": 364,
+      "last_modified": "2025-12-06T01:40:07.763210",
+      "category": "source",
+      "risk_level": "medium",
+      "dependencies": [
+        "@/components",
+        "@/types",
+        "next",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/avatar.tsx",
+      "name": "avatar.tsx",
+      "extension": ".tsx",
+      "size": 1097,
+      "lines": 53,
+      "last_modified": "2025-12-05T22:46:43.549163",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@radix-ui/react-avatar",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/badge.tsx",
+      "name": "badge.tsx",
+      "extension": ".tsx",
+      "size": 1633,
+      "lines": 46,
+      "last_modified": "2025-12-05T22:46:43.155796",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@radix-ui/react-slot",
+        "class-variance-authority",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "name": "button.tsx",
+      "extension": ".tsx",
+      "size": 2142,
+      "lines": 60,
+      "last_modified": "2025-12-05T22:46:43.351134",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@radix-ui/react-slot",
+        "class-variance-authority",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/card.tsx",
+      "name": "card.tsx",
+      "extension": ".tsx",
+      "size": 1987,
+      "lines": 92,
+      "last_modified": "2025-12-05T22:46:42.508030",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/select.tsx",
+      "name": "select.tsx",
+      "extension": ".tsx",
+      "size": 6295,
+      "lines": 187,
+      "last_modified": "2025-12-05T22:46:43.786180",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@radix-ui/react-select",
+        "lucide-react",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/separator.tsx",
+      "name": "separator.tsx",
+      "extension": ".tsx",
+      "size": 699,
+      "lines": 28,
+      "last_modified": "2025-12-05T22:46:43.982196",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@radix-ui/react-separator",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/sheet.tsx",
+      "name": "sheet.tsx",
+      "extension": ".tsx",
+      "size": 4090,
+      "lines": 139,
+      "last_modified": "2025-12-05T23:33:12.363314",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@radix-ui/react-dialog",
+        "lucide-react",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/skeleton.tsx",
+      "name": "skeleton.tsx",
+      "extension": ".tsx",
+      "size": 276,
+      "lines": 13,
+      "last_modified": "2025-12-05T22:46:44.153681",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib"
+      ]
+    },
+    {
+      "path": "src/components/ui/table.tsx",
+      "name": "table.tsx",
+      "extension": ".tsx",
+      "size": 2448,
+      "lines": 116,
+      "last_modified": "2025-12-05T22:46:42.732585",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/tabs.tsx",
+      "name": "tabs.tsx",
+      "extension": ".tsx",
+      "size": 1969,
+      "lines": 66,
+      "last_modified": "2025-12-05T22:46:42.960696",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@radix-ui/react-tabs",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/toggle-group.tsx",
+      "name": "toggle-group.tsx",
+      "extension": ".tsx",
+      "size": 2314,
+      "lines": 83,
+      "last_modified": "2025-12-05T22:46:44.542608",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/components",
+        "@/lib",
+        "@radix-ui/react-toggle-group",
+        "class-variance-authority",
+        "react"
+      ]
+    },
+    {
+      "path": "src/components/ui/toggle.tsx",
+      "name": "toggle.tsx",
+      "extension": ".tsx",
+      "size": 1570,
+      "lines": 47,
+      "last_modified": "2025-12-05T22:46:44.342865",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@radix-ui/react-toggle",
+        "class-variance-authority",
+        "react"
+      ]
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "name": "utils.ts",
+      "extension": ".ts",
+      "size": 166,
+      "lines": 6,
+      "last_modified": "2025-12-05T22:44:58.814827",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ]
+    },
+    {
+      "path": "src/lib/queries/game-queries.ts",
+      "name": "game-queries.ts",
+      "extension": ".ts",
+      "size": 6294,
+      "lines": 242,
+      "last_modified": "2025-12-06T02:39:55.813467",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib"
+      ]
+    },
+    {
+      "path": "src/lib/queries/scoreboard-queries.ts",
+      "name": "scoreboard-queries.ts",
+      "extension": ".ts",
+      "size": 2119,
+      "lines": 86,
+      "last_modified": "2025-12-05T22:56:07.197461",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/lib/queries/standings-queries.ts",
+      "name": "standings-queries.ts",
+      "extension": ".ts",
+      "size": 2248,
+      "lines": 82,
+      "last_modified": "2025-12-06T01:34:00.478101",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@/lib",
+        "@/types"
+      ]
+    },
+    {
+      "path": "src/lib/supabase/client.ts",
+      "name": "client.ts",
+      "extension": ".ts",
+      "size": 220,
+      "lines": 8,
+      "last_modified": "2025-12-05T22:52:58.939176",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@supabase/ssr"
+      ]
+    },
+    {
+      "path": "src/lib/supabase/server.ts",
+      "name": "server.ts",
+      "extension": ".ts",
+      "size": 700,
+      "lines": 27,
+      "last_modified": "2025-12-05T22:53:00.480603",
+      "category": "source",
+      "risk_level": "low",
+      "dependencies": [
+        "@supabase/ssr",
+        "next"
+      ]
+    },
+    {
+      "path": "src/types/game.ts",
+      "name": "game.ts",
+      "extension": ".ts",
+      "size": 15849,
+      "lines": 683,
+      "last_modified": "2025-12-06T02:32:31.604552",
+      "category": "source",
+      "risk_level": "medium",
+      "dependencies": []
+    }
+  ]
+}

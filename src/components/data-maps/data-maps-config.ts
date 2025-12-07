@@ -3,6 +3,7 @@
 
 export type FieldType = 'string' | 'number' | 'boolean' | 'date' | 'enum'
 export type KeyType = 'PK' | 'FK' | 'UK' | undefined
+export type DataType = 'table' | 'view' | 'client'
 
 export interface FieldDefinition {
   field: string
@@ -17,11 +18,13 @@ export interface FieldDefinition {
 export interface SectionDefinition {
   title: string
   table: string
+  dataType: DataType  // table, view, or client-computed
   scraper: string
   schedule: string
   source: 'ESPN API' | 'nflverse' | 'Open-Meteo' | 'The Odds API' | 'Database' | 'Client'
   primaryKey: string
   recordCount?: string
+  displayFormat?: string  // Optional description of how data is displayed in UI
   fields: FieldDefinition[]
 }
 
@@ -44,6 +47,20 @@ export const SCHEDULE_COLORS: Record<string, string> = {
   'seed': 'bg-slate-500/20 text-slate-600 dark:text-slate-400',
 }
 
+// Data type color mapping
+export const DATA_TYPE_COLORS: Record<DataType, string> = {
+  'table': 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400',
+  'view': 'bg-violet-500/20 text-violet-600 dark:text-violet-400',
+  'client': 'bg-gray-500/20 text-gray-600 dark:text-gray-400',
+}
+
+// Data type icons/labels
+export const DATA_TYPE_LABELS: Record<DataType, string> = {
+  'table': '📦 Table',
+  'view': '👁️ View',
+  'client': '💻 Client',
+}
+
 export function getScheduleType(schedule: string): string {
   if (schedule.includes('30s') || schedule.includes('real-time')) return 'real-time'
   if (schedule.includes('Daily')) return 'daily'
@@ -60,6 +77,7 @@ export const SCOREBOARD_SECTIONS: SectionDefinition[] = [
   {
     title: 'Game Info',
     table: 'games',
+    dataType: 'table',
     scraper: 'schedule / live-games',
     schedule: 'Weekly Mon 3AM / Every 30s',
     source: 'ESPN API',
@@ -78,6 +96,7 @@ export const SCOREBOARD_SECTIONS: SectionDefinition[] = [
   {
     title: 'Team Info',
     table: 'teams',
+    dataType: 'table',
     scraper: 'seed',
     schedule: 'One-time seed',
     source: 'ESPN API',
@@ -93,6 +112,7 @@ export const SCOREBOARD_SECTIONS: SectionDefinition[] = [
   {
     title: 'Calculated Fields',
     table: 'client',
+    dataType: 'client',
     scraper: 'client',
     schedule: 'On render',
     source: 'Client',
@@ -112,6 +132,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Scorebug',
     table: 'games',
+    dataType: 'table',
     scraper: 'game-stats',
     schedule: 'On game complete',
     source: 'ESPN API',
@@ -135,6 +156,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Venue',
     table: 'stadiums',
+    dataType: 'table',
     scraper: 'game-stats',
     schedule: 'On game complete',
     source: 'ESPN API',
@@ -153,6 +175,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Weather',
     table: 'game_weather',
+    dataType: 'table',
     scraper: 'weather-scraper',
     schedule: 'Weekly Tue (manual)',
     source: 'Open-Meteo',
@@ -171,6 +194,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Team Stats',
     table: 'team_game_stats',
+    dataType: 'table',
     scraper: 'game-stats',
     schedule: 'On game complete',
     source: 'ESPN API',
@@ -189,6 +213,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Scoring Plays',
     table: 'scoring_plays',
+    dataType: 'table',
     scraper: 'game-stats',
     schedule: 'On game complete',
     source: 'ESPN API',
@@ -207,6 +232,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Player Stats - Passing',
     table: 'player_game_stats',
+    dataType: 'table',
     scraper: 'game-stats',
     schedule: 'On game complete',
     source: 'ESPN API',
@@ -227,6 +253,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Player Stats - Rushing',
     table: 'player_game_stats',
+    dataType: 'table',
     scraper: 'game-stats',
     schedule: 'On game complete',
     source: 'ESPN API',
@@ -244,6 +271,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Player Stats - Receiving',
     table: 'player_game_stats',
+    dataType: 'table',
     scraper: 'game-stats',
     schedule: 'On game complete',
     source: 'ESPN API',
@@ -261,6 +289,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Player Stats - Defense',
     table: 'player_game_stats',
+    dataType: 'table',
     scraper: 'game-stats',
     schedule: 'On game complete',
     source: 'ESPN API',
@@ -279,6 +308,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Snap Counts',
     table: 'snap_counts',
+    dataType: 'table',
     scraper: 'snap-counts',
     schedule: 'Weekly Tue 7AM',
     source: 'nflverse',
@@ -295,27 +325,32 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
     ],
   },
   {
-    title: 'Game Rosters',
+    title: 'Game Day Depth Chart',
     table: 'game_rosters',
+    dataType: 'table',
     scraper: 'game-stats',
     schedule: 'On game complete',
     source: 'ESPN API',
     primaryKey: '(game_id, team_id, player_id)',
     recordCount: '~13,700',
+    displayFormat: 'Depth chart by unit (Offense/Defense/ST). 3 sections: Played (~47) - depth chart grouped by position, DNP (~10-17) - dressed but did not play, Inactive (~3-7) - declared inactive. Format: "QB  #9 J. Goff • #19 N. Sudfeld".',
     fields: [
       { field: 'game_roster_id', type: 'number', nullable: false, key: 'PK', example: '12345', description: 'Auto-increment ID' },
-      { field: 'game_id', type: 'string', nullable: false, key: 'FK', fkRef: 'games.game_id', example: 'espn-401772941', description: 'Game reference' },
+      { field: 'game_id', type: 'string', nullable: false, key: 'FK', fkRef: 'games.game_id', example: '401772941', description: 'Game reference (numeric, no espn- prefix)' },
       { field: 'team_id', type: 'string', nullable: false, key: 'FK', fkRef: 'teams.team_id', example: 'KC', description: 'Team reference' },
       { field: 'player_id', type: 'string', nullable: false, key: 'FK', fkRef: 'players.player_id', example: 'espn-3139477', description: 'Player reference' },
-      { field: 'position', type: 'string', nullable: true, example: 'QB', description: 'Position played' },
-      { field: 'jersey_number', type: 'number', nullable: true, example: '15', description: 'Jersey number' },
-      { field: 'active', type: 'boolean', nullable: false, example: 'true', description: 'Was player active for game' },
+      { field: 'position', type: 'string', nullable: true, example: 'QB', description: 'Position played (grouped by unit)' },
+      { field: 'jersey_number', type: 'number', nullable: true, example: '15', description: 'Jersey number (displayed as #15)' },
+      { field: 'active', type: 'boolean', nullable: false, example: 'true', description: 'Dressed for game (not declared inactive)' },
+      { field: 'played', type: 'boolean', nullable: false, example: 'true', description: 'Actually got on field (had stats). ESPN entry.valid field.' },
       { field: 'status', type: 'enum', nullable: true, example: 'active', description: 'active | inactive | injured_reserve' },
+      { field: 'player.full_name', type: 'string', nullable: true, example: 'Patrick Mahomes', description: 'Joined from players table, displayed as "P. Mahomes"' },
     ],
   },
   {
     title: 'NGS Passing',
     table: 'ngs_passing',
+    dataType: 'table',
     scraper: 'ngs-passing',
     schedule: 'Weekly Tue 9AM',
     source: 'nflverse',
@@ -332,6 +367,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'NGS Rushing',
     table: 'ngs_rushing',
+    dataType: 'table',
     scraper: 'ngs-rushing',
     schedule: 'Weekly Tue 9AM',
     source: 'nflverse',
@@ -348,6 +384,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'NGS Receiving',
     table: 'ngs_receiving',
+    dataType: 'table',
     scraper: 'ngs-receiving',
     schedule: 'Weekly Tue 9AM',
     source: 'nflverse',
@@ -365,6 +402,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Advanced Stats',
     table: 'player_stats_advanced',
+    dataType: 'table',
     scraper: 'player-stats',
     schedule: 'Weekly Tue 8AM',
     source: 'nflverse',
@@ -381,6 +419,7 @@ export const GAME_DETAILS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Top EPA Plays',
     table: 'play_by_play',
+    dataType: 'table',
     scraper: 'analytics',
     schedule: 'Weekly Tue 6AM',
     source: 'nflverse',
@@ -407,6 +446,7 @@ export const STANDINGS_SECTIONS: SectionDefinition[] = [
   {
     title: 'Team Season Stats',
     table: 'team_season_stats',
+    dataType: 'table',
     scraper: 'standings',
     schedule: 'Daily 7AM',
     source: 'Database',

@@ -15,6 +15,11 @@ export default function DashboardPage() {
           description="Division and conference standings"
           href="/standings"
         />
+        <DashboardCard
+          title="Data Maps"
+          description="Complete data structure for each page"
+          href="/data-maps"
+        />
       </div>
     </main>
   )

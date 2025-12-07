@@ -26,7 +26,7 @@ export function TeamFilter({ value, onChange, teams }: TeamFilterProps) {
       value={value ?? 'all'}
       onValueChange={(v) => onChange(v === 'all' ? null : v)}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="flex-1 min-w-0">
         <SelectValue placeholder="All Teams" />
       </SelectTrigger>
       <SelectContent>

@@ -9,6 +9,13 @@ import { TeamScheduleHeader } from './TeamScheduleHeader'
 import { ScoreboardSkeleton } from './ScoreboardSkeleton'
 import { createClient } from '@/lib/supabase/client'
 import { useHeader } from '@/components/header-context'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { Team, ScoreboardGame, Game } from '@/types/game'
 
 interface ScoreboardClientProps {
@@ -36,9 +43,30 @@ export function ScoreboardClient({
   const [teamId, setTeamId] = useState<string | null>(initialTeamId)
   const [maxWeek, setMaxWeek] = useState(initialMaxWeek)
   const [games, setGames] = useState<ScoreboardGame[]>(initialGames)
+  const [allSeasonGames, setAllSeasonGames] = useState<ScoreboardGame[]>([])
   const [loading, setLoading] = useState(false)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   const selectedTeam = teamId ? initialTeams.find(t => t.team_id === teamId) : null
+
+  // Calculate team record up to (not including) a given week
+  const calculateTeamRecord = useCallback((teamIdToCheck: string, upToWeek: number): string => {
+    let wins = 0, losses = 0, ties = 0
+    allSeasonGames
+      .filter(g => g.week < upToWeek && g.status === 'final')
+      .filter(g => g.home_team_id === teamIdToCheck || g.away_team_id === teamIdToCheck)
+      .forEach(g => {
+        const isHome = g.home_team_id === teamIdToCheck
+        const teamScore = isHome ? g.home_score : g.away_score
+        const oppScore = isHome ? g.away_score : g.home_score
+        if (teamScore !== null && oppScore !== null) {
+          if (teamScore > oppScore) wins++
+          else if (teamScore < oppScore) losses++
+          else ties++
+        }
+      })
+    return ties > 0 ? `${wins}-${losses}-${ties}` : `${wins}-${losses}`
+  }, [allSeasonGames])
   const isTeamView = teamId !== null
 
   // Update URL hash
@@ -69,40 +97,31 @@ export function ScoreboardClient({
     updateHash(season, week, newTeamId)
   }
 
-  // Set header with dropdowns
+  // Set header title only
   useEffect(() => {
-    setHeader({
-      title: 'Scoreboard',
-      customContent: (
-        <div className="flex flex-wrap gap-2">
-          <SeasonSelector
-            value={season}
-            onChange={handleSeasonChange}
-            availableSeasons={initialSeasons}
-          />
-          {!isTeamView && (
-            <WeekSelector
-              value={week}
-              onChange={handleWeekChange}
-              maxWeek={maxWeek}
-            />
-          )}
-          <TeamFilter
-            value={teamId}
-            onChange={handleTeamChange}
-            teams={initialTeams}
-          />
-        </div>
-      ),
-    })
-  }, [season, week, teamId, isTeamView, maxWeek, initialSeasons, initialTeams, setHeader])
-
-  // Cleanup: reset header only when unmounting (navigating away)
-  useEffect(() => {
+    setHeader({ title: 'Scoreboard' })
     return () => {
       setHeader({ title: 'NFL Stats' })
     }
   }, [setHeader])
+
+  // Fetch all season games for record calculation
+  useEffect(() => {
+    const fetchAllSeasonGames = async () => {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('games')
+        .select(`
+          game_id, season, week, status, home_team_id, away_team_id, home_score, away_score,
+          home_team:teams!home_team_id(team_id, team_name, team_abbr),
+          away_team:teams!away_team_id(team_id, team_name, team_abbr)
+        `)
+        .eq('season', season)
+        .eq('status', 'final')
+      setAllSeasonGames((data || []) as ScoreboardGame[])
+    }
+    fetchAllSeasonGames()
+  }, [season])
 
   // Fetch games when season/week/team changes
   const fetchGames = useCallback(async () => {
@@ -187,8 +206,45 @@ export function ScoreboardClient({
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Filters */}
+      <div className="bg-background">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex flex-wrap gap-2">
+            <SeasonSelector
+              value={season}
+              onChange={handleSeasonChange}
+              availableSeasons={initialSeasons}
+            />
+            {!isTeamView && (
+              <WeekSelector
+                value={week}
+                onChange={handleWeekChange}
+                maxWeek={maxWeek}
+              />
+            )}
+            <TeamFilter
+              value={teamId}
+              onChange={handleTeamChange}
+              teams={initialTeams}
+            />
+            <Select
+              value={viewMode}
+              onValueChange={(v) => setViewMode(v as 'grid' | 'list')}
+            >
+              <SelectTrigger className="flex-1 min-w-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="grid">Grid</SelectItem>
+                <SelectItem value="list">List</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <main className="flex-1 container mx-auto px-4 py-6">
+      <main className="flex-1 container mx-auto px-4 pt-3 pb-6">
         {loading ? (
           <ScoreboardSkeleton />
         ) : isTeamView && selectedTeam ? (
@@ -203,19 +259,26 @@ export function ScoreboardClient({
                   homeTeam={game.home_team}
                   awayTeam={game.away_team}
                   showWeek
+                  homeRecord={calculateTeamRecord(game.home_team_id, game.week)}
+                  awayRecord={calculateTeamRecord(game.away_team_id, game.week)}
                 />
               ))}
             </div>
           </div>
         ) : (
-          // Week View (Grid)
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          // Week View (Grid or List based on viewMode)
+          <div className={viewMode === 'grid'
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            : "flex flex-col gap-4 max-w-2xl mx-auto"
+          }>
             {games.map((game) => (
               <GameCard
                 key={game.game_id}
                 game={game}
                 homeTeam={game.home_team}
                 awayTeam={game.away_team}
+                homeRecord={calculateTeamRecord(game.home_team_id, game.week)}
+                awayRecord={calculateTeamRecord(game.away_team_id, game.week)}
               />
             ))}
             {games.length === 0 && (

@@ -1,0 +1,17 @@
+{
+  "project_name": "scrapper",
+  "project_path": "C:\\Users\\willh\\Desktop\\scrapper",
+  "generated_at": "2025-12-06T18:38:10.074616",
+  "frameworks": [],
+  "endpoints": [],
+  "metrics": {
+    "total_endpoints": 0,
+    "documented_endpoints": 0,
+    "documentation_coverage": 0,
+    "frameworks_detected": [],
+    "framework_breakdown": {},
+    "method_breakdown": {},
+    "rest_endpoints": 0,
+    "graphql_endpoints": 0
+  }
+}

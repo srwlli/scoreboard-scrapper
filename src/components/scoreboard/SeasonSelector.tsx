@@ -20,7 +20,7 @@ export function SeasonSelector({ value, onChange, availableSeasons }: SeasonSele
       value={value.toString()}
       onValueChange={(v) => onChange(parseInt(v, 10))}
     >
-      <SelectTrigger className="w-[120px]">
+      <SelectTrigger className="flex-1 min-w-0">
         <SelectValue placeholder="Season" />
       </SelectTrigger>
       <SelectContent>
