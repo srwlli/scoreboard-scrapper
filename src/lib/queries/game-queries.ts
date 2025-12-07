@@ -14,6 +14,8 @@ import type {
   NGSReceiving,
   AdvancedStats,
   GameRoster,
+  WinProbability,
+  LivePlay,
   toNflverseGameId
 } from '@/types/game'
 
@@ -34,6 +36,8 @@ export interface GameDetailData {
   ngsReceiving: NGSReceiving[]
   advancedStats: AdvancedStats[]
   gameRosters: GameRoster[]
+  winProbability: WinProbability[]
+  livePlays: LivePlay[]
 }
 
 /**
@@ -80,7 +84,9 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
     ngsRushingResult,
     ngsReceivingResult,
     advancedStatsResult,
-    gameRostersResult
+    gameRostersResult,
+    winProbabilityResult,
+    livePlaysResult
   ] = await Promise.all([
     // Weather
     supabase
@@ -173,7 +179,23 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
       `)
       .eq('game_id', gameId.replace('espn-', ''))
       .order('position')
-      .order('jersey_number')
+      .order('jersey_number'),
+
+    // Win probability data (from live-scraper-v2)
+    supabase
+      .from('win_probability')
+      .select('*')
+      .eq('game_id', gameId)
+      .order('sequence_number', { ascending: true }),
+
+    // Live plays data (from live-scraper-v2)
+    supabase
+      .from('live_plays')
+      .select('*')
+      .eq('game_id', gameId)
+      .order('drive_number', { ascending: false })
+      .order('play_number', { ascending: false })
+      .limit(50)
   ])
 
   return {
@@ -192,7 +214,9 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
     ngsRushing: (ngsRushingResult.data || []) as NGSRushing[],
     ngsReceiving: (ngsReceivingResult.data || []) as NGSReceiving[],
     advancedStats: (advancedStatsResult.data || []) as AdvancedStats[],
-    gameRosters: (gameRostersResult.data || []) as GameRoster[]
+    gameRosters: (gameRostersResult.data || []) as GameRoster[],
+    winProbability: (winProbabilityResult.data || []) as WinProbability[],
+    livePlays: (livePlaysResult.data || []) as LivePlay[]
   }
 }
 

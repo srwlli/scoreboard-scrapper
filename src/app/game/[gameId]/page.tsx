@@ -13,6 +13,9 @@ import { AdvancedStatsCard } from '@/components/game/AdvancedStatsCard'
 import { VenueCard } from '@/components/game/VenueCard'
 import { WeatherCard } from '@/components/game/WeatherCard'
 import { DataSourceFooter } from '@/components/game/DataSourceFooter'
+import { WinProbabilityChart } from '@/components/game/WinProbabilityChart'
+import { LivePlaysCard } from '@/components/game/LivePlaysCard'
+import type { LiveGameState } from '@/types/game'
 
 interface GamePageProps {
   params: Promise<{ gameId: string }>
@@ -66,14 +69,28 @@ export default async function GamePage({ params }: GamePageProps) {
     ngsRushing,
     ngsReceiving,
     advancedStats,
-    gameRosters
+    gameRosters,
+    winProbability,
+    livePlays
   } = data
 
-  // Create teams record for TopEPAPlays
+  // Create teams record for components that need team lookup
   const teams: Record<string, typeof homeTeam> = {
     [homeTeam.team_id]: homeTeam,
     [awayTeam.team_id]: awayTeam
   }
+
+  // Extract live game state from most recent live play
+  const liveState: LiveGameState | null = game.status === 'in_progress' && livePlays.length > 0
+    ? {
+        quarter: livePlays[0].quarter,
+        gameClock: livePlays[0].game_clock,
+        possession: livePlays[0].possession_team_id,
+        down: livePlays[0].down,
+        yardsToGo: livePlays[0].yards_to_go,
+        yardLine: livePlays[0].yard_line
+      }
+    : null
 
   return (
     <main className="min-h-screen bg-background">
@@ -82,6 +99,7 @@ export default async function GamePage({ params }: GamePageProps) {
         game={game}
         homeTeam={homeTeam}
         awayTeam={awayTeam}
+        liveState={liveState}
       />
 
       <div className="container mx-auto px-4 py-6 space-y-6">
@@ -99,6 +117,25 @@ export default async function GamePage({ params }: GamePageProps) {
             homeTeam={homeTeam}
             awayTeam={awayTeam}
           />
+        )}
+
+        {/* Win Probability Chart and Live Plays Feed */}
+        {(winProbability.length > 0 || livePlays.length > 0) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {winProbability.length > 0 && (
+              <WinProbabilityChart
+                data={winProbability}
+                homeTeam={homeTeam}
+                awayTeam={awayTeam}
+              />
+            )}
+            {livePlays.length > 0 && (
+              <LivePlaysCard
+                plays={livePlays}
+                teams={teams}
+              />
+            )}
+          </div>
         )}
 
         {/* Scoring Plays and Top EPA Plays Row */}

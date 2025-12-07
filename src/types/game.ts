@@ -332,6 +332,78 @@ export interface PlayByPlay {
   pass_location: 'left' | 'middle' | 'right' | null
 }
 
+// ============================================================================
+// LIVE GAME DATA (from live-scraper-v2)
+// ============================================================================
+
+/**
+ * Win probability data point from `win_probability` table
+ * ~180+ data points per game, updated every play
+ */
+export interface WinProbability {
+  id: number
+  game_id: string
+  season: number
+  play_id: string | null
+  sequence_number: number
+
+  // Win probability values (0.0 to 1.0)
+  home_win_pct: number
+  away_win_pct: number
+
+  // Game context at this point
+  quarter: number | null
+  game_clock: string | null
+  home_score: number
+  away_score: number
+
+  created_at: string
+}
+
+/**
+ * Live play data from `live_plays` table
+ * Real-time play-by-play feed updated during live games
+ */
+export interface LivePlay {
+  id: number
+  game_id: string
+  season: number
+  play_id: string
+
+  // Play sequencing
+  drive_number: number | null
+  play_number: number | null
+
+  // Game context
+  quarter: number | null
+  game_clock: string | null
+  possession_team_id: string | null
+
+  // Situation
+  down: number | null
+  yards_to_go: number | null
+  yard_line: number | null
+  yard_line_side: string | null
+
+  // Play result
+  play_type: string | null
+  play_text: string | null
+  yards_gained: number | null
+  is_scoring_play: boolean
+  is_turnover: boolean
+
+  // Score at time of play
+  home_score: number
+  away_score: number
+
+  // Analytics (if available during live)
+  epa: number | null
+  win_probability: number | null
+
+  created_at: string
+  updated_at: string
+}
+
 /**
  * NGS Passing stats
  */
@@ -562,6 +634,26 @@ export interface AdvancedStatsCardProps {
 export interface DataSourceFooterProps {
   totalFields?: number
   scraperCount?: number
+}
+
+export interface WinProbabilityChartProps {
+  data: WinProbability[]
+  homeTeam: Team
+  awayTeam: Team
+}
+
+export interface LivePlaysCardProps {
+  plays: LivePlay[]
+  teams: Record<string, Team>
+}
+
+export interface LiveGameState {
+  quarter: number | null
+  gameClock: string | null
+  possession: string | null
+  down: number | null
+  yardsToGo: number | null
+  yardLine: number | null
 }
 
 // ============================================================================

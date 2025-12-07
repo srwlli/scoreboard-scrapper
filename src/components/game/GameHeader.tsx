@@ -1,11 +1,12 @@
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import type { Game, Team } from '@/types/game'
+import type { Game, Team, LiveGameState } from '@/types/game'
 
 interface GameHeaderProps {
   game: Game
   homeTeam: Team
   awayTeam: Team
+  liveState?: LiveGameState | null
 }
 
 function getTeamLogoUrl(teamId: string): string {
@@ -23,13 +24,29 @@ function formatGameDate(dateStr: string): string {
   })
 }
 
-export function GameHeader({ game, homeTeam, awayTeam }: GameHeaderProps) {
+function formatQuarter(quarter: number | null): string {
+  if (!quarter) return ''
+  if (quarter === 5) return 'OT'
+  return `Q${quarter}`
+}
+
+function formatDown(down: number | null, yardsToGo: number | null): string {
+  if (!down) return ''
+  const suffix = down === 1 ? 'st' : down === 2 ? 'nd' : down === 3 ? 'rd' : 'th'
+  return `${down}${suffix}${yardsToGo ? ` & ${yardsToGo}` : ''}`
+}
+
+export function GameHeader({ game, homeTeam, awayTeam, liveState }: GameHeaderProps) {
   const isFinal = game.status === 'final'
   const isLive = game.status === 'in_progress'
   const hasOT = game.overtime === true
 
   const awayWon = isFinal && (game.away_score ?? 0) > (game.home_score ?? 0)
   const homeWon = isFinal && (game.home_score ?? 0) > (game.away_score ?? 0)
+
+  // Determine possession indicator
+  const awayHasBall = isLive && liveState?.possession === awayTeam.team_id
+  const homeHasBall = isLive && liveState?.possession === homeTeam.team_id
 
   return (
     <div className="bg-gradient-to-r from-muted/50 via-background to-muted/50 rounded-lg p-6">
@@ -44,9 +61,16 @@ export function GameHeader({ game, homeTeam, awayTeam }: GameHeaderProps) {
               FINAL{hasOT ? ' OT' : ''}
             </Badge>
           ) : isLive ? (
-            <Badge variant="destructive" className="animate-pulse text-sm">
-              LIVE
-            </Badge>
+            <>
+              <Badge variant="destructive" className="animate-pulse text-sm">
+                LIVE
+              </Badge>
+              {liveState?.quarter && (
+                <Badge variant="outline" className="text-sm">
+                  {formatQuarter(liveState.quarter)} {liveState.gameClock || ''}
+                </Badge>
+              )}
+            </>
           ) : (
             <Badge variant="outline" className="text-sm">
               {game.game_time || 'TBD'} ET
@@ -58,16 +82,37 @@ export function GameHeader({ game, homeTeam, awayTeam }: GameHeaderProps) {
             </Badge>
           )}
         </div>
+
+        {/* Live game situation */}
+        {isLive && liveState?.down && (
+          <div className="flex items-center gap-2 mt-1">
+            <Badge variant="secondary" className="text-xs">
+              {formatDown(liveState.down, liveState.yardsToGo)}
+            </Badge>
+            {liveState.yardLine && (
+              <span className="text-xs text-muted-foreground">
+                at the {liveState.yardLine}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Teams and Scores */}
       <div className="flex items-center justify-center gap-4 md:gap-8">
         {/* Away Team */}
         <div className={`flex flex-col items-center text-center flex-1 ${awayWon ? 'font-semibold' : ''}`}>
-          <Avatar className="h-16 w-16 md:h-20 md:w-20 mb-2">
-            <AvatarImage src={getTeamLogoUrl(awayTeam.team_id)} alt={awayTeam.team_name} />
-            <AvatarFallback className="text-lg">{awayTeam.team_id}</AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            <Avatar className="h-16 w-16 md:h-20 md:w-20 mb-2">
+              <AvatarImage src={getTeamLogoUrl(awayTeam.team_id)} alt={awayTeam.team_name} />
+              <AvatarFallback className="text-lg">{awayTeam.team_id}</AvatarFallback>
+            </Avatar>
+            {awayHasBall && (
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                <span className="text-[10px]">🏈</span>
+              </div>
+            )}
+          </div>
           <p className="text-sm md:text-base text-muted-foreground">{awayTeam.team_id}</p>
           <p className="text-xs md:text-sm text-muted-foreground hidden md:block">
             {awayTeam.team_name}
@@ -84,10 +129,17 @@ export function GameHeader({ game, homeTeam, awayTeam }: GameHeaderProps) {
 
         {/* Home Team */}
         <div className={`flex flex-col items-center text-center flex-1 ${homeWon ? 'font-semibold' : ''}`}>
-          <Avatar className="h-16 w-16 md:h-20 md:w-20 mb-2">
-            <AvatarImage src={getTeamLogoUrl(homeTeam.team_id)} alt={homeTeam.team_name} />
-            <AvatarFallback className="text-lg">{homeTeam.team_id}</AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            <Avatar className="h-16 w-16 md:h-20 md:w-20 mb-2">
+              <AvatarImage src={getTeamLogoUrl(homeTeam.team_id)} alt={homeTeam.team_name} />
+              <AvatarFallback className="text-lg">{homeTeam.team_id}</AvatarFallback>
+            </Avatar>
+            {homeHasBall && (
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                <span className="text-[10px]">🏈</span>
+              </div>
+            )}
+          </div>
           <p className="text-sm md:text-base text-muted-foreground">{homeTeam.team_id}</p>
           <p className="text-xs md:text-sm text-muted-foreground hidden md:block">
             {homeTeam.team_name}
