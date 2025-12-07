@@ -18,9 +18,14 @@ interface GamePageProps {
   params: Promise<{ gameId: string }>
 }
 
+// Normalize game ID to database format (espn-{id})
+function normalizeGameId(gameId: string): string {
+  return gameId.startsWith('espn-') ? gameId : `espn-${gameId}`
+}
+
 export async function generateMetadata({ params }: GamePageProps): Promise<Metadata> {
   const { gameId } = await params
-  const metadata = await getGameMetadata(gameId)
+  const metadata = await getGameMetadata(normalizeGameId(gameId))
 
   if (!metadata) {
     return {
@@ -39,7 +44,7 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
 
 export default async function GamePage({ params }: GamePageProps) {
   const { gameId } = await params
-  const data = await getGameDetails(gameId)
+  const data = await getGameDetails(normalizeGameId(gameId))
 
   if (!data) {
     notFound()

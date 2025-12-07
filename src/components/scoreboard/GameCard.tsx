@@ -10,6 +10,8 @@ interface GameCardProps {
   homeTeam: Team
   awayTeam: Team
   showWeek?: boolean
+  homeRecord?: string
+  awayRecord?: string
 }
 
 function getTeamLogoUrl(teamAbbr: string): string {
@@ -40,7 +42,7 @@ function formatGameTime(dateStr: string, timeStr: string | null): string {
   }) + ' ET'
 }
 
-export function GameCard({ game, homeTeam, awayTeam, showWeek = false }: GameCardProps) {
+export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecord, awayRecord }: GameCardProps) {
   const isFinal = game.status === 'final'
   const isLive = game.status === 'in_progress'
   const isScheduled = !isFinal && !isLive
@@ -53,7 +55,7 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false }: GameCar
   }
 
   return (
-    <Link href={`/game/${game.game_id}`}>
+    <Link href={`/game/${game.game_id.replace('espn-', '')}`}>
       <Card className="hover:bg-accent/50 transition-colors cursor-pointer">
         {showWeek && (
           <div className="px-4 pt-3 pb-1 border-b text-xs text-muted-foreground">
@@ -63,16 +65,19 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false }: GameCar
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             {/* Away Team */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex flex-col items-center gap-0.5 flex-shrink-0 min-w-[50px]">
               <img
-                className="h-10 w-10"
+                className="h-8 w-8"
                 alt={awayTeam.team_name}
                 src={getTeamLogoUrl(awayTeam.team_abbr)}
                 onError={handleImageError}
               />
-              <span className={`font-bold text-lg ${awayWon ? 'text-foreground' : isFinal ? 'text-muted-foreground' : ''}`}>
+              <span className={`font-bold text-sm ${awayWon ? 'text-foreground' : isFinal ? 'text-muted-foreground' : ''}`}>
                 {awayTeam.team_abbr}
               </span>
+              {awayRecord && (
+                <span className="text-[10px] text-muted-foreground">{awayRecord}</span>
+              )}
             </div>
 
             {/* Away Score */}
@@ -108,16 +113,19 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false }: GameCar
             </span>
 
             {/* Home Team */}
-            <div className="flex items-center gap-2 justify-end flex-shrink-0">
-              <span className={`font-bold text-lg ${homeWon ? 'text-foreground' : isFinal ? 'text-muted-foreground' : ''}`}>
-                {homeTeam.team_abbr}
-              </span>
+            <div className="flex flex-col items-center gap-0.5 flex-shrink-0 min-w-[50px]">
               <img
-                className="h-10 w-10"
+                className="h-8 w-8"
                 alt={homeTeam.team_name}
                 src={getTeamLogoUrl(homeTeam.team_abbr)}
                 onError={handleImageError}
               />
+              <span className={`font-bold text-sm ${homeWon ? 'text-foreground' : isFinal ? 'text-muted-foreground' : ''}`}>
+                {homeTeam.team_abbr}
+              </span>
+              {homeRecord && (
+                <span className="text-[10px] text-muted-foreground">{homeRecord}</span>
+              )}
             </div>
           </div>
         </CardContent>
