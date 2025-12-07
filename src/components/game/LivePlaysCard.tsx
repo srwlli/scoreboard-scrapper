@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { abbreviateNamesInDescription } from '@/lib/utils'
 import type { LivePlay, Team } from '@/types/game'
 
 interface LivePlaysCardProps {
@@ -128,7 +129,7 @@ export function LivePlaysCard({ plays, teams }: LivePlaysCardProps) {
 
                   {/* Play text */}
                   {play.play_text && (
-                    <p className="text-sm line-clamp-2">{play.play_text}</p>
+                    <p className="text-sm line-clamp-2">{abbreviateNamesInDescription(play.play_text)}</p>
                   )}
 
                   {/* Score after play */}

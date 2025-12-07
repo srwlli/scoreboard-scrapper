@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { abbreviateNamesInDescription } from '@/lib/utils'
 import type { ScoringPlay, Team } from '@/types/game'
 import { formatTime } from '@/types/game'
 
@@ -103,7 +104,7 @@ export function ScoringPlays({ plays, teams }: ScoringPlaysProps) {
                         )}
                       </div>
                       <p className="text-sm line-clamp-2">
-                        {play.description}
+                        {abbreviateNamesInDescription(play.description)}
                       </p>
                     </div>
                   </div>

@@ -19,12 +19,14 @@ function getTeamLogoUrl(teamAbbr: string): string {
 }
 
 function formatGameDate(dateStr: string): string {
-  const date = new Date(dateStr + 'T00:00:00')
+  // Parse date parts directly to avoid timezone issues
+  // dateStr format: "2025-12-07"
+  const [year, month, day] = dateStr.split('-').map(Number)
+  const date = new Date(year, month - 1, day) // month is 0-indexed
   return date.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'numeric',
-    day: 'numeric',
-    timeZone: 'America/New_York'
+    day: 'numeric'
   })
 }
 
@@ -113,16 +115,24 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecor
                 <div className="flex flex-col items-center gap-0.5">
                   {game.current_period === 2 && game.game_clock === '0:00' ? (
                     <span className="text-sm font-semibold text-orange-500">Halftime</span>
+                  ) : game.game_clock === '0:00' && game.current_period && game.current_period <= 4 ? (
+                    <span className="text-sm font-semibold text-amber-500">
+                      End of {formatQuarter(game.current_period)}
+                    </span>
                   ) : game.current_period && game.game_clock ? (
                     <span className="text-sm font-medium">
                       {formatQuarter(game.current_period)} {game.game_clock}
                     </span>
                   ) : null}
-                  {game.current_down && (
+                  {game.current_down ? (
                     <span className="text-xs text-muted-foreground">
                       {formatDown(game.current_down, game.yards_to_go)}
                     </span>
-                  )}
+                  ) : game.field_position ? (
+                    <span className="text-xs text-muted-foreground italic">
+                      Kickoff
+                    </span>
+                  ) : null}
                   {game.field_position && (
                     <span className="text-[10px] text-muted-foreground">
                       at {game.field_position}

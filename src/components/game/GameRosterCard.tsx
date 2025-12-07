@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Badge } from '@/components/ui/badge'
+import { formatPlayerName } from '@/lib/utils'
 import type { GameRosterCardProps, GameRoster } from '@/types/game'
 
 // Position groups for depth chart display
@@ -124,14 +125,7 @@ export function GameRosterCard({
   // Helper to format player display
   const formatPlayer = (roster: GameRoster): string => {
     const jersey = roster.jersey_number ?? roster.player?.jersey_number
-    const name = roster.player?.full_name ?? `Player ${roster.player_id.replace('espn-', '')}`
-    // Shorten name: "First Last" -> "F. Last"
-    const parts = name.split(' ')
-    if (parts.length >= 2) {
-      const firstName = parts[0]
-      const lastName = parts.slice(1).join(' ')
-      return jersey ? `#${jersey} ${firstName[0]}. ${lastName}` : `${firstName[0]}. ${lastName}`
-    }
+    const name = formatPlayerName(roster.player?.full_name) || `#${roster.player_id.replace('espn-', '')}`
     return jersey ? `#${jersey} ${name}` : name
   }
 

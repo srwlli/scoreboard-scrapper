@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { formatPlayerName } from '@/lib/utils'
 import type { SnapCount, Team } from '@/types/game'
 
 interface SnapCountsCardProps {
@@ -97,7 +98,7 @@ export function SnapCountsCard({
                 <TableBody>
                   {offenseSnaps.map((s) => (
                     <TableRow key={s.id}>
-                      <TableCell className="font-medium">{s.player_name}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                       <TableCell>{s.position || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.offense_snaps}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.offense_pct.toFixed(0)}%</TableCell>
@@ -124,7 +125,7 @@ export function SnapCountsCard({
                 <TableBody>
                   {defenseSnaps.map((s) => (
                     <TableRow key={s.id}>
-                      <TableCell className="font-medium">{s.player_name}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                       <TableCell>{s.position || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.defense_snaps}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.defense_pct.toFixed(0)}%</TableCell>
@@ -151,7 +152,7 @@ export function SnapCountsCard({
                 <TableBody>
                   {stSnaps.map((s) => (
                     <TableRow key={s.id}>
-                      <TableCell className="font-medium">{s.player_name}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                       <TableCell>{s.position || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.st_snaps}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.st_pct.toFixed(0)}%</TableCell>

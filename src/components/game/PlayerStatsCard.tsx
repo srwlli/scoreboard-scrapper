@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { formatPlayerName } from '@/lib/utils'
 import type { PlayerGameStats, Team } from '@/types/game'
 
 interface PlayerStatsCardProps {
@@ -99,7 +100,7 @@ export function PlayerStatsCard({
                 <TableBody>
                   {passingStats.map((p) => (
                     <TableRow key={p.player_game_id}>
-                      <TableCell className="font-medium">{p.player?.full_name || `Player ${p.player_id}`}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(p.player?.full_name) || `#${p.player_id.replace('espn-', '')}`}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.passing_completions}/{p.passing_attempts}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.passing_yards}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.passing_touchdowns}</TableCell>
@@ -130,7 +131,7 @@ export function PlayerStatsCard({
                 <TableBody>
                   {rushingStats.map((p) => (
                     <TableRow key={p.player_game_id}>
-                      <TableCell className="font-medium">{p.player?.full_name || `Player ${p.player_id}`}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(p.player?.full_name) || `#${p.player_id.replace('espn-', '')}`}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.rushing_attempts}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.rushing_yards}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.rushing_attempts > 0 ? (p.rushing_yards / p.rushing_attempts).toFixed(1) : '-'}</TableCell>
@@ -161,7 +162,7 @@ export function PlayerStatsCard({
                 <TableBody>
                   {receivingStats.map((p) => (
                     <TableRow key={p.player_game_id}>
-                      <TableCell className="font-medium">{p.player?.full_name || `Player ${p.player_id}`}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(p.player?.full_name) || `#${p.player_id.replace('espn-', '')}`}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.receptions}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.receiving_targets}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.receiving_yards}</TableCell>
@@ -192,7 +193,7 @@ export function PlayerStatsCard({
                 <TableBody>
                   {defenseStats.map((p) => (
                     <TableRow key={p.player_game_id}>
-                      <TableCell className="font-medium">{p.player?.full_name || `Player ${p.player_id}`}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(p.player?.full_name) || `#${p.player_id.replace('espn-', '')}`}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.tackles_total}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.tackles_solo}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.sacks}</TableCell>
@@ -221,7 +222,7 @@ export function PlayerStatsCard({
                 <TableBody>
                   {kickingStats.map((p) => (
                     <TableRow key={p.player_game_id}>
-                      <TableCell className="font-medium">{p.player?.full_name || `Player ${p.player_id}`}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(p.player?.full_name) || `#${p.player_id.replace('espn-', '')}`}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.field_goals_made}/{p.field_goals_attempted}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.field_goal_longest}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.extra_points_made}/{p.extra_points_attempted}</TableCell>
@@ -250,7 +251,7 @@ export function PlayerStatsCard({
                 <TableBody>
                   {puntingStats.map((p) => (
                     <TableRow key={p.player_game_id}>
-                      <TableCell className="font-medium">{p.player?.full_name || `Player ${p.player_id}`}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(p.player?.full_name) || `#${p.player_id.replace('espn-', '')}`}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.punts}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.punt_yards}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.punt_average?.toFixed(1) ?? '-'}</TableCell>

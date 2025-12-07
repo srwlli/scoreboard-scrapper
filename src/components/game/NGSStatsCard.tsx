@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { formatPlayerName } from '@/lib/utils'
 import type { NGSPassing, NGSRushing, NGSReceiving, Team } from '@/types/game'
 
 interface NGSStatsCardProps {
@@ -94,7 +95,7 @@ export function NGSStatsCard({
                 <TableBody>
                   {filteredPassing.map((p) => (
                     <TableRow key={p.id}>
-                      <TableCell className="font-medium">{p.player_name}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(p.player_name)}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.avg_time_to_throw.toFixed(2)}s</TableCell>
                       <TableCell className="text-right tabular-nums">{p.completion_percentage_above_expectation.toFixed(1)}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.aggressiveness.toFixed(1)}%</TableCell>
@@ -123,7 +124,7 @@ export function NGSStatsCard({
                 <TableBody>
                   {filteredRushing.map((r) => (
                     <TableRow key={r.id}>
-                      <TableCell className="font-medium">{r.player_name}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(r.player_name)}</TableCell>
                       <TableCell className="text-right tabular-nums">{r.efficiency.toFixed(2)}</TableCell>
                       <TableCell className="text-right tabular-nums">{r.percent_attempts_gte_eight_defenders.toFixed(1)}%</TableCell>
                       <TableCell className="text-right tabular-nums">{r.rush_yards_over_expected.toFixed(1)}</TableCell>
@@ -152,7 +153,7 @@ export function NGSStatsCard({
                 <TableBody>
                   {filteredReceiving.map((r) => (
                     <TableRow key={r.id}>
-                      <TableCell className="font-medium">{r.player_name}</TableCell>
+                      <TableCell className="font-medium">{formatPlayerName(r.player_name)}</TableCell>
                       <TableCell className="text-right tabular-nums">{r.avg_separation.toFixed(1)}</TableCell>
                       <TableCell className="text-right tabular-nums">{r.catch_percentage.toFixed(1)}%</TableCell>
                       <TableCell className="text-right tabular-nums">{r.avg_yac.toFixed(1)}</TableCell>

@@ -46,6 +46,7 @@ export function ScoreboardClient({
   const [allSeasonGames, setAllSeasonGames] = useState<ScoreboardGame[]>([])
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
 
   const selectedTeam = teamId ? initialTeams.find(t => t.team_id === teamId) : null
 
@@ -144,6 +145,7 @@ export function ScoreboardClient({
 
         if (error) throw error
         setGames((data || []) as ScoreboardGame[])
+        setLastUpdated(new Date())
       } else {
         // Week view
         const { data, error } = await supabase
@@ -160,6 +162,7 @@ export function ScoreboardClient({
 
         if (error) throw error
         setGames((data || []) as ScoreboardGame[])
+        setLastUpdated(new Date())
       }
     } catch (error) {
       console.error('Failed to fetch games:', error)
@@ -199,16 +202,40 @@ export function ScoreboardClient({
     }
   }, [])
 
-  // Auto-refresh every 30 seconds when there are live games
+  // Real-time subscription for live game updates
   useEffect(() => {
     const hasLiveGames = games.some(g => g.status === 'in_progress')
     if (!hasLiveGames) return
 
+    const supabase = createClient()
+
+    // Subscribe to real-time changes on games table
+    const channel = supabase
+      .channel('live-games')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'games',
+          filter: `status=eq.in_progress`
+        },
+        () => {
+          // Refetch when any live game updates
+          fetchGames()
+        }
+      )
+      .subscribe()
+
+    // Also poll every 30 seconds as backup
     const interval = setInterval(() => {
       fetchGames()
-    }, 30000) // 30 seconds
+    }, 30000)
 
-    return () => clearInterval(interval)
+    return () => {
+      supabase.removeChannel(channel)
+      clearInterval(interval)
+    }
   }, [games, fetchGames])
 
   // Sort games: live first, then scheduled, then completed
@@ -226,9 +253,11 @@ export function ScoreboardClient({
   }, [games])
 
   const gameCount = games.length
+  const liveCount = games.filter(g => g.status === 'in_progress').length
   const footerText = isTeamView
     ? `${selectedTeam?.team_name} | ${season} Season | ${gameCount} Games`
     : `NFL Scoreboard | ${season} Season | ${gameCount} Games`
+  const lastUpdatedText = lastUpdated.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' })
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -319,7 +348,12 @@ export function ScoreboardClient({
       {/* Footer */}
       <footer className="border-t bg-background">
         <div className="container mx-auto px-4 py-4 text-center text-sm text-muted-foreground">
-          {footerText}
+          <div>{footerText}</div>
+          {liveCount > 0 && (
+            <div className="text-xs mt-1">
+              🔴 {liveCount} live • Updated {lastUpdatedText}
+            </div>
+          )}
         </div>
       </footer>
     </div>

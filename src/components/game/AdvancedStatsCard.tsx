@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { formatPlayerName } from '@/lib/utils'
 import type { AdvancedStats, Team } from '@/types/game'
 
 interface AdvancedStatsCardProps {
@@ -78,7 +79,7 @@ export function AdvancedStatsCard({
             <TableBody>
               {filteredStats.map((s) => (
                 <TableRow key={s.id}>
-                  <TableCell className="font-medium">{s.player_name}</TableCell>
+                  <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                   <TableCell>{s.position || '-'}</TableCell>
                   <TableCell className="text-right tabular-nums">{((s.target_share || 0) * 100).toFixed(1)}%</TableCell>
                   <TableCell className="text-right tabular-nums">{((s.air_yards_share || 0) * 100).toFixed(1)}%</TableCell>

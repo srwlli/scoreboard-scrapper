@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { abbreviateNamesInDescription } from '@/lib/utils'
 import type { PlayByPlay, Team } from '@/types/game'
 
 interface TopEPAPlaysProps {
@@ -75,7 +76,7 @@ export function TopEPAPlays({ plays, teams }: TopEPAPlaysProps) {
                   </Badge>
                 </div>
                 <p className="text-sm line-clamp-2">
-                  {play.play_description}
+                  {abbreviateNamesInDescription(play.play_description)}
                 </p>
               </div>
             </div>
