@@ -13,6 +13,7 @@ import type {
   NGSRushing,
   NGSReceiving,
   AdvancedStats,
+  GameRoster,
   toNflverseGameId
 } from '@/types/game'
 
@@ -32,6 +33,7 @@ export interface GameDetailData {
   ngsRushing: NGSRushing[]
   ngsReceiving: NGSReceiving[]
   advancedStats: AdvancedStats[]
+  gameRosters: GameRoster[]
 }
 
 /**
@@ -77,7 +79,8 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
     ngsPassingResult,
     ngsRushingResult,
     ngsReceivingResult,
-    advancedStatsResult
+    advancedStatsResult,
+    gameRostersResult
   ] = await Promise.all([
     // Weather
     supabase
@@ -159,7 +162,18 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
       .from('player_stats_advanced')
       .select('*')
       .eq('season', game.season)
-      .eq('week', game.week)
+      .eq('week', game.week),
+
+    // Game rosters (who played) - game_rosters uses numeric ID without 'espn-' prefix
+    supabase
+      .from('game_rosters')
+      .select(`
+        *,
+        player:players(player_id, full_name, primary_position, jersey_number)
+      `)
+      .eq('game_id', gameId.replace('espn-', ''))
+      .order('position')
+      .order('jersey_number')
   ])
 
   return {
@@ -177,7 +191,8 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
     ngsPassing: (ngsPassingResult.data || []) as NGSPassing[],
     ngsRushing: (ngsRushingResult.data || []) as NGSRushing[],
     ngsReceiving: (ngsReceivingResult.data || []) as NGSReceiving[],
-    advancedStats: (advancedStatsResult.data || []) as AdvancedStats[]
+    advancedStats: (advancedStatsResult.data || []) as AdvancedStats[],
+    gameRosters: (gameRostersResult.data || []) as GameRoster[]
   }
 }
 

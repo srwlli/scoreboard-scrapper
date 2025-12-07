@@ -2,12 +2,12 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { getGameDetails, getGameMetadata } from '@/lib/queries/game-queries'
 import { GameHeader } from '@/components/game/GameHeader'
-import { ScoreBug } from '@/components/game/ScoreBug'
 import { TeamStatsCard } from '@/components/game/TeamStatsCard'
 import { ScoringPlays } from '@/components/game/ScoringPlays'
 import { TopEPAPlays } from '@/components/game/TopEPAPlays'
 import { PlayerStatsCard } from '@/components/game/PlayerStatsCard'
 import { SnapCountsCard } from '@/components/game/SnapCountsCard'
+import { GameRosterCard } from '@/components/game/GameRosterCard'
 import { NGSStatsCard } from '@/components/game/NGSStatsCard'
 import { AdvancedStatsCard } from '@/components/game/AdvancedStatsCard'
 import { VenueCard } from '@/components/game/VenueCard'
@@ -60,7 +60,8 @@ export default async function GamePage({ params }: GamePageProps) {
     ngsPassing,
     ngsRushing,
     ngsReceiving,
-    advancedStats
+    advancedStats,
+    gameRosters
   } = data
 
   // Create teams record for TopEPAPlays
@@ -79,19 +80,10 @@ export default async function GamePage({ params }: GamePageProps) {
       />
 
       <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Score Bug and Game Info Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <ScoreBug
-              game={game}
-              homeTeam={homeTeam}
-              awayTeam={awayTeam}
-            />
-          </div>
-          <div className="space-y-4">
-            {stadium && <VenueCard stadium={stadium} attendance={game.attendance} />}
-            {weather && <WeatherCard weather={weather} />}
-          </div>
+        {/* Venue and Weather Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {stadium && <VenueCard stadium={stadium} attendance={game.attendance} />}
+          {weather && <WeatherCard weather={weather} />}
         </div>
 
         {/* Team Stats */}
@@ -132,6 +124,15 @@ export default async function GamePage({ params }: GamePageProps) {
           {/* Snap Counts */}
           <SnapCountsCard
             snapCounts={snapCounts}
+            homeTeamId={homeTeam.team_id}
+            awayTeamId={awayTeam.team_id}
+            homeTeam={homeTeam}
+            awayTeam={awayTeam}
+          />
+
+          {/* Game Roster */}
+          <GameRosterCard
+            rosters={gameRosters}
             homeTeamId={homeTeam.team_id}
             awayTeamId={awayTeam.team_id}
             homeTeam={homeTeam}

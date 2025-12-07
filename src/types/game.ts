@@ -451,8 +451,38 @@ export interface AdvancedStats {
 }
 
 // ============================================================================
+// GAME ROSTER DATA (ESPN game_id format)
+// ============================================================================
+
+/**
+ * Game roster entry from `game_rosters` table
+ * Tracks who played (active/inactive) in each game
+ */
+export interface GameRoster {
+  game_roster_id: number
+  game_id: string
+  season: number
+  team_id: string
+  player_id: string
+  position: string | null
+  jersey_number: number | null
+  active: boolean
+  status: string | null
+  // Joined relation
+  player?: Player
+}
+
+// ============================================================================
 // COMPONENT PROP TYPES
 // ============================================================================
+
+export interface GameRosterCardProps {
+  rosters: GameRoster[]
+  homeTeamId: string
+  awayTeamId: string
+  homeTeam: Team
+  awayTeam: Team
+}
 
 export interface ScoreBugProps {
   game: Pick<Game,
