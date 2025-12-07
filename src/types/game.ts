@@ -286,6 +286,8 @@ export interface ScoringPlay {
   scoring_type: string
   points: number
   description: string
+  home_score: number | null
+  away_score: number | null
 }
 
 // ============================================================================

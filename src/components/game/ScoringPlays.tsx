@@ -96,6 +96,11 @@ export function ScoringPlays({ plays, teams }: ScoringPlaysProps) {
                         <span className="text-xs font-medium">
                           +{play.points}
                         </span>
+                        {play.away_score !== null && play.home_score !== null && (
+                          <span className="text-xs font-semibold text-primary ml-auto">
+                            {play.away_score} - {play.home_score}
+                          </span>
+                        )}
                       </div>
                       <p className="text-sm line-clamp-2">
                         {play.description}
