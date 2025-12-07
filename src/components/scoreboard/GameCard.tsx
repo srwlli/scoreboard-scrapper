@@ -115,7 +115,9 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecor
                 <div className="flex flex-col items-center gap-0.5">
                   {game.current_period === 2 && game.game_clock === '0:00' ? (
                     <span className="text-sm font-semibold text-orange-500">Halftime</span>
-                  ) : game.game_clock === '0:00' && game.current_period && game.current_period <= 4 ? (
+                  ) : game.game_clock === '0:00' && game.current_period === 4 ? (
+                    <span className="text-sm font-semibold text-amber-500">Final</span>
+                  ) : game.game_clock === '0:00' && game.current_period && game.current_period < 4 ? (
                     <span className="text-sm font-semibold text-amber-500">
                       End of {formatQuarter(game.current_period)}
                     </span>
