@@ -18,30 +18,46 @@ function getTeamLogoUrl(teamAbbr: string): string {
   return `https://a.espncdn.com/i/teamlogos/nfl/500/${teamAbbr.toLowerCase()}.png`
 }
 
-function formatGameDate(dateStr: string): string {
-  // Parse date parts directly to avoid timezone issues
-  // dateStr format: "2025-12-07"
-  const [year, month, day] = dateStr.split('-').map(Number)
-  const date = new Date(year, month - 1, day) // month is 0-indexed
-  return date.toLocaleDateString('en-US', {
-    weekday: 'short',
-    month: 'numeric',
-    day: 'numeric'
-  })
+function formatGameDateTime(dateStr: string, timeStr: string | null): { date: string; time: string } {
+  if (!timeStr) {
+    // No time - just parse the date directly (for TBD games)
+    const [year, month, day] = dateStr.split('-').map(Number)
+    const date = new Date(year, month - 1, day)
+    return {
+      date: date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'numeric',
+        day: 'numeric'
+      }),
+      time: 'TBD'
+    }
+  }
+
+  // Times are stored in UTC - convert to Eastern for both date and time
+  const dateTimeStr = `${dateStr}T${timeStr}Z`
+  const utcDate = new Date(dateTimeStr)
+
+  return {
+    date: utcDate.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'numeric',
+      day: 'numeric',
+      timeZone: 'America/New_York'
+    }),
+    time: utcDate.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: 'America/New_York'
+    }) + ' ET'
+  }
+}
+
+function formatGameDate(dateStr: string, timeStr: string | null): string {
+  return formatGameDateTime(dateStr, timeStr).date
 }
 
 function formatGameTime(dateStr: string, timeStr: string | null): string {
-  if (!timeStr) return 'TBD'
-
-  // Combine date and time, parse as UTC, then format in Eastern
-  const dateTimeStr = `${dateStr}T${timeStr}Z`
-  const date = new Date(dateTimeStr)
-
-  return date.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZone: 'America/New_York'
-  }) + ' ET'
+  return formatGameDateTime(dateStr, timeStr).time
 }
 
 function formatQuarter(period: number | null): string {
@@ -73,7 +89,7 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecor
       <Card className={`hover:bg-accent/50 transition-colors cursor-pointer ${isLive ? 'border-2 border-red-500' : ''}`}>
         {showWeek && (
           <div className="px-4 pt-3 pb-1 border-b text-xs text-muted-foreground">
-            Week {game.week} • {formatGameDate(game.game_date)} • {formatGameTime(game.game_date, game.game_time)}
+            Week {game.week} • {formatGameDate(game.game_date, game.game_time)} • {formatGameTime(game.game_date, game.game_time)}
           </div>
         )}
         <CardContent className="p-4">
@@ -105,7 +121,7 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecor
                 <div>
                   <Badge variant="secondary" className="mb-1">FINAL</Badge>
                   <p className="text-xs text-muted-foreground">
-                    {formatGameDate(game.game_date)}
+                    {formatGameDate(game.game_date, game.game_time)}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {formatGameTime(game.game_date, game.game_time)}
@@ -143,7 +159,7 @@ export function GameCard({ game, homeTeam, awayTeam, showWeek = false, homeRecor
                 </div>
               ) : (
                 <div>
-                  <p className="text-sm font-medium">{formatGameDate(game.game_date)}</p>
+                  <p className="text-sm font-medium">{formatGameDate(game.game_date, game.game_time)}</p>
                   <p className="text-xs text-muted-foreground">{formatGameTime(game.game_date, game.game_time)}</p>
                 </div>
               )}
