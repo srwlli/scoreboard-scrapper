@@ -668,6 +668,7 @@ export interface LiveGameState {
   down: number | null
   yardsToGo: number | null
   yardLine: number | null
+  yardLineSide: string | null
 }
 
 // ============================================================================

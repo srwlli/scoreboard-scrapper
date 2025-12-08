@@ -91,7 +91,7 @@ export function GameHeader({ game, homeTeam, awayTeam, liveState }: GameHeaderPr
             </Badge>
             {liveState.yardLine && (
               <span className="text-xs text-muted-foreground">
-                at the {liveState.yardLine}
+                at {liveState.yardLineSide ? `${liveState.yardLineSide} ${liveState.yardLine}` : `the ${liveState.yardLine}`}
               </span>
             )}
           </div>

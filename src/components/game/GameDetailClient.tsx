@@ -62,7 +62,8 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
         possession: livePlays[0].possession_team_id,
         down: livePlays[0].down,
         yardsToGo: livePlays[0].yards_to_go,
-        yardLine: livePlays[0].yard_line
+        yardLine: livePlays[0].yard_line,
+        yardLineSide: livePlays[0].yard_line_side
       }
     : null
 
