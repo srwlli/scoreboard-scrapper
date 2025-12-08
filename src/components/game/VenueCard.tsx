@@ -36,6 +36,10 @@ export function VenueCard({ stadium, attendance }: VenueCardProps) {
             {attendance?.toLocaleString() || '--'}
           </div>
           <div>
+            <span className="text-muted-foreground">Capacity:</span>{' '}
+            {stadium.capacity?.toLocaleString() || '--'}
+          </div>
+          <div>
             <span className="text-muted-foreground">Surface:</span>{' '}
             {stadium.surface_type || '--'}
           </div>
@@ -43,6 +47,12 @@ export function VenueCard({ stadium, attendance }: VenueCardProps) {
             <span className="text-muted-foreground">Roof:</span>{' '}
             {stadium.roof_type || '--'}
           </div>
+          {stadium.opened_year && (
+            <div>
+              <span className="text-muted-foreground">Opened:</span>{' '}
+              {stadium.opened_year}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

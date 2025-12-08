@@ -105,6 +105,7 @@ export function PlayerStatsCard({
                     <TableHead className="text-right">TD</TableHead>
                     <TableHead className="text-right">INT</TableHead>
                     <TableHead className="text-right">RTG</TableHead>
+                    <TableHead className="text-right">QBR</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -116,6 +117,7 @@ export function PlayerStatsCard({
                       <TableCell className="text-right tabular-nums">{p.passing_touchdowns}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.passing_interceptions}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.passer_rating?.toFixed(1) ?? '-'}</TableCell>
+                      <TableCell className="text-right tabular-nums">{p.qbr?.toFixed(1) ?? '-'}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -225,6 +227,9 @@ export function PlayerStatsCard({
                   <TableRow>
                     <TableHead>Player</TableHead>
                     <TableHead className="text-right">FG</TableHead>
+                    <TableHead className="text-right">0-39</TableHead>
+                    <TableHead className="text-right">40-49</TableHead>
+                    <TableHead className="text-right">50+</TableHead>
                     <TableHead className="text-right">Lng</TableHead>
                     <TableHead className="text-right">XP</TableHead>
                   </TableRow>
@@ -234,6 +239,9 @@ export function PlayerStatsCard({
                     <TableRow key={p.player_game_id}>
                       <TableCell className="font-medium">{formatPlayerName(p.player?.full_name) || `#${p.player_id.replace('espn-', '')}`}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.field_goals_made}/{p.field_goals_attempted}</TableCell>
+                      <TableCell className="text-right tabular-nums">{p.field_goals_0_39 || '-'}</TableCell>
+                      <TableCell className="text-right tabular-nums">{p.field_goals_40_49 || '-'}</TableCell>
+                      <TableCell className="text-right tabular-nums">{p.field_goals_50_plus || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.field_goal_longest}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.extra_points_made}/{p.extra_points_attempted}</TableCell>
                     </TableRow>
