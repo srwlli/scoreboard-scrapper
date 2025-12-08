@@ -57,47 +57,77 @@ function formatYardLine(yardLine: number | null, possTeam: string | null): strin
 }
 
 function getDriveResult(plays: PlayByPlay[]): string {
-  const lastPlay = plays[plays.length - 1]
+  if (!plays.length) return 'Unknown'
+
+  // Filter out marker plays (END QUARTER, GAME, etc.) to find actual last play
+  const actualPlays = plays.filter(p =>
+    p.play_type &&
+    !p.play_description.toLowerCase().includes('end quarter') &&
+    !p.play_description.toLowerCase().includes('end of') &&
+    p.play_description !== 'GAME'
+  )
+
+  const lastPlay = actualPlays[actualPlays.length - 1] || plays[plays.length - 1]
   if (!lastPlay) return 'Unknown'
 
   const desc = lastPlay.play_description.toLowerCase()
   const playType = lastPlay.play_type?.toLowerCase() || ''
 
-  // Check for touchdown in any play
+  // Check for touchdown in any play of the drive
   if (plays.some(p => p.play_description.toLowerCase().includes('touchdown'))) {
     return 'Touchdown'
   }
 
-  // Check last play
-  if (playType === 'field_goal' || desc.includes('field goal is good')) {
-    return 'Field Goal'
-  }
-  if (desc.includes('field goal') && (desc.includes('no good') || desc.includes('missed') || desc.includes('blocked'))) {
-    return 'Missed FG'
-  }
-  if (playType === 'punt' || desc.includes('punts')) {
+  // Check last actual play by play_type first (most reliable)
+  if (playType === 'punt') {
     return 'Punt'
   }
+  if (playType === 'field_goal') {
+    if (desc.includes('no good') || desc.includes('missed') || desc.includes('blocked')) {
+      return 'Missed FG'
+    }
+    return 'Field Goal'
+  }
+
+  // Check description for turnovers
   if (desc.includes('intercepted') || desc.includes('interception')) {
     return 'Interception'
   }
-  if (desc.includes('fumble') && desc.includes('recovered by')) {
-    return 'Fumble'
+  if (desc.includes('fumble') && (desc.includes('recovered by') || desc.includes('forced by'))) {
+    // Check if fumble was recovered by same team (not a turnover)
+    if (!desc.includes('recovered by ' + lastPlay.possession_team_id?.toLowerCase())) {
+      return 'Fumble'
+    }
   }
+
+  // Check for turnover on downs (4th down failure)
+  if (lastPlay.down === 4 && (playType === 'pass' || playType === 'run')) {
+    const neededYards = lastPlay.yards_to_go || 0
+    const gainedYards = lastPlay.yards_gained || 0
+    if (gainedYards < neededYards) {
+      return 'Turnover on Downs'
+    }
+  }
+
+  // Quarter/half/game endings
   if (desc.includes('end quarter') || desc.includes('end of quarter')) {
     return 'End of Quarter'
   }
-  if (desc.includes('end of half') || desc.includes('two-minute')) {
+  if (desc.includes('end of half') || desc.includes('two-minute warning')) {
     return 'End of Half'
   }
   if (desc.includes('end of game')) {
     return 'End of Game'
   }
-  if (desc.includes('downs')) {
-    return 'Turnover on Downs'
-  }
+
+  // Kickoff (usually start of possession after score)
   if (playType === 'kickoff') {
     return 'Kickoff'
+  }
+
+  // Kneel downs at end of game/half
+  if (playType === 'qb_kneel') {
+    return 'Kneel'
   }
 
   return 'In Progress'
