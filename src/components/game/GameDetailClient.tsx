@@ -182,6 +182,8 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
               <LivePlaysCard
                 plays={livePlays.slice(0, 20)}
                 teams={teams}
+                homeTeam={homeTeam}
+                awayTeam={awayTeam}
               />
             )}
           </div>

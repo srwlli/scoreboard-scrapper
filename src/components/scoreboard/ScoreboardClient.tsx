@@ -46,7 +46,7 @@ export function ScoreboardClient({
   const [allSeasonGames, setAllSeasonGames] = useState<ScoreboardGame[]>([])
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
   const selectedTeam = teamId ? initialTeams.find(t => t.team_id === teamId) : null
 
@@ -105,6 +105,11 @@ export function ScoreboardClient({
       setHeader({ title: 'NFL Stats' })
     }
   }, [setHeader])
+
+  // Initialize lastUpdated on client mount to avoid hydration mismatch
+  useEffect(() => {
+    setLastUpdated(new Date())
+  }, [])
 
   // Fetch all season games for record calculation
   useEffect(() => {
@@ -257,7 +262,7 @@ export function ScoreboardClient({
   const footerText = isTeamView
     ? `${selectedTeam?.team_name} | ${season} Season | ${gameCount} Games`
     : `NFL Scoreboard | ${season} Season | ${gameCount} Games`
-  const lastUpdatedText = lastUpdated.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' })
+  const lastUpdatedText = lastUpdated?.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' }) || ''
 
   return (
     <div className="min-h-screen flex flex-col">
