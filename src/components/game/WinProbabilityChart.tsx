@@ -62,17 +62,20 @@ export function WinProbabilityChart({ data, homeTeam, awayTeam }: WinProbability
     return { pathD, quarterMarkers: quarters, maxSeq }
   }, [data])
 
-  // Handle mouse move to find closest point
-  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+  // Handle mouse/touch to find closest point
+  const handleInteraction = (clientX: number, clientY: number, svg: SVGSVGElement) => {
     if (data.length === 0 || maxSeq === 0) return
 
-    const svg = e.currentTarget
     const rect = svg.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+
+    // Scale mouse coordinates to SVG viewBox coordinates
+    const scaleX = CHART_WIDTH / rect.width
+    const scaleY = CHART_HEIGHT / rect.height
+    const svgX = (clientX - rect.left) * scaleX
+    const svgY = (clientY - rect.top) * scaleY
 
     // Convert to data coordinates
-    const dataX = ((x - PADDING.left) / INNER_WIDTH) * maxSeq
+    const dataX = ((svgX - PADDING.left) / INNER_WIDTH) * maxSeq
 
     // Find closest point
     let closestPoint = data[0]
@@ -86,7 +89,19 @@ export function WinProbabilityChart({ data, homeTeam, awayTeam }: WinProbability
     })
 
     setHoveredPoint(closestPoint)
-    setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+    // Use scaled position for tooltip
+    setMousePosition({ x: svgX, y: svgY })
+  }
+
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    handleInteraction(e.clientX, e.clientY, e.currentTarget)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent<SVGSVGElement>) => {
+    if (e.touches.length > 0) {
+      const touch = e.touches[0]
+      handleInteraction(touch.clientX, touch.clientY, e.currentTarget)
+    }
   }
 
   const handleMouseLeave = () => {
@@ -144,19 +159,45 @@ export function WinProbabilityChart({ data, homeTeam, awayTeam }: WinProbability
         <div className="relative">
           <svg
             viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
-            className="w-full h-auto"
+            className="w-full h-auto touch-none"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleMouseLeave}
           >
-            {/* Background */}
+            {/* Background - split into two halves for team colors */}
             <rect
               x={PADDING.left}
               y={PADDING.top}
               width={INNER_WIDTH}
-              height={INNER_HEIGHT}
+              height={INNER_HEIGHT / 2}
               fill="currentColor"
-              className="text-muted/20"
+              className="text-primary/5"
             />
+            <rect
+              x={PADDING.left}
+              y={PADDING.top + INNER_HEIGHT / 2}
+              width={INNER_WIDTH}
+              height={INNER_HEIGHT / 2}
+              fill="currentColor"
+              className="text-muted/10"
+            />
+
+            {/* Team labels on left side */}
+            <text
+              x={PADDING.left + 5}
+              y={PADDING.top + 15}
+              className="fill-primary/70 text-[10px] font-medium"
+            >
+              ↑ {homeTeam.team_abbr}
+            </text>
+            <text
+              x={PADDING.left + 5}
+              y={PADDING.top + INNER_HEIGHT - 5}
+              className="fill-muted-foreground/70 text-[10px] font-medium"
+            >
+              ↓ {awayTeam.team_abbr}
+            </text>
 
             {/* 50% line */}
             <line
@@ -259,29 +300,48 @@ export function WinProbabilityChart({ data, homeTeam, awayTeam }: WinProbability
           {/* Tooltip */}
           {hoveredPoint && mousePosition && (
             <div
-              className="absolute z-10 bg-popover text-popover-foreground border rounded-lg shadow-lg p-2 text-xs pointer-events-none"
+              className="absolute z-10 bg-popover text-popover-foreground border rounded-lg shadow-lg p-3 text-xs pointer-events-none min-w-[160px]"
               style={{
-                left: mousePosition.x > CHART_WIDTH / 2 ? mousePosition.x - 140 : mousePosition.x + 10,
-                top: Math.max(10, mousePosition.y - 60)
+                left: mousePosition.x > CHART_WIDTH / 2 ? 'auto' : `${(mousePosition.x / CHART_WIDTH) * 100}%`,
+                right: mousePosition.x > CHART_WIDTH / 2 ? `${100 - (mousePosition.x / CHART_WIDTH) * 100}%` : 'auto',
+                top: Math.max(10, (mousePosition.y / CHART_HEIGHT) * 100 - 30) + '%'
               }}
             >
-              <div className="flex items-center justify-between gap-4 mb-1">
-                <span className="font-medium">{homeTeam.team_abbr}</span>
-                <span className="text-primary font-bold">
-                  {(hoveredPoint.home_win_pct * 100).toFixed(1)}%
-                </span>
+              {/* Game situation */}
+              <div className="text-center border-b pb-2 mb-2">
+                <div className="font-bold text-sm">
+                  {formatQuarter(hoveredPoint.quarter)} {hoveredPoint.game_clock || ''}
+                </div>
+                {(hoveredPoint.home_score !== null && hoveredPoint.away_score !== null) && (
+                  <div className="text-muted-foreground">
+                    {awayTeam.team_abbr} {hoveredPoint.away_score} - {hoveredPoint.home_score} {homeTeam.team_abbr}
+                  </div>
+                )}
               </div>
-              <div className="flex items-center justify-between gap-4 mb-1">
-                <span className="font-medium">{awayTeam.team_abbr}</span>
-                <span className="text-muted-foreground">
-                  {(hoveredPoint.away_win_pct * 100).toFixed(1)}%
-                </span>
+
+              {/* Win probabilities */}
+              <div className="space-y-1">
+                <div className={`flex items-center justify-between gap-3 ${hoveredPoint.home_win_pct > 0.5 ? 'text-primary font-medium' : ''}`}>
+                  <span>{homeTeam.team_abbr}</span>
+                  <span className="font-bold">
+                    {(hoveredPoint.home_win_pct * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <div className={`flex items-center justify-between gap-3 ${hoveredPoint.away_win_pct > 0.5 ? 'text-primary font-medium' : ''}`}>
+                  <span>{awayTeam.team_abbr}</span>
+                  <span className="font-bold">
+                    {(hoveredPoint.away_win_pct * 100).toFixed(1)}%
+                  </span>
+                </div>
               </div>
-              <div className="text-muted-foreground border-t pt-1 mt-1">
-                {formatQuarter(hoveredPoint.quarter)} {hoveredPoint.game_clock}
-                <span className="ml-2">
-                  {hoveredPoint.away_score} - {hoveredPoint.home_score}
-                </span>
+
+              {/* Favored indicator */}
+              <div className="text-center mt-2 pt-2 border-t text-[10px] text-muted-foreground">
+                {hoveredPoint.home_win_pct > 0.5
+                  ? `${homeTeam.team_abbr} favored`
+                  : hoveredPoint.away_win_pct > 0.5
+                  ? `${awayTeam.team_abbr} favored`
+                  : 'Even matchup'}
               </div>
             </div>
           )}

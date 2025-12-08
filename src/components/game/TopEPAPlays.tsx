@@ -45,7 +45,7 @@ export function TopEPAPlays({ plays, teams }: TopEPAPlaysProps) {
       </CardHeader>
       <CardContent className="space-y-3">
         {topPlays.map((play, index) => {
-          const team = teams[play.possession_team_id]
+          const team = play.possession_team_id ? teams[play.possession_team_id] : null
           const epa = play.epa ?? 0
 
           return (
@@ -59,9 +59,9 @@ export function TopEPAPlays({ plays, teams }: TopEPAPlaysProps) {
               <Avatar className="h-8 w-8 shrink-0">
                 <AvatarImage
                   src={team ? getTeamLogoUrl(team.team_id) : ''}
-                  alt={team?.team_name || play.possession_team_id}
+                  alt={team?.team_name || play.possession_team_id || 'Unknown'}
                 />
-                <AvatarFallback>{play.possession_team_id}</AvatarFallback>
+                <AvatarFallback>{play.possession_team_id || '?'}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">

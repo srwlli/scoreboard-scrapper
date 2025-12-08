@@ -321,29 +321,27 @@ export interface PlayByPlay {
   play_id: string
   game_id: string
   season: number
-  week: number
-  game_date: string | null
 
   quarter: number
-  time_remaining_seconds: number
+  time_remaining_seconds: number | null
   play_description: string
 
-  possession_team_id: string
-  defensive_team_id: string
+  possession_team_id: string | null
 
-  play_type: string
+  play_type: string | null
   yards_gained: number
-  shotgun: boolean | null
-  no_huddle: boolean | null
 
+  // Situation fields
+  down: number | null
+  yards_to_go: number | null
+  yard_line: number | null
+  drive_id: string | null
+  play_number: number | null
+
+  // Analytics
   epa: number | null
   wpa: number | null
   success: boolean | null
-
-  air_yards: number | null
-  yards_after_catch: number | null
-  pass_length: 'short' | 'mid' | 'deep' | null
-  pass_location: 'left' | 'middle' | 'right' | null
 }
 
 // ============================================================================
