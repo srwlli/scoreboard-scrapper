@@ -188,14 +188,13 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
       .eq('game_id', gameId)
       .order('sequence_number', { ascending: true }),
 
-    // Live plays data (from live-scraper-v2)
+    // Live plays data (from live-scraper-v2) - all plays for drive summary
     supabase
       .from('live_plays')
       .select('*')
       .eq('game_id', gameId)
       .order('drive_number', { ascending: false })
       .order('play_number', { ascending: false })
-      .limit(50)
   ])
 
   return {

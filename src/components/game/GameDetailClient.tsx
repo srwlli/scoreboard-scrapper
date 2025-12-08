@@ -16,6 +16,7 @@ import { WeatherCard } from '@/components/game/WeatherCard'
 import { DataSourceFooter } from '@/components/game/DataSourceFooter'
 import { WinProbabilityChart } from '@/components/game/WinProbabilityChart'
 import { LivePlaysCard } from '@/components/game/LivePlaysCard'
+import { DrivesSummaryCard } from '@/components/game/DrivesSummaryCard'
 import type { GameDetailData } from '@/lib/queries/game-queries'
 import type { LiveGameState, Team } from '@/types/game'
 
@@ -166,8 +167,8 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
           />
         )}
 
-        {/* Win Probability Chart and Live Plays Feed */}
-        {(winProbability.length > 0 || livePlays.length > 0) && (
+        {/* Win Probability Chart and Live Plays Feed (for live games) */}
+        {(winProbability.length > 0 || (livePlays.length > 0 && game.status === 'in_progress')) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {winProbability.length > 0 && (
               <WinProbabilityChart
@@ -176,13 +177,21 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
                 awayTeam={awayTeam}
               />
             )}
-            {livePlays.length > 0 && (
+            {livePlays.length > 0 && game.status === 'in_progress' && (
               <LivePlaysCard
-                plays={livePlays}
+                plays={livePlays.slice(0, 20)}
                 teams={teams}
               />
             )}
           </div>
+        )}
+
+        {/* Drive Summary / Full Play-by-Play */}
+        {livePlays.length > 0 && (
+          <DrivesSummaryCard
+            plays={livePlays}
+            teams={teams}
+          />
         )}
 
         {/* Scoring Plays and Top EPA Plays Row */}
