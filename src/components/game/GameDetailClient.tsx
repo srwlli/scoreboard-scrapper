@@ -17,6 +17,7 @@ import { DataSourceFooter } from '@/components/game/DataSourceFooter'
 import { WinProbabilityChart } from '@/components/game/WinProbabilityChart'
 import { LivePlaysCard } from '@/components/game/LivePlaysCard'
 import { DrivesSummaryCard } from '@/components/game/DrivesSummaryCard'
+import { PlayByPlayCard } from '@/components/game/PlayByPlayCard'
 import type { GameDetailData } from '@/lib/queries/game-queries'
 import type { LiveGameState, Team } from '@/types/game'
 
@@ -186,8 +187,17 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
           </div>
         )}
 
-        {/* Drive Summary / Full Play-by-Play */}
-        {livePlays.length > 0 && (
+        {/* Play-by-Play from nflverse data (completed games) */}
+        {playByPlay.length > 0 && (
+          <PlayByPlayCard
+            plays={playByPlay}
+            homeTeam={homeTeam}
+            awayTeam={awayTeam}
+          />
+        )}
+
+        {/* Drive Summary from live plays (live games only) */}
+        {livePlays.length > 0 && game.status === 'in_progress' && (
           <DrivesSummaryCard
             plays={livePlays}
             teams={teams}
