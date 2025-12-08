@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Green circular background -->
+  <circle cx="256" cy="256" r="256" fill="#16a34a"/>
+
+  <!-- Football shape (brown) -->
+  <ellipse cx="256" cy="256" rx="160" ry="100" fill="#8B4513" transform="rotate(-45 256 256)"/>
+
+  <!-- Football highlight -->
+  <ellipse cx="230" cy="230" rx="140" ry="80" fill="#A0522D" transform="rotate(-45 256 256)" opacity="0.5"/>
+
+  <!-- White laces - center stripe -->
+  <rect x="248" y="156" width="16" height="200" fill="white" transform="rotate(-45 256 256)"/>
+
+  <!-- White laces - horizontal lines -->
+  <rect x="220" y="220" width="72" height="8" fill="white" transform="rotate(-45 256 256)"/>
+  <rect x="220" y="240" width="72" height="8" fill="white" transform="rotate(-45 256 256)"/>
+  <rect x="220" y="260" width="72" height="8" fill="white" transform="rotate(-45 256 256)"/>
+  <rect x="220" y="280" width="72" height="8" fill="white" transform="rotate(-45 256 256)"/>
+</svg>
