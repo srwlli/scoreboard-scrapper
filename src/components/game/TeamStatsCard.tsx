@@ -96,6 +96,26 @@ export function TeamStatsCard({ homeStats, awayStats, homeTeam, awayTeam }: Team
             home={homeStats.first_downs}
             {...compareNum(awayStats.first_downs, homeStats.first_downs)}
           />
+          {/* First Down Breakdown (WO-GAME-DETAILS-UI-001) */}
+          {(awayStats.passing_first_downs > 0 || homeStats.passing_first_downs > 0) && (
+            <>
+              <StatRow
+                label="Passing 1st"
+                away={awayStats.passing_first_downs || 0}
+                home={homeStats.passing_first_downs || 0}
+              />
+              <StatRow
+                label="Rushing 1st"
+                away={awayStats.rushing_first_downs || 0}
+                home={homeStats.rushing_first_downs || 0}
+              />
+              <StatRow
+                label="Penalty 1st"
+                away={awayStats.penalty_first_downs || 0}
+                home={homeStats.penalty_first_downs || 0}
+              />
+            </>
+          )}
           <StatRow
             label="3rd Down"
             away={`${awayStats.third_down_conversions}/${awayStats.third_down_attempts}`}

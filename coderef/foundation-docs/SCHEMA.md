@@ -1,7 +1,7 @@
 # Schema Reference - NFL Stats App
 
-**Last Updated:** 2025-12-06
-**Schema Version:** 1.0.0
+**Last Updated:** 2025-12-08
+**Schema Version:** 1.1.0
 
 ---
 
@@ -53,6 +53,10 @@ interface Game {
   attendance: number | null
   overtime: boolean
   duration_minutes: number | null
+
+  // Coin Toss (WO-GAME-DETAILS-ENHANCEMENTS-001)
+  coin_toss_winner_team_id: string | null  // FK to teams
+  coin_toss_decision: 'receive' | 'defer' | 'kick' | null
 }
 ```
 
@@ -160,6 +164,11 @@ interface TeamGameStats {
   penalties: number
   penalty_yards: number
   sacks_allowed: number
+
+  // First Down Breakdown (WO-GAME-DETAILS-ENHANCEMENTS-001)
+  passing_first_downs: number | null
+  rushing_first_downs: number | null
+  penalty_first_downs: number | null
 }
 ```
 
@@ -255,6 +264,20 @@ interface PlayerGameStats {
   fantasy_points_half_ppr: number | null
   fantasy_points_dfs_dk: number | null
   fantasy_points_dfs_fd: number | null
+
+  // KICK RETURNS (WO-GAME-DETAILS-ENHANCEMENTS-001)
+  kick_return_attempts: number | null
+  kick_return_yards: number | null
+  kick_return_avg: number | null
+  kick_return_long: number | null
+  kick_return_tds: number | null
+
+  // PUNT RETURNS (WO-GAME-DETAILS-ENHANCEMENTS-001)
+  punt_return_attempts: number | null
+  punt_return_yards: number | null
+  punt_return_avg: number | null
+  punt_return_long: number | null
+  punt_return_tds: number | null
 }
 ```
 
@@ -318,6 +341,83 @@ interface GameWeather {
   wind_direction: string       // "NW"
   conditions: string           // "Clear", "Cloudy"
   precipitation: string        // "None", "Rain"
+}
+```
+
+---
+
+## Game Details Enhancements Tables (WO-GAME-DETAILS-ENHANCEMENTS-001)
+
+### `game_officials`
+
+Referee crew for each game.
+
+```typescript
+interface GameOfficial {
+  id: number                   // Primary key
+  game_id: string              // FK to games (espn-{id} format)
+  position: string             // "referee", "umpire", "head_linesman", etc.
+  official_name: string        // "Carl Cheffers"
+  created_at: string
+}
+```
+
+---
+
+### `game_predictions`
+
+ESPN expert predictions and pickcenter data.
+
+```typescript
+interface GamePrediction {
+  id: number                   // Primary key
+  game_id: string              // FK to games (espn-{id} format)
+  source: string               // "espn_pickcenter"
+  home_win_pct: number | null  // 0.65 = 65%
+  away_win_pct: number | null
+  spread: number | null        // -3.5
+  over_under: number | null    // 47.5
+  predicted_winner_team_id: string | null
+  created_at: string
+  updated_at: string
+}
+```
+
+---
+
+### `game_recaps`
+
+Post-game article/recap from ESPN.
+
+```typescript
+interface GameRecap {
+  id: number                   // Primary key
+  game_id: string              // FK to games (espn-{id} format)
+  headline: string             // "Chiefs rally to defeat Ravens in overtime thriller"
+  summary: string | null       // Article body text
+  published_at: string | null
+  created_at: string
+}
+```
+
+---
+
+### `game_head_to_head`
+
+Historical matchup records between teams.
+
+```typescript
+interface GameHeadToHead {
+  id: number                   // Primary key
+  game_id: string              // FK to games (espn-{id} format)
+  home_all_time_wins: number   // Total wins in series
+  away_all_time_wins: number
+  ties: number
+  home_streak: number | null   // Current streak (positive = home winning)
+  away_streak: number | null
+  last_meeting_date: string | null
+  last_meeting_winner_team_id: string | null
+  created_at: string
 }
 ```
 
@@ -559,6 +659,7 @@ function generateNflverseGameId(
 teams
   ├── games.home_team_id
   ├── games.away_team_id
+  ├── games.coin_toss_winner_team_id
   ├── players.current_team_id
   ├── team_game_stats.team_id
   ├── player_game_stats.team_id
@@ -570,7 +671,11 @@ games
   ├── team_game_stats.game_id
   ├── player_game_stats.game_id
   ├── scoring_plays.game_id
-  └── game_weather.game_id
+  ├── game_weather.game_id
+  ├── game_officials.game_id
+  ├── game_predictions.game_id
+  ├── game_recaps.game_id
+  └── game_head_to_head.game_id
 
 players
   └── player_game_stats.player_id

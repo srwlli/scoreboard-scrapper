@@ -1,0 +1,151 @@
+{
+  "workorder_id": "WO-GAME-DETAILS-UI-001",
+  "feature_name": "game-details-ui-components",
+  "description": "Add UI components for game details enhancements: officials, coin toss, recap, head-to-head, return stats, first down breakdown",
+  "created_at": "2025-12-08",
+  "status": "in_progress",
+  "phases": [
+    {
+      "phase_id": "TYPES",
+      "name": "TypeScript Interfaces",
+      "tasks": [
+        {
+          "task_id": "TYPES-001",
+          "title": "Add GameOfficial interface to types/game.ts",
+          "description": "Add interface for game_officials table data",
+          "status": "pending",
+          "files": ["src/types/game.ts"]
+        },
+        {
+          "task_id": "TYPES-002",
+          "title": "Add GamePrediction interface to types/game.ts",
+          "description": "Add interface for game_predictions table data",
+          "status": "pending",
+          "files": ["src/types/game.ts"]
+        },
+        {
+          "task_id": "TYPES-003",
+          "title": "Add GameRecap interface to types/game.ts",
+          "description": "Add interface for game_recaps table data",
+          "status": "pending",
+          "files": ["src/types/game.ts"]
+        },
+        {
+          "task_id": "TYPES-004",
+          "title": "Add GameHeadToHead interface to types/game.ts",
+          "description": "Add interface for game_head_to_head table data",
+          "status": "pending",
+          "files": ["src/types/game.ts"]
+        },
+        {
+          "task_id": "TYPES-005",
+          "title": "Add return stats fields to PlayerGameStats",
+          "description": "Add kick_return_* and punt_return_* fields to PlayerGameStats interface",
+          "status": "pending",
+          "files": ["src/types/game.ts"]
+        },
+        {
+          "task_id": "TYPES-006",
+          "title": "Add first down breakdown to TeamGameStats",
+          "description": "Add passing_first_downs, rushing_first_downs, penalty_first_downs to TeamGameStats",
+          "status": "pending",
+          "files": ["src/types/game.ts"]
+        },
+        {
+          "task_id": "TYPES-007",
+          "title": "Add coin toss fields to Game interface",
+          "description": "Add coin_toss_winner_team_id and coin_toss_decision to Game interface",
+          "status": "pending",
+          "files": ["src/types/game.ts"]
+        }
+      ]
+    },
+    {
+      "phase_id": "QUERIES",
+      "name": "Data Fetching",
+      "tasks": [
+        {
+          "task_id": "QUERIES-001",
+          "title": "Update GameDetailData interface",
+          "description": "Add officials, predictions, recap, headToHead fields to GameDetailData",
+          "status": "pending",
+          "files": ["src/lib/queries/game-queries.ts"]
+        },
+        {
+          "task_id": "QUERIES-002",
+          "title": "Add queries for new tables",
+          "description": "Add Supabase queries for game_officials, game_predictions, game_recaps, game_head_to_head",
+          "status": "pending",
+          "files": ["src/lib/queries/game-queries.ts"]
+        }
+      ]
+    },
+    {
+      "phase_id": "COMPONENTS",
+      "name": "New Components",
+      "tasks": [
+        {
+          "task_id": "COMP-001",
+          "title": "Create OfficialsCard component",
+          "description": "Display referee crew in a card with position and name",
+          "status": "pending",
+          "files": ["src/components/game/OfficialsCard.tsx"]
+        },
+        {
+          "task_id": "COMP-002",
+          "title": "Create CoinTossCard component",
+          "description": "Display coin toss winner and decision (receive/defer/kick)",
+          "status": "pending",
+          "files": ["src/components/game/CoinTossCard.tsx"]
+        },
+        {
+          "task_id": "COMP-003",
+          "title": "Create GameRecapCard component",
+          "description": "Display post-game article headline and summary",
+          "status": "pending",
+          "files": ["src/components/game/GameRecapCard.tsx"]
+        },
+        {
+          "task_id": "COMP-004",
+          "title": "Create HeadToHeadCard component",
+          "description": "Display historical matchup record between teams",
+          "status": "pending",
+          "files": ["src/components/game/HeadToHeadCard.tsx"]
+        }
+      ]
+    },
+    {
+      "phase_id": "ENHANCE",
+      "name": "Enhance Existing Components",
+      "tasks": [
+        {
+          "task_id": "ENHANCE-001",
+          "title": "Add Returns tab to PlayerStatsCard",
+          "description": "Add new 'Returns' tab showing kick/punt return stats",
+          "status": "pending",
+          "files": ["src/components/game/PlayerStatsCard.tsx"]
+        },
+        {
+          "task_id": "ENHANCE-002",
+          "title": "Add first down breakdown to TeamStatsCard",
+          "description": "Add passing/rushing/penalty first downs row below total first downs",
+          "status": "pending",
+          "files": ["src/components/game/TeamStatsCard.tsx"]
+        }
+      ]
+    },
+    {
+      "phase_id": "INTEGRATE",
+      "name": "Integration",
+      "tasks": [
+        {
+          "task_id": "INT-001",
+          "title": "Update GameDetailClient with new components",
+          "description": "Import and render new components in appropriate sections",
+          "status": "pending",
+          "files": ["src/components/game/GameDetailClient.tsx"]
+        }
+      ]
+    }
+  ]
+}

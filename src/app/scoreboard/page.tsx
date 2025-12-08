@@ -14,10 +14,20 @@ export default async function ScoreboardPage() {
     getAvailableSeasons(),
   ])
 
+  // Use first available season from DB, or 2025 as default
   const currentSeason = seasons[0] || 2025
-  const currentWeek = getCurrentWeek(currentSeason)
+  const calculatedWeek = getCurrentWeek(currentSeason)
   const maxWeek = await getMaxWeekForSeason(currentSeason)
-  const games = await getGamesForWeek(currentSeason, currentWeek)
+
+  // Try current calculated week first
+  let games = await getGamesForWeek(currentSeason, calculatedWeek)
+  let currentWeek = calculatedWeek
+
+  // If no games for current week, fall back to max available week
+  if (games.length === 0 && maxWeek > 0 && maxWeek !== calculatedWeek) {
+    games = await getGamesForWeek(currentSeason, maxWeek)
+    currentWeek = maxWeek
+  }
 
   return (
     <ScoreboardClient

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 import { HeaderProvider } from '@/components/header-context'
 import { SiteHeader } from '@/components/site-header'
+import { ServiceWorkerRegister } from '@/components/service-worker-register'
 import './globals.css'
 
 const geistSans = Geist({
@@ -47,6 +48,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
+        <ServiceWorkerRegister />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

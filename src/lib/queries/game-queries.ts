@@ -16,6 +16,10 @@ import type {
   GameRoster,
   WinProbability,
   LivePlay,
+  GameOfficial,
+  GamePrediction,
+  GameRecap,
+  GameHeadToHead,
   toNflverseGameId
 } from '@/types/game'
 
@@ -38,6 +42,11 @@ export interface GameDetailData {
   gameRosters: GameRoster[]
   winProbability: WinProbability[]
   livePlays: LivePlay[]
+  // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
+  officials: GameOfficial[]
+  prediction: GamePrediction | null
+  recap: GameRecap | null
+  headToHead: GameHeadToHead | null
 }
 
 /**
@@ -86,7 +95,12 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
     advancedStatsResult,
     gameRostersResult,
     winProbabilityResult,
-    livePlaysResult
+    livePlaysResult,
+    // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
+    officialsResult,
+    predictionResult,
+    recapResult,
+    headToHeadResult
   ] = await Promise.all([
     // Weather
     supabase
@@ -194,7 +208,36 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
       .select('*')
       .eq('game_id', gameId)
       .order('drive_number', { ascending: false })
-      .order('play_number', { ascending: false })
+      .order('play_number', { ascending: false }),
+
+    // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
+    // Officials - uses espn-{id} format
+    supabase
+      .from('game_officials')
+      .select('*')
+      .eq('game_id', gameId)
+      .order('position'),
+
+    // Prediction - uses espn-{id} format
+    supabase
+      .from('game_predictions')
+      .select('*')
+      .eq('game_id', gameId)
+      .single(),
+
+    // Recap - uses espn-{id} format
+    supabase
+      .from('game_recaps')
+      .select('*')
+      .eq('game_id', gameId)
+      .single(),
+
+    // Head to Head - uses espn-{id} format
+    supabase
+      .from('game_head_to_head')
+      .select('*')
+      .eq('game_id', gameId)
+      .single()
   ])
 
   return {
@@ -215,7 +258,12 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
     advancedStats: (advancedStatsResult.data || []) as AdvancedStats[],
     gameRosters: (gameRostersResult.data || []) as GameRoster[],
     winProbability: (winProbabilityResult.data || []) as WinProbability[],
-    livePlays: (livePlaysResult.data || []) as LivePlay[]
+    livePlays: (livePlaysResult.data || []) as LivePlay[],
+    // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
+    officials: (officialsResult.data || []) as GameOfficial[],
+    prediction: predictionResult.data as GamePrediction | null,
+    recap: recapResult.data as GameRecap | null,
+    headToHead: headToHeadResult.data as GameHeadToHead | null
   }
 }
 

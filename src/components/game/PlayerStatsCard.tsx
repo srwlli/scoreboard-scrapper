@@ -16,7 +16,7 @@ interface PlayerStatsCardProps {
   awayTeam: Team
 }
 
-type StatCategory = 'passing' | 'rushing' | 'receiving' | 'defense' | 'kicking' | 'punting'
+type StatCategory = 'passing' | 'rushing' | 'receiving' | 'defense' | 'kicking' | 'punting' | 'returns'
 
 export function PlayerStatsCard({
   playerStats,
@@ -52,6 +52,15 @@ export function PlayerStatsCard({
   const puntingStats = filteredStats
     .filter(p => p.punts > 0)
 
+  // Return stats (kick and punt returns combined)
+  const returnStats = filteredStats
+    .filter(p => (p.kick_return_attempts > 0) || (p.punt_return_attempts > 0))
+    .sort((a, b) => {
+      const aYards = (a.kick_return_yards || 0) + (a.punt_return_yards_total || 0)
+      const bYards = (b.kick_return_yards || 0) + (b.punt_return_yards_total || 0)
+      return bYards - aYards
+    })
+
   return (
     <Card>
       <CardHeader>
@@ -73,13 +82,14 @@ export function PlayerStatsCard({
       </CardHeader>
       <CardContent>
         <Tabs value={category} onValueChange={(v) => setCategory(v as StatCategory)}>
-          <TabsList className="grid w-full grid-cols-6 mb-4">
+          <TabsList className="grid w-full grid-cols-7 mb-4">
             <TabsTrigger value="passing" className="text-xs">Pass</TabsTrigger>
             <TabsTrigger value="rushing" className="text-xs">Rush</TabsTrigger>
             <TabsTrigger value="receiving" className="text-xs">Rec</TabsTrigger>
             <TabsTrigger value="defense" className="text-xs">Def</TabsTrigger>
             <TabsTrigger value="kicking" className="text-xs">Kick</TabsTrigger>
             <TabsTrigger value="punting" className="text-xs">Punt</TabsTrigger>
+            <TabsTrigger value="returns" className="text-xs">Ret</TabsTrigger>
           </TabsList>
 
           <TabsContent value="passing">
@@ -257,6 +267,37 @@ export function PlayerStatsCard({
                       <TableCell className="text-right tabular-nums">{p.punt_average?.toFixed(1) ?? '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.punts_inside_20}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.punt_longest}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </TabsContent>
+
+          <TabsContent value="returns">
+            {returnStats.length === 0 ? (
+              <p className="text-muted-foreground text-center py-4">No return stats</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Player</TableHead>
+                    <TableHead className="text-right">KR</TableHead>
+                    <TableHead className="text-right">KR Yds</TableHead>
+                    <TableHead className="text-right">PR</TableHead>
+                    <TableHead className="text-right">PR Yds</TableHead>
+                    <TableHead className="text-right">TD</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {returnStats.map((p) => (
+                    <TableRow key={p.player_game_id}>
+                      <TableCell className="font-medium">{formatPlayerName(p.player?.full_name) || `#${p.player_id.replace('espn-', '')}`}</TableCell>
+                      <TableCell className="text-right tabular-nums">{p.kick_return_attempts || 0}</TableCell>
+                      <TableCell className="text-right tabular-nums">{p.kick_return_yards || 0}</TableCell>
+                      <TableCell className="text-right tabular-nums">{p.punt_return_attempts || 0}</TableCell>
+                      <TableCell className="text-right tabular-nums">{p.punt_return_yards_total || 0}</TableCell>
+                      <TableCell className="text-right tabular-nums">{(p.kick_return_tds || 0) + (p.punt_return_tds || 0)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -195,7 +195,6 @@ export function WinProbabilityChart({ data, homeTeam, awayTeam }: WinProbability
             onMouseLeave={handleMouseLeave}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
-            onTouchEnd={handleMouseLeave}
           >
             {/* Background - split into two halves for team colors */}
             <rect

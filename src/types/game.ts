@@ -47,6 +47,10 @@ export interface Game {
   overtime: boolean
   duration_minutes: number | null
 
+  // Coin Toss (WO-GAME-DETAILS-UI-001)
+  coin_toss_winner_team_id: string | null
+  coin_toss_decision: string | null  // 'receive', 'defer', 'kick'
+
   // Live game state (populated during in_progress games)
   game_clock: string | null
   current_period: number | null
@@ -157,6 +161,11 @@ export interface TeamGameStats {
   penalties: number
   penalty_yards: number
   sacks_allowed: number
+
+  // First Down Breakdown (WO-GAME-DETAILS-UI-001)
+  passing_first_downs: number
+  rushing_first_downs: number
+  penalty_first_downs: number
 }
 
 /**
@@ -240,6 +249,20 @@ export interface PlayerGameStats {
   punt_touchbacks: number
   punt_fair_catches: number
   punt_return_yards: number
+
+  // KICK RETURNS (WO-GAME-DETAILS-UI-001)
+  kick_return_attempts: number
+  kick_return_yards: number
+  kick_return_avg: number | null
+  kick_return_long: number
+  kick_return_tds: number
+
+  // PUNT RETURNS (WO-GAME-DETAILS-UI-001)
+  punt_return_attempts: number
+  punt_return_yards_total: number
+  punt_return_avg: number | null
+  punt_return_long: number
+  punt_return_tds: number
 
   // FANTASY
   fantasy_points_standard: number | null
@@ -667,6 +690,81 @@ export interface LiveGameState {
   yardsToGo: number | null
   yardLine: number | null
   yardLineSide: string | null
+}
+
+// ============================================================================
+// GAME DETAILS ENHANCEMENTS (WO-GAME-DETAILS-UI-001)
+// ============================================================================
+
+/**
+ * Game official from `game_officials` table
+ * Referee crew information for each game
+ */
+export interface GameOfficial {
+  id: number
+  game_id: string
+  season: number
+  position: string  // 'Referee', 'Umpire', 'Down Judge', 'Line Judge', etc.
+  official_name: string
+  created_at: string
+  updated_at: string
+}
+
+/**
+ * Game prediction from `game_predictions` table
+ * ESPN pregame predictions and expert picks
+ */
+export interface GamePrediction {
+  id: number
+  game_id: string
+  season: number
+  source: string  // 'espn'
+  home_win_probability: number | null
+  away_win_probability: number | null
+  predicted_winner_team_id: string | null
+  expert_pick_home_pct: number | null
+  expert_pick_away_pct: number | null
+  created_at: string
+  updated_at: string
+}
+
+/**
+ * Game recap from `game_recaps` table
+ * Post-game article text
+ */
+export interface GameRecap {
+  id: number
+  game_id: string
+  season: number
+  headline: string | null
+  summary: string | null
+  full_text: string | null
+  published_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+/**
+ * Head-to-head record from `game_head_to_head` table
+ * Historical matchup records between teams
+ */
+export interface GameHeadToHead {
+  id: number
+  game_id: string
+  season: number
+  home_team_id: string
+  away_team_id: string
+  home_all_time_wins: number
+  away_all_time_wins: number
+  all_time_ties: number
+  home_home_wins: number
+  away_away_wins: number
+  current_streak_team_id: string | null
+  current_streak_count: number
+  last_meeting_date: string | null
+  last_meeting_winner_team_id: string | null
+  created_at: string
+  updated_at: string
 }
 
 // ============================================================================

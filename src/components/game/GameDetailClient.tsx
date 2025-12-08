@@ -18,6 +18,11 @@ import { WinProbabilityChart } from '@/components/game/WinProbabilityChart'
 import { LivePlaysCard } from '@/components/game/LivePlaysCard'
 import { DrivesSummaryCard } from '@/components/game/DrivesSummaryCard'
 import { PlayByPlayCard } from '@/components/game/PlayByPlayCard'
+// Game Details Enhancements (WO-GAME-DETAILS-UI-001)
+import { OfficialsCard } from '@/components/game/OfficialsCard'
+import { CoinTossCard } from '@/components/game/CoinTossCard'
+import { GameRecapCard } from '@/components/game/GameRecapCard'
+import { HeadToHeadCard } from '@/components/game/HeadToHeadCard'
 import type { GameDetailData } from '@/lib/queries/game-queries'
 import type { LiveGameState, Team } from '@/types/game'
 
@@ -47,7 +52,12 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
     advancedStats,
     gameRosters,
     winProbability,
-    livePlays
+    livePlays,
+    // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
+    officials,
+    prediction,
+    recap,
+    headToHead
   } = data
 
   // Create teams record for components that need team lookup
@@ -158,6 +168,22 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
           {weather && <WeatherCard weather={weather} />}
         </div>
 
+        {/* Game Info Section (WO-GAME-DETAILS-UI-001) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {officials && officials.length > 0 && (
+            <OfficialsCard officials={officials} />
+          )}
+          {(game.coin_toss_winner_team_id || game.coin_toss_decision) && (
+            <CoinTossCard game={game} homeTeam={homeTeam} awayTeam={awayTeam} />
+          )}
+          {headToHead && (
+            <HeadToHeadCard headToHead={headToHead} homeTeam={homeTeam} awayTeam={awayTeam} />
+          )}
+          {recap && (
+            <GameRecapCard recap={recap} />
+          )}
+        </div>
+
         {/* Team Stats */}
         {(homeTeamStats || awayTeamStats) && (
           <TeamStatsCard
@@ -168,25 +194,23 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
           />
         )}
 
-        {/* Win Probability Chart and Live Plays Feed (for live games) */}
-        {(winProbability.length > 0 || (livePlays.length > 0 && game.status === 'in_progress')) && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {winProbability.length > 0 && (
-              <WinProbabilityChart
-                data={winProbability}
-                homeTeam={homeTeam}
-                awayTeam={awayTeam}
-              />
-            )}
-            {livePlays.length > 0 && game.status === 'in_progress' && (
-              <LivePlaysCard
-                plays={livePlays.slice(0, 20)}
-                teams={teams}
-                homeTeam={homeTeam}
-                awayTeam={awayTeam}
-              />
-            )}
-          </div>
+        {/* Win Probability Chart - Full Width */}
+        {winProbability.length > 0 && (
+          <WinProbabilityChart
+            data={winProbability}
+            homeTeam={homeTeam}
+            awayTeam={awayTeam}
+          />
+        )}
+
+        {/* Live Plays Feed (for live games) */}
+        {livePlays.length > 0 && game.status === 'in_progress' && (
+          <LivePlaysCard
+            plays={livePlays.slice(0, 20)}
+            teams={teams}
+            homeTeam={homeTeam}
+            awayTeam={awayTeam}
+          />
         )}
 
         {/* Play-by-Play from nflverse data (completed games) */}
