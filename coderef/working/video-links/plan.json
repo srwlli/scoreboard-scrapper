@@ -1,0 +1,455 @@
+{
+  "META_DOCUMENTATION": {
+    "feature_name": "video-links",
+    "schema_version": "1.0.0",
+    "version": "1.0.0",
+    "status": "complete",
+    "generated_by": "AI Assistant",
+    "generated_at": "2025-12-11T00:00:00.000Z",
+    "has_context": false,
+    "has_analysis": false
+  },
+  "UNIVERSAL_PLANNING_STRUCTURE": {
+    "0_preparation": {
+      "foundation_docs": {
+        "readme": "README.md",
+        "architecture": "docs/ARCHITECTURE.md",
+        "claude_md": "CLAUDE.md"
+      },
+      "key_references": {
+        "game_types": "src/types/game.ts",
+        "game_queries": "src/lib/queries/game-queries.ts",
+        "game_detail_client": "src/components/game/GameDetailClient.tsx",
+        "supabase_client": "src/lib/supabase.ts"
+      },
+      "external_apis": {
+        "youtube_data_api_v3": {
+          "documentation": "https://developers.google.com/youtube/v3/docs",
+          "search_endpoint": "https://developers.google.com/youtube/v3/docs/search/list",
+          "nfl_channel_id": "UCDVYQ4Zhbm3S2dlz7P1GBDg",
+          "quota_limit": "10,000 units/day (free tier)",
+          "search_cost": "100 units per search.list call"
+        }
+      },
+      "research_findings": {
+        "video_title_pattern": "{TeamNickname} vs. {TeamNickname} highlights | Week {N}",
+        "title_examples": [
+          "Texans vs. Chiefs highlights | Week 14",
+          "Bears vs. Packers highlights | Week 14",
+          "Rams vs. Cardinals highlights | Week 14"
+        ],
+        "team_name_format": "Nickname only (Texans, not Houston Texans)",
+        "search_query_template": "{AwayNickname} vs. {HomeNickname} highlights Week {N}"
+      }
+    },
+    "1_executive_summary": {
+      "feature_description": "Add YouTube video links (game highlights) to the game details page. Each NFL game has an official highlight video on the NFL YouTube channel following a consistent naming pattern. This feature will scrape video metadata via YouTube Data API v3 and display embedded videos on the game detail page.",
+      "primary_goal": "Enable users to watch official NFL game highlights directly from the game details page",
+      "scope": {
+        "in_scope": [
+          "YouTube Data API v3 integration for video search",
+          "Database table for storing video metadata (game_videos)",
+          "VideoCard component for displaying video embeds",
+          "Team nickname mapping for search queries",
+          "API route for fetching/caching video data",
+          "Scraper script for batch processing completed games"
+        ],
+        "out_of_scope": [
+          "Player-specific highlight videos",
+          "Condensed games or full game replays",
+          "Non-NFL YouTube channels",
+          "Real-time video scraping during live games"
+        ]
+      },
+      "success_metrics": [
+        "Video found for 95%+ of completed games",
+        "Video loads within 2 seconds on game detail page",
+        "API quota usage under 50% of daily limit"
+      ]
+    },
+    "2_risk_assessment": {
+      "complexity_score": 5,
+      "complexity_reasoning": "Medium complexity - requires external API integration, new database table, and UI component. Pattern matching for video titles is straightforward due to NFL's consistent naming.",
+      "risks": [
+        {
+          "risk": "YouTube API quota exhaustion",
+          "severity": "medium",
+          "mitigation": "Cache video data aggressively, scrape completed games once, implement rate limiting"
+        },
+        {
+          "risk": "Video title pattern changes",
+          "severity": "low",
+          "mitigation": "Use flexible regex matching, log failed searches for review"
+        },
+        {
+          "risk": "API key exposure",
+          "severity": "high",
+          "mitigation": "Store API key in environment variables, use server-side API route only"
+        },
+        {
+          "risk": "Video not found for some games",
+          "severity": "low",
+          "mitigation": "Graceful fallback UI, manual override capability"
+        }
+      ],
+      "dependencies": [
+        "Google Cloud Console account for YouTube API key",
+        "Supabase database access for new table"
+      ]
+    },
+    "3_current_state_analysis": {
+      "existing_patterns": {
+        "data_fetching": "Supabase queries via src/lib/queries/*.ts files",
+        "type_definitions": "Centralized in src/types/game.ts",
+        "component_structure": "Card-based layout in src/components/game/",
+        "api_routes": "Next.js App Router at src/app/api/"
+      },
+      "files_to_modify": [
+        {
+          "path": "src/types/game.ts",
+          "changes": "Add GameVideo interface and update GameDetailData"
+        },
+        {
+          "path": "src/lib/queries/game-queries.ts",
+          "changes": "Add getGameVideos query and include in getGameDetails"
+        },
+        {
+          "path": "src/components/game/GameDetailClient.tsx",
+          "changes": "Add VideoCard to layout"
+        }
+      ],
+      "files_to_create": [
+        {
+          "path": "src/lib/youtube.ts",
+          "purpose": "YouTube API client with search and team nickname mapping"
+        },
+        {
+          "path": "src/components/game/VideoCard.tsx",
+          "purpose": "Video embed component with thumbnail fallback"
+        },
+        {
+          "path": "src/app/api/videos/[gameId]/route.ts",
+          "purpose": "API route for fetching video data with caching"
+        },
+        {
+          "path": "scripts/scrape-videos.ts",
+          "purpose": "Batch scraper for populating video data"
+        },
+        {
+          "path": "supabase/migrations/add_game_videos.sql",
+          "purpose": "Database migration for game_videos table"
+        }
+      ],
+      "database_changes": {
+        "new_table": "game_videos",
+        "columns": [
+          "id (uuid, primary key)",
+          "game_id (text, foreign key to games)",
+          "video_type (text: highlights, condensed_game, full_game)",
+          "youtube_id (text, unique)",
+          "title (text)",
+          "thumbnail_url (text)",
+          "duration (text, ISO 8601 duration)",
+          "channel_title (text)",
+          "published_at (timestamp)",
+          "scraped_at (timestamp)",
+          "created_at (timestamp)"
+        ]
+      }
+    },
+    "4_key_features": {
+      "features": [
+        {
+          "id": "F1",
+          "name": "YouTube API Integration",
+          "description": "Server-side YouTube Data API v3 client for searching NFL channel videos",
+          "requirements": [
+            "Search by game matchup and week number",
+            "Team nickname mapping (Houston Texans → Texans)",
+            "Error handling and rate limiting",
+            "API key security via environment variables"
+          ]
+        },
+        {
+          "id": "F2",
+          "name": "Video Database Storage",
+          "description": "Supabase table for caching video metadata",
+          "requirements": [
+            "Store YouTube video ID, title, thumbnail, duration",
+            "Link to game_id for relationship",
+            "Track scrape timestamp for cache invalidation",
+            "Support multiple video types per game"
+          ]
+        },
+        {
+          "id": "F3",
+          "name": "Video Display Component",
+          "description": "VideoCard component for game detail page",
+          "requirements": [
+            "YouTube embed with lazy loading",
+            "Thumbnail preview before play",
+            "Responsive design matching existing cards",
+            "Graceful fallback when no video available"
+          ]
+        },
+        {
+          "id": "F4",
+          "name": "Batch Video Scraper",
+          "description": "Script for bulk processing completed games",
+          "requirements": [
+            "Process games by season/week range",
+            "Respect API quota limits",
+            "Skip games with existing videos",
+            "Log success/failure for monitoring"
+          ]
+        }
+      ]
+    },
+    "5_task_id_system": {
+      "workorder": {
+        "id": "WO-VIDEO-LINKS-001",
+        "name": "Video Links Feature",
+        "feature_dir": "coderef/working/video-links"
+      },
+      "tasks": [
+        {
+          "id": "SETUP-001",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Create game_videos database migration",
+          "feature": "F2",
+          "estimated_loc": 30,
+          "files": ["supabase/migrations/add_game_videos.sql"]
+        },
+        {
+          "id": "SETUP-002",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Add GameVideo interface to types",
+          "feature": "F2",
+          "estimated_loc": 25,
+          "files": ["src/types/game.ts"]
+        },
+        {
+          "id": "SETUP-003",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Add YOUTUBE_API_KEY to environment variables",
+          "feature": "F1",
+          "estimated_loc": 5,
+          "files": [".env.local.example"]
+        },
+        {
+          "id": "API-001",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Create YouTube API client with team nickname mapping",
+          "feature": "F1",
+          "estimated_loc": 120,
+          "files": ["src/lib/youtube.ts"]
+        },
+        {
+          "id": "API-002",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Create video queries for Supabase",
+          "feature": "F2",
+          "estimated_loc": 50,
+          "files": ["src/lib/queries/video-queries.ts"]
+        },
+        {
+          "id": "API-003",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Create API route for fetching game videos",
+          "feature": "F1",
+          "estimated_loc": 60,
+          "files": ["src/app/api/videos/[gameId]/route.ts"]
+        },
+        {
+          "id": "UI-001",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Create VideoCard component with YouTube embed",
+          "feature": "F3",
+          "estimated_loc": 100,
+          "files": ["src/components/game/VideoCard.tsx"]
+        },
+        {
+          "id": "UI-002",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Integrate VideoCard into GameDetailClient",
+          "feature": "F3",
+          "estimated_loc": 30,
+          "files": ["src/components/game/GameDetailClient.tsx", "src/lib/queries/game-queries.ts"]
+        },
+        {
+          "id": "SCRAPER-001",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Create batch video scraper script",
+          "feature": "F4",
+          "estimated_loc": 150,
+          "files": ["scripts/scrape-videos.ts"]
+        },
+        {
+          "id": "TEST-001",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Test YouTube API integration manually",
+          "feature": "F1",
+          "estimated_loc": 0,
+          "files": []
+        },
+        {
+          "id": "TEST-002",
+          "workorder_id": "WO-VIDEO-LINKS-001",
+          "description": "Verify VideoCard renders correctly",
+          "feature": "F3",
+          "estimated_loc": 0,
+          "files": []
+        }
+      ]
+    },
+    "6_implementation_phases": {
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Database & Types Setup",
+          "description": "Create database schema and TypeScript interfaces for video data",
+          "tasks": ["SETUP-001", "SETUP-002", "SETUP-003"],
+          "deliverables": [
+            "game_videos table created in Supabase",
+            "GameVideo interface added to types",
+            "Environment variable documented"
+          ]
+        },
+        {
+          "phase": 2,
+          "name": "YouTube API Integration",
+          "description": "Build YouTube API client and server-side data fetching",
+          "tasks": ["API-001", "API-002", "API-003"],
+          "deliverables": [
+            "YouTube client with search functionality",
+            "Supabase queries for video CRUD",
+            "API route returning video data"
+          ]
+        },
+        {
+          "phase": 3,
+          "name": "UI Implementation",
+          "description": "Create VideoCard component and integrate into game detail page",
+          "tasks": ["UI-001", "UI-002"],
+          "deliverables": [
+            "VideoCard component with embed and thumbnail",
+            "Video section visible on game detail page"
+          ]
+        },
+        {
+          "phase": 4,
+          "name": "Batch Scraper & Testing",
+          "description": "Build scraper for bulk processing and verify end-to-end flow",
+          "tasks": ["SCRAPER-001", "TEST-001", "TEST-002"],
+          "deliverables": [
+            "Working scraper script",
+            "Videos populated for test games",
+            "End-to-end verification complete"
+          ]
+        }
+      ]
+    },
+    "7_testing_strategy": {
+      "manual_testing": [
+        {
+          "scenario": "YouTube API search returns correct video",
+          "steps": [
+            "Call searchGameHighlight with known game (Texans vs Chiefs Week 14)",
+            "Verify returned video matches expected title pattern",
+            "Confirm video ID is valid YouTube ID"
+          ]
+        },
+        {
+          "scenario": "VideoCard displays embedded video",
+          "steps": [
+            "Navigate to game detail page with video data",
+            "Verify thumbnail displays before interaction",
+            "Click play and confirm video loads",
+            "Check responsive behavior on mobile"
+          ]
+        },
+        {
+          "scenario": "Graceful fallback when no video",
+          "steps": [
+            "Navigate to game without video data",
+            "Verify no error shown",
+            "Confirm page renders normally without video section"
+          ]
+        }
+      ],
+      "integration_tests": [
+        {
+          "test": "API route returns cached video",
+          "coverage": "GET /api/videos/[gameId] returns video from database"
+        },
+        {
+          "test": "API route fetches from YouTube when not cached",
+          "coverage": "GET /api/videos/[gameId] calls YouTube API and caches result"
+        }
+      ]
+    },
+    "8_success_criteria": {
+      "acceptance_criteria": [
+        {
+          "id": "AC-001",
+          "description": "Video highlights display on completed game detail pages",
+          "verification": "Navigate to any completed game and see video section"
+        },
+        {
+          "id": "AC-002",
+          "description": "YouTube embed plays when clicked",
+          "verification": "Click video thumbnail and verify playback starts"
+        },
+        {
+          "id": "AC-003",
+          "description": "No video section shown for games without video data",
+          "verification": "Navigate to game without video, confirm clean UI"
+        },
+        {
+          "id": "AC-004",
+          "description": "Batch scraper populates video data for historical games",
+          "verification": "Run scraper on 2024 season games, verify 95%+ hit rate"
+        },
+        {
+          "id": "AC-005",
+          "description": "API quota usage stays under 50% daily limit",
+          "verification": "Check Google Cloud Console quota dashboard"
+        }
+      ]
+    },
+    "9_implementation_checklist": {
+      "phase_1_checklist": [
+        "[ ] Create supabase/migrations/add_game_videos.sql",
+        "[ ] Run migration to create game_videos table",
+        "[ ] Add GameVideo interface to src/types/game.ts",
+        "[ ] Update GameDetailData to include videos array",
+        "[ ] Document YOUTUBE_API_KEY in .env.local.example"
+      ],
+      "phase_2_checklist": [
+        "[ ] Create src/lib/youtube.ts with YouTube client",
+        "[ ] Implement TEAM_NICKNAMES mapping object",
+        "[ ] Implement searchGameHighlight function",
+        "[ ] Create src/lib/queries/video-queries.ts",
+        "[ ] Implement getGameVideos, insertGameVideo functions",
+        "[ ] Create src/app/api/videos/[gameId]/route.ts",
+        "[ ] Implement GET handler with cache-first strategy"
+      ],
+      "phase_3_checklist": [
+        "[ ] Create src/components/game/VideoCard.tsx",
+        "[ ] Implement YouTube embed with thumbnail preview",
+        "[ ] Add loading and error states",
+        "[ ] Import VideoCard in GameDetailClient.tsx",
+        "[ ] Add video query to getGameDetails",
+        "[ ] Position VideoCard after TeamStatsCard"
+      ],
+      "phase_4_checklist": [
+        "[ ] Create scripts/scrape-videos.ts",
+        "[ ] Implement batch processing with rate limiting",
+        "[ ] Add CLI args for season/week filtering",
+        "[ ] Run scraper on sample games",
+        "[ ] Verify video displays on game detail page",
+        "[ ] Check API quota usage"
+      ]
+    }
+  }
+}
