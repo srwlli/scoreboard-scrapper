@@ -23,7 +23,9 @@ const navItems = [
 ]
 
 const adminItems = [
-  { href: '/admin', label: 'Admin' },
+  { href: '/admin', label: 'Admin Dashboard' },
+  { href: '/admin/scrapers', label: 'Scrapers Status' },
+  { href: '/admin/tools', label: 'Dev Tools' },
   { href: '/data-maps', label: 'Data Maps' },
 ]
 
@@ -69,19 +71,23 @@ export function SiteHeader() {
               <span className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 System
               </span>
-              {adminItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent ${
-                    pathname === item.href
-                      ? 'bg-accent text-accent-foreground'
-                      : 'text-muted-foreground'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {adminItems.map((item) => {
+                const isActive = pathname === item.href ||
+                  (item.href !== '/admin' && pathname?.startsWith(item.href))
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent ${
+                      isActive
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
             </nav>
 
             <div className="mt-auto pt-4 border-t">

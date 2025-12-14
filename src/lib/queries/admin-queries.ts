@@ -236,3 +236,69 @@ export async function getAdminDashboardData() {
     last_refresh: new Date().toISOString(),
   }
 }
+
+/**
+ * Get recent games for scrapers status page
+ */
+export async function getRecentGames(limit: number = 16) {
+  const supabase = await createClient()
+
+  const { data: games } = await supabase
+    .from('games')
+    .select(`
+      game_id,
+      status,
+      home_score,
+      away_score,
+      game_date,
+      week,
+      season,
+      home_team:teams!home_team_id(team_id, team_abbr),
+      away_team:teams!away_team_id(team_id, team_abbr)
+    `)
+    .order('game_date', { ascending: false })
+    .limit(limit)
+
+  // Transform the data to match expected types (Supabase returns single objects, not arrays)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (games || []).map((game: any) => ({
+    game_id: game.game_id,
+    status: game.status,
+    home_score: game.home_score,
+    away_score: game.away_score,
+    game_date: game.game_date,
+    week: game.week,
+    season: game.season,
+    home_team: game.home_team,
+    away_team: game.away_team,
+  }))
+}
+
+/**
+ * Get scrapers page data
+ */
+export async function getScrapersData() {
+  const [recentGames, freshness] = await Promise.all([
+    getRecentGames(16),
+    getTableFreshness(),
+  ])
+
+  // Calculate status counts
+  const statusCounts = recentGames.reduce(
+    (acc, game) => {
+      const status = game.status?.toLowerCase() || 'unknown'
+      if (status === 'final') acc.final++
+      else if (status === 'in_progress' || status === 'in progress') acc.inProgress++
+      else if (status === 'scheduled') acc.scheduled++
+      return acc
+    },
+    { final: 0, inProgress: 0, scheduled: 0 }
+  )
+
+  return {
+    recentGames,
+    freshness,
+    statusCounts,
+    last_refresh: new Date().toISOString(),
+  }
+}
