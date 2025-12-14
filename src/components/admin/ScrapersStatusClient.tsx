@@ -34,6 +34,7 @@ const SCRAPER_SCHEDULE = [
   { name: 'Roster Updates', schedule: 'Daily @ 5:00 PM ET' },
   { name: 'Standings Scraper', schedule: 'Daily @ 7:00 AM ET' },
   { name: 'Betting Odds', schedule: 'Daily @ 10:00 AM ET' },
+  { name: 'YouTube Videos', schedule: 'Daily @ 4:00 AM ET (90 games max)' },
   { name: 'Advanced Analytics', schedule: 'Tuesdays @ 6:00 AM ET' },
   { name: 'Snap Counts', schedule: 'Tuesdays @ 7:00 AM ET' },
   { name: 'Player Stats (nflverse)', schedule: 'Tuesdays @ 8:00 AM ET' },
@@ -61,7 +62,7 @@ const SCRAPER_COMMANDS = {
     { name: 'NGS Rushing', command: 'npm run scrape:ngs-rushing' },
   ],
   other: [
-    { name: 'Video Highlights (YouTube)', command: 'npx tsx scripts/scrape-videos.ts --season 2025' },
+    { name: 'Video Highlights (YouTube)', command: 'npx tsx scripts/scrape-videos.ts --season 2025 --limit 90' },
     { name: 'Betting Odds', command: 'npm run scrape:betting' },
     { name: 'Weekly Aggregation', command: 'npm run aggregate:weekly' },
   ],

@@ -37,15 +37,17 @@ export async function getTableFreshness(): Promise<TableFreshness[]> {
   const results: TableFreshness[] = []
 
   for (const table of MONITORED_TABLES) {
+    const tsColumn = table.tsColumn || 'updated_at'
+
     try {
-      // Get most recent updated_at and count
+      // Get most recent timestamp and count
       const { data, count } = await supabase
         .from(table.name)
-        .select('updated_at', { count: 'exact', head: false })
-        .order('updated_at', { ascending: false })
+        .select(tsColumn, { count: 'exact', head: false })
+        .order(tsColumn, { ascending: false })
         .limit(1)
 
-      const lastUpdated = data?.[0]?.updated_at || null
+      const lastUpdated = data?.[0] ? (data[0] as unknown as Record<string, string>)[tsColumn] : null
 
       results.push({
         table_name: table.name,
@@ -55,7 +57,7 @@ export async function getTableFreshness(): Promise<TableFreshness[]> {
         row_count: count || 0,
       })
     } catch {
-      // Table might not have updated_at column, try without it
+      // Table might not have the timestamp column, try without it
       try {
         const { count } = await supabase
           .from(table.name)
@@ -160,42 +162,162 @@ export async function getCoverageMap(): Promise<CoverageData> {
 }
 
 /**
+ * Build metadata description for activity entries
+ * Uses actual columns available in each table
+ */
+function buildMetadataDescription(
+  tableName: string,
+  count: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  rows: any[]
+): string {
+  switch (tableName) {
+    case 'game_videos': {
+      // game_videos has video_type but not week
+      const types = new Map<string, number>()
+      rows.forEach((r) => {
+        if (r.video_type) types.set(r.video_type, (types.get(r.video_type) || 0) + 1)
+      })
+      if (types.size > 0) {
+        const typeStr = Array.from(types.entries())
+          .map(([t, c]) => `${c} ${t}`)
+          .join(', ')
+        return typeStr
+      }
+      return `${count} videos`
+    }
+    case 'games': {
+      // games has week column
+      const weeks = new Set<number>()
+      rows.forEach((r) => { if (r.week) weeks.add(r.week) })
+      const weekArr = Array.from(weeks).sort((a, b) => a - b)
+      const weekStr = weekArr.length > 1
+        ? `Weeks ${weekArr[0]}-${weekArr[weekArr.length - 1]}`
+        : weekArr.length === 1 ? `Week ${weekArr[0]}` : ''
+      return weekStr ? `${count} games (${weekStr})` : `${count} games`
+    }
+    case 'live_plays': {
+      // live_plays has season but not week
+      const seasons = new Set<number>()
+      rows.forEach((r) => { if (r.season) seasons.add(r.season) })
+      const seasonStr = seasons.size > 0 ? Array.from(seasons).join(', ') : ''
+      return seasonStr ? `${count} plays (${seasonStr})` : `${count} plays`
+    }
+    case 'live_drives': {
+      // live_drives has season but not week
+      const seasons = new Set<number>()
+      rows.forEach((r) => { if (r.season) seasons.add(r.season) })
+      const seasonStr = seasons.size > 0 ? Array.from(seasons).join(', ') : ''
+      return seasonStr ? `${count} drives (${seasonStr})` : `${count} drives`
+    }
+    case 'win_probability': {
+      // win_probability has season but not week
+      const seasons = new Set<number>()
+      rows.forEach((r) => { if (r.season) seasons.add(r.season) })
+      const seasonStr = seasons.size > 0 ? Array.from(seasons).join(', ') : ''
+      return seasonStr ? `${count.toLocaleString()} entries (${seasonStr})` : `${count.toLocaleString()} entries`
+    }
+    case 'player_game_stats': {
+      // player_game_stats has season but not week
+      const seasons = new Set<number>()
+      rows.forEach((r) => { if (r.season) seasons.add(r.season) })
+      const seasonStr = seasons.size > 0 ? Array.from(seasons).join(', ') : ''
+      return seasonStr ? `${count} player stats (${seasonStr})` : `${count} player stats`
+    }
+    case 'team_game_stats': {
+      // team_game_stats has season but not week
+      const seasons = new Set<number>()
+      rows.forEach((r) => { if (r.season) seasons.add(r.season) })
+      const seasonStr = seasons.size > 0 ? Array.from(seasons).join(', ') : ''
+      return seasonStr ? `${count} team stats (${seasonStr})` : `${count} team stats`
+    }
+    case 'player_injuries': {
+      // player_injuries has injury_type, not team_id
+      const types = new Map<string, number>()
+      rows.forEach((r) => {
+        if (r.injury_type) types.set(r.injury_type, (types.get(r.injury_type) || 0) + 1)
+      })
+      if (types.size > 0) {
+        const breakdown = Array.from(types.entries())
+          .slice(0, 3)
+          .map(([t, c]) => `${c} ${t}`)
+          .join(', ')
+        return `${count} injuries (${breakdown})`
+      }
+      return `${count} injuries`
+    }
+    case 'roster_transactions': {
+      const types = new Map<string, number>()
+      rows.forEach((r) => {
+        if (r.transaction_type) types.set(r.transaction_type, (types.get(r.transaction_type) || 0) + 1)
+      })
+      if (types.size > 0) {
+        const breakdown = Array.from(types.entries())
+          .slice(0, 3)  // Limit to 3 types
+          .map(([t, c]) => `${c} ${t}`)
+          .join(', ')
+        return `${count} transactions (${breakdown})`
+      }
+      return `${count} transactions`
+    }
+    default:
+      return `${count} row${count > 1 ? 's' : ''} updated`
+  }
+}
+
+/**
  * Get recent activity based on updated_at timestamps across tables
  * Since we don't have a dedicated activity log, we infer from recent updates
+ * Enhanced with metadata aggregation for contextual descriptions
  */
 export async function getRecentActivity(limit: number = 20): Promise<ActivityEntry[]> {
   const supabase = await createClient()
   const activities: ActivityEntry[] = []
 
-  // Check tables with updated_at for recent changes
+  // Check tables with timestamp columns for recent changes
+  // Each table specifies which timestamp column and metadata columns to use
+  // Note: Using actual columns that exist in each table
   const tablesToCheck = [
-    { name: 'games', display: 'Games' },
-    { name: 'live_plays', display: 'Live Plays' },
-    { name: 'live_drives', display: 'Live Drives' },
-    { name: 'win_probability', display: 'Win Probability' },
-    { name: 'player_game_stats', display: 'Player Stats' },
-    { name: 'team_game_stats', display: 'Team Stats' },
+    { name: 'games', display: 'Games', tsColumn: 'updated_at', metaCols: 'week,season' },
+    { name: 'live_plays', display: 'Live Plays', tsColumn: 'updated_at', metaCols: 'season' },
+    { name: 'live_drives', display: 'Live Drives', tsColumn: 'updated_at', metaCols: 'season' },
+    { name: 'win_probability', display: 'Win Probability', tsColumn: 'created_at', metaCols: 'season' },
+    { name: 'player_game_stats', display: 'Player Stats', tsColumn: 'updated_at', metaCols: 'season' },
+    { name: 'team_game_stats', display: 'Team Stats', tsColumn: 'updated_at', metaCols: 'season' },
+    { name: 'game_videos', display: 'YouTube Videos', tsColumn: 'scraped_at', metaCols: 'video_type' },
+    { name: 'player_injuries', display: 'Injuries', tsColumn: 'updated_at', metaCols: 'injury_type' },
+    { name: 'roster_transactions', display: 'Transactions', tsColumn: 'created_at', metaCols: 'transaction_type' },
   ]
 
   for (const table of tablesToCheck) {
     try {
+      // Fetch more rows to get better metadata context
+      const selectCols = [table.tsColumn, ...table.metaCols.split(',')].join(',')
       const { data } = await supabase
         .from(table.name)
-        .select('updated_at')
-        .order('updated_at', { ascending: false })
-        .limit(5)
+        .select(selectCols)
+        .order(table.tsColumn, { ascending: false })
+        .limit(100)
 
       if (data && data.length > 0) {
         // Group by timestamp (rounded to minute) to show batch updates
-        const grouped = new Map<string, number>()
+        const grouped = new Map<string, { count: number; rows: typeof data }>()
         data.forEach((row) => {
-          if (row.updated_at) {
-            const minute = row.updated_at.substring(0, 16) // YYYY-MM-DDTHH:MM
-            grouped.set(minute, (grouped.get(minute) || 0) + 1)
+          const ts = (row as unknown as Record<string, string>)[table.tsColumn]
+          if (ts) {
+            const minute = ts.substring(0, 16) // YYYY-MM-DDTHH:MM
+            const existing = grouped.get(minute)
+            if (existing) {
+              existing.count++
+              existing.rows.push(row)
+            } else {
+              grouped.set(minute, { count: 1, rows: [row] })
+            }
           }
         })
 
-        grouped.forEach((count, timestamp) => {
+        grouped.forEach(({ count, rows }, timestamp) => {
+          const metadata = buildMetadataDescription(table.name, count, rows)
           activities.push({
             id: `${table.name}-${timestamp}`,
             table_name: table.display,
@@ -203,11 +325,12 @@ export async function getRecentActivity(limit: number = 20): Promise<ActivityEnt
             timestamp: timestamp + ':00Z',
             row_count: count,
             description: `${count} row${count > 1 ? 's' : ''} updated`,
+            metadata,
           })
         })
       }
     } catch {
-      // Skip tables without updated_at
+      // Skip tables that error (missing column, etc)
     }
   }
 

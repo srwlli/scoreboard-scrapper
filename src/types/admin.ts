@@ -38,6 +38,7 @@ export interface ActivityEntry {
   timestamp: string
   row_count: number
   description?: string
+  metadata?: string  // Enhanced contextual description (e.g., "90 highlights (Weeks 5-11)")
 }
 
 export interface AdminDashboardData {
@@ -75,6 +76,7 @@ export const MONITORED_TABLES: Array<{
   name: string
   display: string
   category: 'live' | 'daily' | 'weekly'
+  tsColumn?: string  // timestamp column name, defaults to 'updated_at'
 }> = [
   // Live/Real-time tables
   { name: 'games', display: 'Games', category: 'live' },
@@ -85,7 +87,7 @@ export const MONITORED_TABLES: Array<{
   // Daily tables
   { name: 'team_season_stats', display: 'Team Season Stats', category: 'daily' },
   { name: 'player_injuries', display: 'Player Injuries', category: 'daily' },
-  { name: 'roster_transactions', display: 'Roster Transactions', category: 'daily' },
+  { name: 'roster_transactions', display: 'Roster Transactions', category: 'daily', tsColumn: 'created_at' },
 
   // Weekly/On-demand tables
   { name: 'player_game_stats', display: 'Player Game Stats', category: 'weekly' },
@@ -97,4 +99,5 @@ export const MONITORED_TABLES: Array<{
   { name: 'ngs_rushing', display: 'NGS Rushing', category: 'weekly' },
   { name: 'ngs_receiving', display: 'NGS Receiving', category: 'weekly' },
   { name: 'game_weather', display: 'Game Weather', category: 'weekly' },
+  { name: 'game_videos', display: 'YouTube Videos', category: 'weekly', tsColumn: 'scraped_at' },
 ]

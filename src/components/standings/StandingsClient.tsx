@@ -64,79 +64,27 @@ export function StandingsClient({ standings, seasons, currentSeason }: Standings
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="division" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-3">
-          <TabsTrigger value="division">Division</TabsTrigger>
-          <TabsTrigger value="conference">Conference</TabsTrigger>
-          <TabsTrigger value="playoffs">Playoffs</TabsTrigger>
+      {/* Primary Conference Tabs */}
+      <Tabs defaultValue="afc" className="w-full">
+        <TabsList className="grid w-full max-w-xs grid-cols-2">
+          <TabsTrigger value="afc">AFC</TabsTrigger>
+          <TabsTrigger value="nfc">NFC</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="division" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* AFC */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-bold text-center">AFC</h2>
-              {standings.afc.map((div) => (
-                <DivisionTable
-                  key={`${div.conference}-${div.division}`}
-                  division={div}
-                />
-              ))}
-            </div>
-
-            {/* NFC */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-bold text-center">NFC</h2>
-              {standings.nfc.map((div) => (
-                <DivisionTable
-                  key={`${div.conference}-${div.division}`}
-                  division={div}
-                />
-              ))}
-            </div>
-          </div>
+        {/* AFC Content */}
+        <TabsContent value="afc" className="mt-4">
+          <ConferenceStandings
+            divisions={standings.afc}
+            conference="AFC"
+          />
         </TabsContent>
 
-        <TabsContent value="conference" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* AFC Conference */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-bold text-center">AFC</h2>
-              <ConferenceTable
-                teams={standings.afc.flatMap(d => d.teams).sort((a, b) => a.conference_rank - b.conference_rank)}
-              />
-            </div>
-
-            {/* NFC Conference */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-bold text-center">NFC</h2>
-              <ConferenceTable
-                teams={standings.nfc.flatMap(d => d.teams).sort((a, b) => a.conference_rank - b.conference_rank)}
-              />
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="playoffs" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* AFC Playoffs */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-bold text-center">AFC Playoff Picture</h2>
-              <PlayoffBracket
-                teams={standings.afc.flatMap(d => d.teams)}
-                conference="AFC"
-              />
-            </div>
-
-            {/* NFC Playoffs */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-bold text-center">NFC Playoff Picture</h2>
-              <PlayoffBracket
-                teams={standings.nfc.flatMap(d => d.teams)}
-                conference="NFC"
-              />
-            </div>
-          </div>
+        {/* NFC Content */}
+        <TabsContent value="nfc" className="mt-4">
+          <ConferenceStandings
+            divisions={standings.nfc}
+            conference="NFC"
+          />
         </TabsContent>
       </Tabs>
     </div>
@@ -145,7 +93,43 @@ export function StandingsClient({ standings, seasons, currentSeason }: Standings
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import type { TeamStanding } from '@/types/game'
+import type { TeamStanding, DivisionStandings } from '@/types/game'
+
+function ConferenceStandings({ divisions, conference }: { divisions: DivisionStandings[], conference: 'AFC' | 'NFC' }) {
+  return (
+    <Tabs defaultValue="division" className="w-full">
+      <TabsList className="grid w-full max-w-md grid-cols-3">
+        <TabsTrigger value="division">Division</TabsTrigger>
+        <TabsTrigger value="conference">Conference</TabsTrigger>
+        <TabsTrigger value="playoffs">Playoffs</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="division" className="mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {divisions.map((div) => (
+            <DivisionTable
+              key={`${div.conference}-${div.division}`}
+              division={div}
+            />
+          ))}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="conference" className="mt-6">
+        <ConferenceTable
+          teams={divisions.flatMap(d => d.teams).sort((a, b) => a.conference_rank - b.conference_rank)}
+        />
+      </TabsContent>
+
+      <TabsContent value="playoffs" className="mt-6">
+        <PlayoffBracket
+          teams={divisions.flatMap(d => d.teams)}
+          conference={conference}
+        />
+      </TabsContent>
+    </Tabs>
+  )
+}
 
 function ConferenceTable({ teams }: { teams: TeamStanding[] }) {
   return (

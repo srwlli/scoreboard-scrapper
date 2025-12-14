@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ScoreboardTab } from './ScoreboardTab'
 import { GameDetailsTab } from './GameDetailsTab'
 import { StandingsTab } from './StandingsTab'
+import { InjuriesTab } from './InjuriesTab'
+import { TransactionsTab } from './TransactionsTab'
 import {
   getTotalFields,
   getUniqueTables,
@@ -63,7 +65,7 @@ export function DataMapsClient() {
       </Card>
 
       <Tabs defaultValue="scoreboard" className="w-full">
-        <TabsList className="mb-4">
+        <TabsList className="mb-4 flex-wrap h-auto gap-1">
           <TabsTrigger value="scoreboard" className="gap-2">
             Scoreboard
             <Badge variant="secondary" className="ml-1">{fieldCounts.scoreboard}</Badge>
@@ -75,6 +77,14 @@ export function DataMapsClient() {
           <TabsTrigger value="standings" className="gap-2">
             Standings
             <Badge variant="secondary" className="ml-1">{fieldCounts.standings}</Badge>
+          </TabsTrigger>
+          <TabsTrigger value="injuries" className="gap-2">
+            Injuries
+            <Badge variant="secondary" className="ml-1">{fieldCounts.injuries}</Badge>
+          </TabsTrigger>
+          <TabsTrigger value="transactions" className="gap-2">
+            Transactions
+            <Badge variant="secondary" className="ml-1">{fieldCounts.transactions}</Badge>
           </TabsTrigger>
         </TabsList>
 
@@ -88,6 +98,14 @@ export function DataMapsClient() {
 
         <TabsContent value="standings">
           <StandingsTab />
+        </TabsContent>
+
+        <TabsContent value="injuries">
+          <InjuriesTab />
+        </TabsContent>
+
+        <TabsContent value="transactions">
+          <TransactionsTab />
         </TabsContent>
       </Tabs>
     </main>

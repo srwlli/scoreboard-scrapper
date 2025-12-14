@@ -47,8 +47,8 @@ export function OfficialsCard({ officials }: OfficialsCardProps) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {sortedOfficials.map((official) => (
-            <div key={official.id} className="flex justify-between items-center py-1.5 border-b last:border-b-0">
+          {sortedOfficials.map((official, index) => (
+            <div key={official.id ?? `${official.position}-${index}`} className="flex justify-between items-center py-1.5 border-b last:border-b-0">
               <span className="text-sm text-muted-foreground">{official.position}</span>
               <span className="text-sm font-medium">{official.official_name}</span>
             </div>

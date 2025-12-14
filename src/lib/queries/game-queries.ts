@@ -16,10 +16,12 @@ import type {
   GameRoster,
   WinProbability,
   LivePlay,
+  LiveDrive,
   GameOfficial,
   GamePrediction,
   GameRecap,
   GameHeadToHead,
+  GameVideo,
   toNflverseGameId
 } from '@/types/game'
 
@@ -42,11 +44,14 @@ export interface GameDetailData {
   gameRosters: GameRoster[]
   winProbability: WinProbability[]
   livePlays: LivePlay[]
+  liveDrives: LiveDrive[]
   // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
   officials: GameOfficial[]
   prediction: GamePrediction | null
   recap: GameRecap | null
   headToHead: GameHeadToHead | null
+  // Video Links (WO-VIDEO-LINKS-001)
+  videos: GameVideo[]
 }
 
 /**
@@ -96,11 +101,14 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
     gameRostersResult,
     winProbabilityResult,
     livePlaysResult,
+    liveDrivesResult,
     // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
     officialsResult,
     predictionResult,
     recapResult,
-    headToHeadResult
+    headToHeadResult,
+    // Video Links (WO-VIDEO-LINKS-001)
+    videosResult
   ] = await Promise.all([
     // Weather
     supabase
@@ -210,6 +218,13 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
       .order('drive_number', { ascending: false })
       .order('play_number', { ascending: false }),
 
+    // Live drives data (ESPN drive results) - avoids client-side computation
+    supabase
+      .from('live_drives')
+      .select('*')
+      .eq('game_id', gameId)
+      .order('drive_number', { ascending: false }),
+
     // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
     // Officials - uses espn-{id} format
     supabase
@@ -237,7 +252,14 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
       .from('game_head_to_head')
       .select('*')
       .eq('game_id', gameId)
-      .single()
+      .single(),
+
+    // Video Links (WO-VIDEO-LINKS-001) - uses espn-{id} format
+    supabase
+      .from('game_videos')
+      .select('*')
+      .eq('game_id', gameId)
+      .order('video_type')
   ])
 
   return {
@@ -259,11 +281,14 @@ export async function getGameDetails(gameId: string): Promise<GameDetailData | n
     gameRosters: (gameRostersResult.data || []) as GameRoster[],
     winProbability: (winProbabilityResult.data || []) as WinProbability[],
     livePlays: (livePlaysResult.data || []) as LivePlay[],
+    liveDrives: (liveDrivesResult.data || []) as LiveDrive[],
     // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
     officials: (officialsResult.data || []) as GameOfficial[],
     prediction: predictionResult.data as GamePrediction | null,
     recap: recapResult.data as GameRecap | null,
-    headToHead: headToHeadResult.data as GameHeadToHead | null
+    headToHead: headToHeadResult.data as GameHeadToHead | null,
+    // Video Links (WO-VIDEO-LINKS-001)
+    videos: (videosResult.data || []) as GameVideo[]
   }
 }
 

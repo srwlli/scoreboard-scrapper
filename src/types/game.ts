@@ -440,6 +440,47 @@ export interface LivePlay {
 }
 
 /**
+ * Drive-level data with results from ESPN API
+ * Scraped and stored to avoid client-side computation
+ */
+export interface LiveDrive {
+  id: number
+  game_id: string
+  season: number
+  drive_number: number
+
+  // Team info
+  team_id: string | null
+
+  // Drive result from ESPN
+  result: string | null          // "FG", "TD", "PUNT", "INT", "FUMBLE", "DOWNS", etc.
+  display_result: string | null  // "Field Goal", "Touchdown", "Punt", etc.
+  short_display_result: string | null
+  is_score: boolean
+
+  // Drive stats
+  yards: number
+  play_count: number
+  description: string | null     // "15 plays, 67 yards, 6:43"
+  time_elapsed: string | null
+
+  // Start position
+  start_quarter: number | null
+  start_clock: string | null
+  start_yard_line: number | null
+  start_yard_line_text: string | null
+
+  // End position
+  end_quarter: number | null
+  end_clock: string | null
+  end_yard_line: number | null
+  end_yard_line_text: string | null
+
+  created_at: string
+  updated_at: string
+}
+
+/**
  * NGS Passing stats
  */
 export interface NGSPassing {
@@ -765,6 +806,79 @@ export interface GameHeadToHead {
   last_meeting_winner_team_id: string | null
   created_at: string
   updated_at: string
+}
+
+// ============================================================================
+// ROSTER TRANSACTIONS
+// ============================================================================
+
+/**
+ * Roster transaction from `roster_transactions` table
+ * Tracks player signings, releases, trades
+ */
+export interface RosterTransaction {
+  transaction_id: number
+  player_id: string
+  team_id: string
+  transaction_type: 'signed' | 'released' | 'traded' | 'waived' | 'claimed'
+  transaction_date: string
+  details: string | null
+  created_at: string
+  updated_at: string
+  // Joined data
+  player?: Player
+  team?: Team
+}
+
+// ============================================================================
+// PLAYER INJURIES
+// ============================================================================
+
+/**
+ * Player injury from `player_injuries` table
+ * Tracks injury history and status
+ */
+export interface PlayerInjury {
+  injury_id: number
+  player_id: string
+  season: number
+  injury_type: string | null
+  injury_description: string | null
+  injury_date: string | null
+  return_date: string | null
+  games_missed: number
+  created_at: string
+  updated_at: string
+  // Joined data
+  player?: Player
+}
+
+// ============================================================================
+// VIDEO DATA (WO-VIDEO-LINKS-001)
+// ============================================================================
+
+/**
+ * Game video from `game_videos` table
+ * YouTube video metadata for game highlights
+ */
+export interface GameVideo {
+  id: string
+  game_id: string
+  video_type: 'highlights' | 'condensed_game' | 'full_game' | 'key_plays'
+  youtube_id: string
+  title: string
+  thumbnail_url: string | null
+  duration: string | null  // ISO 8601 duration (e.g., "PT10M30S")
+  channel_title: string | null
+  published_at: string | null
+  scraped_at: string
+  created_at: string
+}
+
+export interface VideoCardProps {
+  videos: GameVideo[]
+  homeTeam: Team
+  awayTeam: Team
 }
 
 // ============================================================================

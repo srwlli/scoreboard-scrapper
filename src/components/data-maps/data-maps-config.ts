@@ -603,24 +603,133 @@ export const STANDINGS_SECTIONS: SectionDefinition[] = [
 ]
 
 // =============================================================================
+// INJURIES TAB DATA
+// =============================================================================
+
+export const INJURIES_SECTIONS: SectionDefinition[] = [
+  {
+    title: 'Player Injuries',
+    table: 'player_injuries',
+    dataType: 'table',
+    scraper: 'roster-updates',
+    schedule: 'Daily',
+    source: 'ESPN API',
+    primaryKey: 'injury_id',
+    recordCount: '~500+/season',
+    displayFormat: 'Grouped by injury type with color-coded badges. Shows player name, position, description, dates, and games missed.',
+    fields: [
+      { field: 'injury_id', type: 'number', nullable: false, key: 'PK', example: '12345', description: 'Auto-increment ID' },
+      { field: 'player_id', type: 'string', nullable: false, key: 'FK', fkRef: 'players.player_id', example: 'espn-3139477', description: 'Player reference' },
+      { field: 'season', type: 'number', nullable: false, example: '2025', description: 'Season year' },
+      { field: 'injury_type', type: 'string', nullable: true, example: 'Knee', description: 'Type of injury (Knee, Ankle, Concussion, etc.)' },
+      { field: 'injury_description', type: 'string', nullable: true, example: 'ACL tear, out for season', description: 'Detailed injury description' },
+      { field: 'injury_date', type: 'date', nullable: true, example: '2025-10-15', description: 'Date injury occurred' },
+      { field: 'return_date', type: 'date', nullable: true, example: '2025-11-20', description: 'Date player returned (if applicable)' },
+      { field: 'games_missed', type: 'number', nullable: false, example: '4', description: 'Number of games missed' },
+      { field: 'created_at', type: 'date', nullable: false, example: '2025-10-15T12:00:00Z', description: 'Record creation timestamp' },
+      { field: 'updated_at', type: 'date', nullable: false, example: '2025-10-15T12:00:00Z', description: 'Record update timestamp' },
+    ],
+  },
+  {
+    title: 'Player Info (Joined)',
+    table: 'players',
+    dataType: 'table',
+    scraper: 'roster-updates',
+    schedule: 'Daily',
+    source: 'ESPN API',
+    primaryKey: 'player_id',
+    recordCount: '~2,500',
+    fields: [
+      { field: 'player_id', type: 'string', nullable: false, key: 'PK', example: 'espn-3139477', description: 'ESPN player ID' },
+      { field: 'full_name', type: 'string', nullable: false, example: 'Patrick Mahomes', description: 'Player full name' },
+      { field: 'primary_position', type: 'string', nullable: true, example: 'QB', description: 'Primary position' },
+      { field: 'current_team_id', type: 'string', nullable: true, key: 'FK', fkRef: 'teams.team_id', example: 'KC', description: 'Current team' },
+    ],
+  },
+]
+
+// =============================================================================
+// TRANSACTIONS TAB DATA
+// =============================================================================
+
+export const TRANSACTIONS_SECTIONS: SectionDefinition[] = [
+  {
+    title: 'Roster Transactions',
+    table: 'roster_transactions',
+    dataType: 'table',
+    scraper: 'roster-updates',
+    schedule: 'Daily',
+    source: 'ESPN API',
+    primaryKey: 'transaction_id',
+    recordCount: '~1,000+/season',
+    displayFormat: 'Grouped by date, showing transaction type badges (Signed=green, Released=red, Traded=blue, Waived=orange, Claimed=purple)',
+    fields: [
+      { field: 'transaction_id', type: 'number', nullable: false, key: 'PK', example: '12345', description: 'Auto-increment ID' },
+      { field: 'player_id', type: 'string', nullable: false, key: 'FK', fkRef: 'players.player_id', example: 'espn-3139477', description: 'Player reference' },
+      { field: 'team_id', type: 'string', nullable: false, key: 'FK', fkRef: 'teams.team_id', example: 'KC', description: 'Team reference' },
+      { field: 'transaction_type', type: 'enum', nullable: false, example: 'signed', description: 'signed | released | traded | waived | claimed' },
+      { field: 'transaction_date', type: 'date', nullable: false, example: '2025-10-15', description: 'Date of transaction' },
+      { field: 'details', type: 'string', nullable: true, example: 'Signed to practice squad', description: 'Transaction details' },
+      { field: 'created_at', type: 'date', nullable: false, example: '2025-10-15T12:00:00Z', description: 'Record creation timestamp' },
+      { field: 'updated_at', type: 'date', nullable: false, example: '2025-10-15T12:00:00Z', description: 'Record update timestamp' },
+    ],
+  },
+  {
+    title: 'Player Info (Joined)',
+    table: 'players',
+    dataType: 'table',
+    scraper: 'roster-updates',
+    schedule: 'Daily',
+    source: 'ESPN API',
+    primaryKey: 'player_id',
+    recordCount: '~2,500',
+    fields: [
+      { field: 'player_id', type: 'string', nullable: false, key: 'PK', example: 'espn-3139477', description: 'ESPN player ID' },
+      { field: 'full_name', type: 'string', nullable: false, example: 'Patrick Mahomes', description: 'Player full name' },
+      { field: 'primary_position', type: 'string', nullable: true, example: 'QB', description: 'Primary position' },
+    ],
+  },
+  {
+    title: 'Team Info (Joined)',
+    table: 'teams',
+    dataType: 'table',
+    scraper: 'seed',
+    schedule: 'One-time seed',
+    source: 'ESPN API',
+    primaryKey: 'team_id',
+    recordCount: '32 teams',
+    fields: [
+      { field: 'team_id', type: 'string', nullable: false, key: 'PK', example: 'KC', description: 'Team code' },
+      { field: 'team_name', type: 'string', nullable: false, example: 'Kansas City Chiefs', description: 'Full team name' },
+      { field: 'team_abbr', type: 'string', nullable: false, example: 'KC', description: 'Team abbreviation' },
+      { field: 'logo_url', type: 'string', nullable: true, example: 'https://a.espncdn.com/...', description: 'Team logo URL' },
+    ],
+  },
+]
+
+// =============================================================================
 // SUMMARY STATS
 // =============================================================================
 
-export function getTotalFields(): { scoreboard: number; gameDetails: number; standings: number; total: number } {
+export function getTotalFields(): { scoreboard: number; gameDetails: number; standings: number; injuries: number; transactions: number; total: number } {
   const scoreboard = SCOREBOARD_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
   const gameDetails = GAME_DETAILS_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
   const standings = STANDINGS_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
+  const injuries = INJURIES_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
+  const transactions = TRANSACTIONS_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
   return {
     scoreboard,
     gameDetails,
     standings,
-    total: scoreboard + gameDetails + standings,
+    injuries,
+    transactions,
+    total: scoreboard + gameDetails + standings + injuries + transactions,
   }
 }
 
 export function getUniqueTables(): string[] {
   const tables = new Set<string>()
-  ;[...SCOREBOARD_SECTIONS, ...GAME_DETAILS_SECTIONS, ...STANDINGS_SECTIONS].forEach(s => {
+  ;[...SCOREBOARD_SECTIONS, ...GAME_DETAILS_SECTIONS, ...STANDINGS_SECTIONS, ...INJURIES_SECTIONS, ...TRANSACTIONS_SECTIONS].forEach(s => {
     if (s.table !== 'client') tables.add(s.table)
   })
   return Array.from(tables)
@@ -628,7 +737,7 @@ export function getUniqueTables(): string[] {
 
 export function getUniqueSources(): string[] {
   const sources = new Set<string>()
-  ;[...SCOREBOARD_SECTIONS, ...GAME_DETAILS_SECTIONS, ...STANDINGS_SECTIONS].forEach(s => {
+  ;[...SCOREBOARD_SECTIONS, ...GAME_DETAILS_SECTIONS, ...STANDINGS_SECTIONS, ...INJURIES_SECTIONS, ...TRANSACTIONS_SECTIONS].forEach(s => {
     sources.add(s.source)
   })
   return Array.from(sources)

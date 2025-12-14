@@ -19,6 +19,16 @@ export default function DashboardPage() {
           description="Complete data structure for each page"
           href="/data-maps"
         />
+        <DashboardCard
+          title="Teams"
+          description="Team rosters and transactions"
+          href="/teams"
+        />
+        <DashboardCard
+          title="Injuries"
+          description="Player injury reports"
+          href="/injuries"
+        />
       </div>
     </main>
   )

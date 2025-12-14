@@ -78,6 +78,17 @@ function getDriveResult(plays: PlayByPlay[]): string {
     return 'Touchdown'
   }
 
+  // Check for field goal in any play (sometimes FG is not the last play due to extra point)
+  if (plays.some(p => {
+    const pDesc = p.play_description.toLowerCase()
+    const pType = p.play_type?.toLowerCase() || ''
+    return (pType === 'field_goal' || pDesc.includes('field goal')) &&
+           !pDesc.includes('no good') && !pDesc.includes('missed') && !pDesc.includes('blocked') &&
+           pDesc.includes('good')
+  })) {
+    return 'Field Goal'
+  }
+
   // Check last actual play by play_type first (most reliable)
   if (playType === 'punt') {
     return 'Punt'
@@ -100,8 +111,13 @@ function getDriveResult(plays: PlayByPlay[]): string {
     }
   }
 
+  // Check for safety
+  if (desc.includes('safety') || plays.some(p => p.play_description.toLowerCase().includes('safety'))) {
+    return 'Safety'
+  }
+
   // Check for turnover on downs (4th down failure)
-  if (lastPlay.down === 4 && (playType === 'pass' || playType === 'run')) {
+  if (lastPlay.down === 4 && (playType === 'pass' || playType === 'run' || playType === 'qb_scramble')) {
     const neededYards = lastPlay.yards_to_go || 0
     const gainedYards = lastPlay.yards_gained || 0
     if (gainedYards < neededYards) {
@@ -109,15 +125,31 @@ function getDriveResult(plays: PlayByPlay[]): string {
     }
   }
 
-  // Quarter/half/game endings
-  if (desc.includes('end quarter') || desc.includes('end of quarter')) {
-    return 'End of Quarter'
+  // Kneel downs at end of game/half
+  if (playType === 'qb_kneel' || desc.includes('kneels') || desc.includes('kneel')) {
+    return 'Kneel'
   }
-  if (desc.includes('end of half') || desc.includes('two-minute warning')) {
+
+  // Check all plays for end markers
+  const allDescs = plays.map(p => p.play_description.toLowerCase()).join(' ')
+
+  // Quarter/half/game endings
+  if (allDescs.includes('end of game') || allDescs.includes('game over')) {
+    return 'End of Game'
+  }
+  if (allDescs.includes('end of half') || allDescs.includes('halftime')) {
     return 'End of Half'
   }
-  if (desc.includes('end of game')) {
-    return 'End of Game'
+  if (allDescs.includes('end quarter') || allDescs.includes('end of quarter')) {
+    return 'End of Quarter'
+  }
+
+  // If time expired (0 seconds remaining on last play of Q2 or Q4)
+  if (lastPlay.time_remaining_seconds === 0) {
+    if (lastPlay.quarter === 2) return 'End of Half'
+    if (lastPlay.quarter === 4) return 'End of Game'
+    if (lastPlay.quarter === 5) return 'End of Game' // OT
+    return 'End of Quarter'
   }
 
   // Kickoff (usually start of possession after score)
@@ -125,12 +157,14 @@ function getDriveResult(plays: PlayByPlay[]): string {
     return 'Kickoff'
   }
 
-  // Kneel downs at end of game/half
-  if (playType === 'qb_kneel') {
-    return 'Kneel'
+  // For completed games/drives that we couldn't categorize,
+  // check if this appears to be a scoring drive based on play patterns
+  if (plays.some(p => p.play_type?.toLowerCase() === 'extra_point' || p.play_type?.toLowerCase() === 'two_point_attempt')) {
+    return 'Touchdown'
   }
 
-  return 'In Progress'
+  // Default - this shouldn't show for completed games
+  return 'Drive Complete'
 }
 
 function getDriveResultColor(result: string): string {
@@ -139,10 +173,14 @@ function getDriveResultColor(result: string): string {
       return 'bg-green-600'
     case 'Field Goal':
       return 'bg-green-500'
+    case 'Safety':
+      return 'bg-yellow-600'
     case 'Punt':
+    case 'Kneel':
     case 'End of Quarter':
     case 'End of Half':
     case 'End of Game':
+    case 'Drive Complete':
       return 'bg-gray-500'
     case 'Interception':
     case 'Fumble':
@@ -153,7 +191,7 @@ function getDriveResultColor(result: string): string {
     case 'Kickoff':
       return 'bg-blue-500'
     default:
-      return 'bg-blue-500'
+      return 'bg-gray-500'
   }
 }
 

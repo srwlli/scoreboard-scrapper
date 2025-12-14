@@ -6,11 +6,12 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { abbreviateNamesInDescription } from '@/lib/utils'
-import type { LivePlay, Team } from '@/types/game'
+import type { LivePlay, LiveDrive, Team } from '@/types/game'
 
 interface DrivesSummaryCardProps {
   plays: LivePlay[]
   teams: Record<string, Team>
+  liveDrives?: LiveDrive[]  // Scraped drive results from ESPN (preferred)
 }
 
 interface Drive {
@@ -51,9 +52,14 @@ function getDriveResult(plays: LivePlay[]): string {
   const scoringPlay = plays.find(p => p.is_scoring_play)
   if (scoringPlay) {
     const playType = scoringPlay.play_type?.toLowerCase() || ''
-    if (playType.includes('field_goal') || scoringPlay.play_text?.toLowerCase().includes('field goal')) {
+    const playText = scoringPlay.play_text?.toLowerCase() || ''
+    if (playType.includes('field_goal') || playText.includes('field goal')) {
+      if (playText.includes('no good') || playText.includes('missed') || playText.includes('blocked')) {
+        return 'Missed FG'
+      }
       return 'Field Goal'
     }
+    if (playText.includes('safety')) return 'Safety'
     return 'Touchdown'
   }
 
@@ -72,14 +78,32 @@ function getDriveResult(plays: LivePlay[]): string {
 
   if (lastPlayType.includes('punt') || lastPlayText.includes('punts')) return 'Punt'
   if (lastPlayType.includes('field_goal') || lastPlayText.includes('field goal')) {
-    if (lastPlayText.includes('no good') || lastPlayText.includes('missed')) return 'Missed FG'
+    if (lastPlayText.includes('no good') || lastPlayText.includes('missed') || lastPlayText.includes('blocked')) return 'Missed FG'
     return 'Field Goal'
   }
   if (lastPlayText.includes('touchdown')) return 'Touchdown'
-  if (lastPlayText.includes('end of half') || lastPlayText.includes('end of game')) return 'End of Half'
-  if (lastPlayText.includes('downs')) return 'Turnover on Downs'
+  if (lastPlayText.includes('safety')) return 'Safety'
 
-  return 'In Progress'
+  // Check for kneel downs
+  if (lastPlayType.includes('kneel') || lastPlayText.includes('kneels') || lastPlayText.includes('kneel')) return 'Kneel'
+
+  // Check for turnover on downs
+  if (lastPlayText.includes('turnover on downs') || lastPlayText.includes('downs')) return 'Turnover on Downs'
+
+  // Check for end of quarter/half/game
+  if (lastPlayText.includes('end of game') || lastPlayText.includes('game over')) return 'End of Game'
+  if (lastPlayText.includes('end of half') || lastPlayText.includes('halftime')) return 'End of Half'
+  if (lastPlayText.includes('end of quarter') || lastPlayText.includes('end quarter')) return 'End of Quarter'
+
+  // Check the game clock - if 0:00 in Q2 or Q4
+  if (lastPlay.game_clock === '0:00') {
+    if (lastPlay.quarter === 2) return 'End of Half'
+    if (lastPlay.quarter === 4 || lastPlay.quarter === 5) return 'End of Game'
+    return 'End of Quarter'
+  }
+
+  // Default for completed drives we couldn't categorize
+  return 'Drive Complete'
 }
 
 function getDriveResultColor(result: string): string {
@@ -88,7 +112,14 @@ function getDriveResultColor(result: string): string {
       return 'bg-green-600'
     case 'Field Goal':
       return 'bg-green-500'
+    case 'Safety':
+      return 'bg-yellow-600'
     case 'Punt':
+    case 'Kneel':
+    case 'End of Quarter':
+    case 'End of Half':
+    case 'End of Game':
+    case 'Drive Complete':
       return 'bg-gray-500'
     case 'Interception':
     case 'Fumble':
@@ -97,14 +128,12 @@ function getDriveResultColor(result: string): string {
       return 'bg-red-500'
     case 'Missed FG':
       return 'bg-orange-500'
-    case 'End of Half':
-      return 'bg-gray-400'
     default:
-      return 'bg-blue-500'
+      return 'bg-gray-500'
   }
 }
 
-function groupPlaysByDrive(plays: LivePlay[]): Drive[] {
+function groupPlaysByDrive(plays: LivePlay[], liveDrives?: LiveDrive[]): Drive[] {
   const driveMap = new Map<number, LivePlay[]>()
 
   // Group plays by drive number
@@ -116,6 +145,14 @@ function groupPlaysByDrive(plays: LivePlay[]): Drive[] {
     driveMap.get(driveNum)!.push(play)
   })
 
+  // Create a lookup map for scraped drive results (if available)
+  const driveResultsMap = new Map<number, LiveDrive>()
+  if (liveDrives) {
+    liveDrives.forEach(drive => {
+      driveResultsMap.set(drive.drive_number, drive)
+    })
+  }
+
   // Convert to Drive objects, sorted by play_number within each drive
   const drives: Drive[] = []
   driveMap.forEach((drivePlays, driveNumber) => {
@@ -125,24 +162,31 @@ function groupPlaysByDrive(plays: LivePlay[]): Drive[] {
     const firstPlay = sortedPlays[0]
     const lastPlay = sortedPlays[sortedPlays.length - 1]
 
-    // Calculate total yards
-    const totalYards = sortedPlays.reduce((sum, p) => sum + (p.yards_gained || 0), 0)
+    // Get scraped drive data if available
+    const scrapedDrive = driveResultsMap.get(driveNumber)
+
+    // Use scraped yards/play_count if available, otherwise calculate
+    const totalYards = scrapedDrive?.yards ?? sortedPlays.reduce((sum, p) => sum + (p.yards_gained || 0), 0)
+    const playCount = scrapedDrive?.play_count ?? sortedPlays.length
+
+    // Use scraped drive result from ESPN if available, otherwise compute
+    const result = scrapedDrive?.display_result || getDriveResult(sortedPlays)
 
     drives.push({
       driveNumber,
-      teamId: firstPlay?.possession_team_id || null,
+      teamId: scrapedDrive?.team_id || firstPlay?.possession_team_id || null,
       plays: sortedPlays,
-      result: getDriveResult(sortedPlays),
+      result,
       totalYards,
-      playCount: sortedPlays.length,
-      startYardLine: firstPlay?.yard_line_side
+      playCount,
+      startYardLine: scrapedDrive?.start_yard_line_text || (firstPlay?.yard_line_side
         ? `${firstPlay.yard_line_side} ${firstPlay.yard_line}`
-        : `${firstPlay?.yard_line || ''}`,
-      endYardLine: lastPlay?.yard_line_side
+        : `${firstPlay?.yard_line || ''}`),
+      endYardLine: scrapedDrive?.end_yard_line_text || (lastPlay?.yard_line_side
         ? `${lastPlay.yard_line_side} ${lastPlay.yard_line}`
-        : `${lastPlay?.yard_line || ''}`,
-      startQuarter: firstPlay?.quarter || null,
-      endQuarter: lastPlay?.quarter || null
+        : `${lastPlay?.yard_line || ''}`),
+      startQuarter: scrapedDrive?.start_quarter || firstPlay?.quarter || null,
+      endQuarter: scrapedDrive?.end_quarter || lastPlay?.quarter || null
     })
   })
 
@@ -249,7 +293,7 @@ function DriveRow({ drive, teams, isExpanded, onToggle }: {
   )
 }
 
-export function DrivesSummaryCard({ plays, teams }: DrivesSummaryCardProps) {
+export function DrivesSummaryCard({ plays, teams, liveDrives }: DrivesSummaryCardProps) {
   const [expandedDrives, setExpandedDrives] = useState<Set<number>>(new Set())
 
   if (plays.length === 0) {
@@ -265,7 +309,8 @@ export function DrivesSummaryCard({ plays, teams }: DrivesSummaryCardProps) {
     )
   }
 
-  const drives = groupPlaysByDrive(plays)
+  // Use scraped drive results from ESPN when available
+  const drives = groupPlaysByDrive(plays, liveDrives)
 
   const toggleDrive = (driveNumber: number) => {
     setExpandedDrives(prev => {

@@ -23,6 +23,8 @@ import { OfficialsCard } from '@/components/game/OfficialsCard'
 import { CoinTossCard } from '@/components/game/CoinTossCard'
 import { GameRecapCard } from '@/components/game/GameRecapCard'
 import { HeadToHeadCard } from '@/components/game/HeadToHeadCard'
+// Video Links (WO-VIDEO-LINKS-001)
+import { VideoCard } from '@/components/game/VideoCard'
 import type { GameDetailData } from '@/lib/queries/game-queries'
 import type { LiveGameState, Team } from '@/types/game'
 
@@ -53,11 +55,14 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
     gameRosters,
     winProbability,
     livePlays,
+    liveDrives,
     // Game Details Enhancements (WO-GAME-DETAILS-UI-001)
     officials,
     prediction,
     recap,
-    headToHead
+    headToHead,
+    // Video Links (WO-VIDEO-LINKS-001)
+    videos
   } = data
 
   // Create teams record for components that need team lookup
@@ -194,6 +199,15 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
           />
         )}
 
+        {/* Video Highlights (WO-VIDEO-LINKS-001) */}
+        {videos && videos.length > 0 && (
+          <VideoCard
+            videos={videos}
+            homeTeam={homeTeam}
+            awayTeam={awayTeam}
+          />
+        )}
+
         {/* Win Probability Chart - Full Width */}
         {winProbability.length > 0 && (
           <WinProbabilityChart
@@ -222,11 +236,12 @@ export function GameDetailClient({ initialData }: GameDetailClientProps) {
           />
         )}
 
-        {/* Drive Summary from live plays (live games only) */}
-        {livePlays.length > 0 && game.status === 'in_progress' && (
+        {/* Drive Summary from live plays (uses ESPN scraped drive results when available) */}
+        {livePlays.length > 0 && (
           <DrivesSummaryCard
             plays={livePlays}
             teams={teams}
+            liveDrives={liveDrives}
           />
         )}
 
