@@ -83,67 +83,6 @@ const SECTIONS: ToolSection[] = [
       },
     ],
   },
-  {
-    title: 'External Prototypes',
-    icon: '📄',
-    tools: [
-      {
-        title: 'Scraper Dashboard (HTML)',
-        description: 'Original standalone admin dashboard with logs.',
-        href: 'http://localhost:8080/scraper-dashboard.html',
-        external: true,
-        badge: { text: 'HTML', variant: 'game' },
-      },
-      {
-        title: 'Scoreboard Prototype',
-        description: 'Supabase-connected scoreboard UI.',
-        href: 'http://localhost:8080/scripts/scrapers/UI/scoreboard.html',
-        external: true,
-        badge: { text: 'HTML', variant: 'game' },
-      },
-      {
-        title: 'Game Detail Prototype',
-        description: 'Full game details with stats and plays.',
-        href: 'http://localhost:8080/scripts/scrapers/UI/game-detail.html',
-        external: true,
-        badge: { text: 'HTML', variant: 'game' },
-      },
-    ],
-  },
-  {
-    title: 'Polished Components',
-    icon: '✨',
-    tools: [
-      {
-        title: 'Betting Odds Table',
-        description: 'Production-ready betting odds display.',
-        href: 'http://localhost:8080/FINAL/BETTING-LINES/betting-odds-table.html',
-        external: true,
-        badge: { text: 'Final', variant: 'final' },
-      },
-      {
-        title: 'Play-by-Play (BAL vs MIA)',
-        description: 'Week 9 play-by-play feed example.',
-        href: 'http://localhost:8080/FINAL/play-by-play-BAL-MIA-week9.html',
-        external: true,
-        badge: { text: 'Final', variant: 'final' },
-      },
-      {
-        title: 'Score Bug Widget',
-        description: 'Compact score bug for embedding.',
-        href: 'http://localhost:8080/FINAL/scorebug-BAL-MIA-week9.html',
-        external: true,
-        badge: { text: 'Final', variant: 'final' },
-      },
-      {
-        title: 'Player Cards',
-        description: 'Player evaluation and stats cards.',
-        href: 'http://localhost:8080/FINAL/player-evaluation-Lamar-Jackson.html',
-        external: true,
-        badge: { text: 'Final', variant: 'final' },
-      },
-    ],
-  },
 ]
 
 function ToolCard({ tool }: { tool: ToolCard }) {
