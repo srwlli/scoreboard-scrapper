@@ -1,0 +1,306 @@
+{
+  "META_DOCUMENTATION": {
+    "feature_name": "admin-dashboard",
+    "schema_version": "1.0.0",
+    "version": "1.0.0",
+    "status": "complete",
+    "generated_by": "AI Assistant",
+    "generated_at": "2025-12-14T00:20:00Z",
+    "has_context": true,
+    "has_analysis": true
+  },
+  "UNIVERSAL_PLANNING_STRUCTURE": {
+    "0_preparation": {
+      "foundation_docs_reviewed": [
+        "README.md - Project overview and tech stack",
+        "ARCHITECTURE.md - Next.js 16 App Router patterns",
+        "API.md - Supabase query function patterns",
+        "COMPONENTS.md - Component organization and shadcn/ui usage",
+        "SCHEMA.md - Database tables and TypeScript interfaces"
+      ],
+      "reference_components": [
+        "src/components/data-maps/DataMapsClient.tsx - Tab-based layout pattern",
+        "src/app/data-maps/page.tsx - Simple page wrapper pattern",
+        "src/lib/queries/game-queries.ts - Supabase query patterns"
+      ],
+      "technology_stack": {
+        "framework": "Next.js 16 with App Router",
+        "ui_library": "shadcn/ui (Card, Table, Badge, Tabs)",
+        "database": "Supabase (PostgreSQL)",
+        "styling": "Tailwind CSS with dark theme",
+        "state": "React 19 with use client for interactivity"
+      }
+    },
+    "1_executive_summary": {
+      "feature_description": "Admin/ops dashboard for monitoring data freshness, table statistics, scraper health, and data coverage. Displays live database metrics with auto-refresh capabilities.",
+      "primary_goal": "Provide visibility into the health and status of the NFL data platform - know when data was last updated, how much data exists, and identify any gaps or issues.",
+      "target_users": "Developers and operators managing the NFL Stats platform",
+      "key_benefits": [
+        "Real-time visibility into data freshness across all tables",
+        "Quick identification of stale or missing data",
+        "Coverage tracking to ensure complete season/week data",
+        "Activity monitoring for debugging and operations"
+      ]
+    },
+    "2_risk_assessment": {
+      "complexity_level": "Medium",
+      "estimated_files": 8,
+      "risks": [
+        {
+          "risk": "Supabase metadata queries may be slow for large tables",
+          "mitigation": "Use COUNT(*) with LIMIT and cache results, refresh on interval",
+          "severity": "Low"
+        },
+        {
+          "risk": "Auto-refresh may cause excessive API calls",
+          "mitigation": "Use 30s interval with SWR/useEffect, batch queries where possible",
+          "severity": "Low"
+        },
+        {
+          "risk": "No existing scraper_logs table for activity tracking",
+          "mitigation": "Query recent updated_at timestamps from existing tables as proxy",
+          "severity": "Medium"
+        }
+      ],
+      "dependencies": [
+        "Existing Supabase client setup",
+        "shadcn/ui components already installed",
+        "Existing query patterns in src/lib/queries/"
+      ]
+    },
+    "3_current_state_analysis": {
+      "files_to_create": [
+        { "path": "src/app/admin/page.tsx", "purpose": "Admin dashboard page (server component wrapper)" },
+        { "path": "src/components/admin/AdminDashboardClient.tsx", "purpose": "Main client component with tabs and auto-refresh" },
+        { "path": "src/components/admin/DataFreshnessCard.tsx", "purpose": "Shows last updated time per table with status badges" },
+        { "path": "src/components/admin/TableStatsCard.tsx", "purpose": "Displays row counts for each database table" },
+        { "path": "src/components/admin/CoverageMapCard.tsx", "purpose": "Visual grid of seasons/weeks with data" },
+        { "path": "src/components/admin/RecentActivityCard.tsx", "purpose": "Shows recent data changes with timestamps" },
+        { "path": "src/lib/queries/admin-queries.ts", "purpose": "Supabase queries for admin dashboard data" },
+        { "path": "src/types/admin.ts", "purpose": "TypeScript interfaces for admin dashboard data" }
+      ],
+      "files_to_modify": [
+        { "path": "src/components/site-header.tsx", "purpose": "Add Admin link to navigation menu" }
+      ],
+      "existing_patterns_to_follow": [
+        "DataMapsClient.tsx for tab-based layout with summary card",
+        "game-queries.ts for Supabase query patterns with error handling",
+        "ScoreboardClient.tsx for client-side data fetching with useEffect"
+      ]
+    },
+    "4_key_features": {
+      "features": [
+        {
+          "id": "FRESH",
+          "name": "Data Freshness Indicators",
+          "description": "Show last updated time per table with color-coded status badges (green=fresh, yellow=aging, red=stale)",
+          "priority": "P0"
+        },
+        {
+          "id": "STATS",
+          "name": "Table Row Counts",
+          "description": "Display total row counts for each database table with formatted numbers",
+          "priority": "P0"
+        },
+        {
+          "id": "COVER",
+          "name": "Coverage Map",
+          "description": "Visual grid showing what seasons and weeks have data, identifying gaps",
+          "priority": "P1"
+        },
+        {
+          "id": "ACTIVITY",
+          "name": "Recent Activity Log",
+          "description": "Show last N data updates with timestamps and table names",
+          "priority": "P1"
+        },
+        {
+          "id": "REFRESH",
+          "name": "Auto-Refresh",
+          "description": "Automatically refresh dashboard data every 30 seconds",
+          "priority": "P0"
+        },
+        {
+          "id": "ROUTE",
+          "name": "Dedicated Admin Route",
+          "description": "Separate /admin route with navigation link",
+          "priority": "P0"
+        }
+      ]
+    },
+    "5_task_id_system": {
+      "workorder": {
+        "id": "WO-ADMIN-DASHBOARD-001",
+        "name": "Admin Dashboard",
+        "feature_dir": "coderef/working/admin-dashboard"
+      },
+      "tasks": [
+        {
+          "id": "SETUP-001",
+          "workorder_id": "WO-ADMIN-DASHBOARD-001",
+          "description": "Create admin types file with TypeScript interfaces",
+          "file": "src/types/admin.ts",
+          "feature_id": "STATS",
+          "acceptance_criteria": "Interfaces defined for TableStats, DataFreshness, CoverageData, ActivityEntry"
+        },
+        {
+          "id": "SETUP-002",
+          "workorder_id": "WO-ADMIN-DASHBOARD-001",
+          "description": "Create admin queries file with Supabase query functions",
+          "file": "src/lib/queries/admin-queries.ts",
+          "feature_id": "STATS",
+          "acceptance_criteria": "Functions: getTableStats(), getDataFreshness(), getCoverageMap(), getRecentActivity()"
+        },
+        {
+          "id": "SETUP-003",
+          "workorder_id": "WO-ADMIN-DASHBOARD-001",
+          "description": "Create admin page route",
+          "file": "src/app/admin/page.tsx",
+          "feature_id": "ROUTE",
+          "acceptance_criteria": "Page renders AdminDashboardClient, accessible at /admin"
+        },
+        {
+          "id": "COMP-001",
+          "workorder_id": "WO-ADMIN-DASHBOARD-001",
+          "description": "Create DataFreshnessCard component",
+          "file": "src/components/admin/DataFreshnessCard.tsx",
+          "feature_id": "FRESH",
+          "acceptance_criteria": "Shows each table with last updated time and green/yellow/red badge based on freshness thresholds"
+        },
+        {
+          "id": "COMP-002",
+          "workorder_id": "WO-ADMIN-DASHBOARD-001",
+          "description": "Create TableStatsCard component",
+          "file": "src/components/admin/TableStatsCard.tsx",
+          "feature_id": "STATS",
+          "acceptance_criteria": "Displays row count for each table in a clean table/grid layout"
+        },
+        {
+          "id": "COMP-003",
+          "workorder_id": "WO-ADMIN-DASHBOARD-001",
+          "description": "Create CoverageMapCard component",
+          "file": "src/components/admin/CoverageMapCard.tsx",
+          "feature_id": "COVER",
+          "acceptance_criteria": "Visual grid with seasons as rows, weeks as columns, colored cells indicating data presence"
+        },
+        {
+          "id": "COMP-004",
+          "workorder_id": "WO-ADMIN-DASHBOARD-001",
+          "description": "Create RecentActivityCard component",
+          "file": "src/components/admin/RecentActivityCard.tsx",
+          "feature_id": "ACTIVITY",
+          "acceptance_criteria": "List of recent updates showing table name, timestamp, and row counts"
+        },
+        {
+          "id": "COMP-005",
+          "workorder_id": "WO-ADMIN-DASHBOARD-001",
+          "description": "Create AdminDashboardClient with tabs and auto-refresh",
+          "file": "src/components/admin/AdminDashboardClient.tsx",
+          "feature_id": "REFRESH",
+          "acceptance_criteria": "Tab layout with all cards, useEffect for 30s auto-refresh, loading states"
+        },
+        {
+          "id": "NAV-001",
+          "workorder_id": "WO-ADMIN-DASHBOARD-001",
+          "description": "Add Admin link to site navigation",
+          "file": "src/components/site-header.tsx",
+          "feature_id": "ROUTE",
+          "acceptance_criteria": "Admin link appears in nav menu, routes to /admin"
+        }
+      ]
+    },
+    "6_implementation_phases": {
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Foundation",
+          "description": "Set up types, queries, and page route",
+          "tasks": ["SETUP-001", "SETUP-002", "SETUP-003"],
+          "deliverables": [
+            "src/types/admin.ts with all interfaces",
+            "src/lib/queries/admin-queries.ts with query functions",
+            "src/app/admin/page.tsx accessible at /admin"
+          ]
+        },
+        {
+          "phase": 2,
+          "name": "Core Components",
+          "description": "Build the main dashboard cards",
+          "tasks": ["COMP-001", "COMP-002", "COMP-003", "COMP-004"],
+          "deliverables": [
+            "DataFreshnessCard with status badges",
+            "TableStatsCard with row counts",
+            "CoverageMapCard with visual grid",
+            "RecentActivityCard with activity list"
+          ]
+        },
+        {
+          "phase": 3,
+          "name": "Integration",
+          "description": "Wire up main client component and navigation",
+          "tasks": ["COMP-005", "NAV-001"],
+          "deliverables": [
+            "AdminDashboardClient with tabs and auto-refresh",
+            "Admin link in site navigation"
+          ]
+        }
+      ]
+    },
+    "7_testing_strategy": {
+      "manual_testing": [
+        "Navigate to /admin and verify page loads",
+        "Check that all four cards display data",
+        "Wait 30s and verify auto-refresh updates data",
+        "Test on mobile viewport for responsive layout",
+        "Verify color-coded freshness badges show correctly"
+      ],
+      "edge_cases": [
+        "Empty tables should show 0 rows, not error",
+        "Tables with no updated_at should show 'Unknown' freshness",
+        "Large row counts should be formatted with commas"
+      ],
+      "note": "No automated tests for v1 per project constraints (no test infrastructure)"
+    },
+    "8_success_criteria": {
+      "functional": [
+        "/admin route loads without errors",
+        "Data freshness shows last updated time for each monitored table",
+        "Row counts display for all major tables",
+        "Coverage map shows seasons/weeks with data",
+        "Dashboard auto-refreshes every 30 seconds"
+      ],
+      "non_functional": [
+        "Initial page load under 2 seconds",
+        "Auto-refresh does not cause visible flicker",
+        "Consistent styling with rest of application"
+      ],
+      "acceptance": [
+        "All P0 features implemented and working",
+        "Navigation includes Admin link",
+        "No console errors on page load"
+      ]
+    },
+    "9_implementation_checklist": {
+      "phase_1_checklist": [
+        "[ ] Create src/types/admin.ts with interfaces",
+        "[ ] Create src/lib/queries/admin-queries.ts with query functions",
+        "[ ] Create src/app/admin/page.tsx route",
+        "[ ] Verify /admin URL is accessible"
+      ],
+      "phase_2_checklist": [
+        "[ ] Create DataFreshnessCard component",
+        "[ ] Create TableStatsCard component",
+        "[ ] Create CoverageMapCard component",
+        "[ ] Create RecentActivityCard component",
+        "[ ] Verify each component renders with mock/real data"
+      ],
+      "phase_3_checklist": [
+        "[ ] Create AdminDashboardClient with all cards",
+        "[ ] Implement 30s auto-refresh with useEffect",
+        "[ ] Add Admin link to site-header.tsx navigation",
+        "[ ] Test full flow from nav link to dashboard",
+        "[ ] Verify responsive layout on mobile"
+      ]
+    }
+  }
+}

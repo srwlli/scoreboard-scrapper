@@ -1,0 +1,30 @@
+{
+  "feature_name": "admin-dashboard",
+  "description": "Admin/ops dashboard for monitoring data freshness, table statistics, scraper health, and data coverage. Displays live database metrics with auto-refresh capabilities.",
+  "goal": "Provide visibility into the health and status of the NFL data platform - know when data was last updated, how much data exists, and identify any gaps or issues.",
+  "requirements": [
+    "Data freshness indicators - show last updated time per table with color-coded status (green/yellow/red)",
+    "Row counts per table - display total rows for each database table",
+    "Coverage map - visual grid showing what seasons/weeks have data",
+    "Recent activity log - show last N scraper events with timestamps",
+    "Auto-refresh every 30s for live monitoring feel",
+    "Dedicated /admin route separate from user-facing pages"
+  ],
+  "out_of_scope": [
+    "User authentication - no login required for v1",
+    "Scraper controls - read-only, no manual trigger buttons (optional enhancement)"
+  ],
+  "constraints": [
+    "Use existing shadcn/ui components (Card, Table, Badge, Tabs)",
+    "Follow existing app styling (dark theme, same fonts)",
+    "Hybrid data fetching - server render + client auto-refresh",
+    "Match patterns from existing pages like /data-maps"
+  ],
+  "decisions": {},
+  "success_criteria": {},
+  "_metadata": {
+    "workorder_id": "WO-ADMIN-DASHBOARD-001",
+    "workorder_assigned_at": "2025-12-14T05:19:43.905713+00:00",
+    "workorder_assigned_by": "gather_context"
+  }
+}
