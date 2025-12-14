@@ -18,6 +18,13 @@ const navItems = [
   { href: '/', label: 'Dashboard' },
   { href: '/scoreboard', label: 'Scoreboard' },
   { href: '/standings', label: 'Standings' },
+  { href: '/teams', label: 'Teams' },
+  { href: '/injuries', label: 'Injuries' },
+]
+
+const adminItems = [
+  { href: '/admin', label: 'Admin' },
+  { href: '/data-maps', label: 'Data Maps' },
 ]
 
 export function SiteHeader() {
@@ -45,6 +52,24 @@ export function SiteHeader() {
             </SheetHeader>
             <nav className="flex flex-col gap-2 mt-4">
               {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent ${
+                    pathname === item.href
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+
+              <div className="my-2 border-t" />
+              <span className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                System
+              </span>
+              {adminItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
