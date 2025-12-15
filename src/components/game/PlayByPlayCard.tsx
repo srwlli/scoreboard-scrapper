@@ -376,13 +376,77 @@ function DriveRow({ drive, teams, isExpanded, onToggle }: {
                   )}
                 </div>
                 <p className="text-sm">{play.play_description}</p>
-                {play.epa !== null && play.epa !== 0 && (
-                  <div className="text-xs text-muted-foreground mt-1">
-                    <span className={play.epa > 0 ? 'text-green-600' : 'text-red-500'}>
-                      EPA: {play.epa > 0 ? '+' : ''}{play.epa.toFixed(2)}
-                    </span>
+
+                {/* Player attribution (WO-HISTORICAL-BACKFILL-001) */}
+                {(play.passer_player_name || play.rusher_player_name) && (
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                    {play.passer_player_name && (
+                      <span>
+                        <span className="font-medium">{play.passer_player_name}</span>
+                        {play.receiver_player_name && (
+                          <> → <span className="font-medium">{play.receiver_player_name}</span></>
+                        )}
+                      </span>
+                    )}
+                    {play.rusher_player_name && !play.passer_player_name && (
+                      <span className="font-medium">{play.rusher_player_name}</span>
+                    )}
+                    {/* Pass details */}
+                    {play.air_yards != null && (
+                      <span className="text-blue-500">Air: {play.air_yards}y</span>
+                    )}
+                    {play.yards_after_catch != null && (
+                      <span className="text-purple-500">YAC: {play.yards_after_catch}y</span>
+                    )}
+                    {play.pass_length && play.pass_location && (
+                      <Badge variant="outline" className="text-xs py-0">
+                        {play.pass_length} {play.pass_location}
+                      </Badge>
+                    )}
                   </div>
                 )}
+
+                {/* Formation indicators */}
+                {(play.shotgun || play.no_huddle) && (
+                  <div className="flex items-center gap-2 text-xs mt-1">
+                    {play.shotgun && (
+                      <Badge variant="outline" className="text-xs py-0 text-yellow-600 border-yellow-600">
+                        Shotgun
+                      </Badge>
+                    )}
+                    {play.no_huddle && (
+                      <Badge variant="outline" className="text-xs py-0 text-orange-500 border-orange-500">
+                        No-Huddle
+                      </Badge>
+                    )}
+                  </div>
+                )}
+
+                {/* Analytics metrics */}
+                {(play.epa !== null && play.epa !== 0) || (play.cpoe != null) ? (
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                    {play.epa !== null && play.epa !== 0 && (
+                      <span className={play.epa > 0 ? 'text-green-600' : 'text-red-500'}>
+                        EPA: {play.epa > 0 ? '+' : ''}{play.epa.toFixed(2)}
+                      </span>
+                    )}
+                    {play.wpa != null && play.wpa !== 0 && (
+                      <span className={play.wpa > 0 ? 'text-green-600' : 'text-red-500'}>
+                        WPA: {play.wpa > 0 ? '+' : ''}{(play.wpa * 100).toFixed(1)}%
+                      </span>
+                    )}
+                    {play.cpoe != null && (
+                      <span className={play.cpoe > 0 ? 'text-green-600' : 'text-red-500'}>
+                        CPOE: {play.cpoe > 0 ? '+' : ''}{play.cpoe.toFixed(1)}%
+                      </span>
+                    )}
+                    {play.success !== null && (
+                      <Badge variant={play.success ? 'default' : 'secondary'} className="text-xs py-0">
+                        {play.success ? '✓ Success' : '✗'}
+                      </Badge>
+                    )}
+                  </div>
+                ) : null}
               </div>
             )
           })}

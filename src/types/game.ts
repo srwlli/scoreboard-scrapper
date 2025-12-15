@@ -1,7 +1,8 @@
 /**
  * NFL Stats App - TypeScript Interface Reference
  *
- * Total: 15 interfaces covering 146 data fields across 13 database tables
+ * Total: 25+ interfaces covering 300+ data fields across 15+ database tables
+ * Enhanced with WO-HISTORICAL-BACKFILL-001 fields for complete ESPN + nflverse data capture
  */
 
 // ============================================================================
@@ -166,6 +167,20 @@ export interface TeamGameStats {
   passing_first_downs: number
   rushing_first_downs: number
   penalty_first_downs: number
+
+  // Enhanced stats (WO-HISTORICAL-BACKFILL-001)
+  pass_completions: number | null
+  pass_attempts: number | null
+  yards_per_pass: number | null
+  yards_per_rush: number | null
+  interceptions_thrown: number | null
+  fumbles_lost: number | null
+  sack_yards_lost: number | null
+  total_drives: number | null
+  total_plays: number | null
+  yards_per_play: number | null
+  defensive_tds: number | null
+  passes_defended: number | null
 }
 
 /**
@@ -339,6 +354,7 @@ export interface SnapCount {
 
 /**
  * Play-by-play record from `play_by_play` table
+ * Contains nflverse analytics data
  */
 export interface PlayByPlay {
   play_id: string
@@ -361,10 +377,89 @@ export interface PlayByPlay {
   drive_id: string | null
   play_number: number | null
 
-  // Analytics
+  // Core analytics
   epa: number | null
   wpa: number | null
   success: boolean | null
+
+  // EPA breakdown (WO-HISTORICAL-BACKFILL-001)
+  air_epa: number | null
+  yac_epa: number | null
+  comp_air_epa: number | null
+  comp_yac_epa: number | null
+
+  // Win probability context
+  home_wp: number | null
+  away_wp: number | null
+  vegas_home_wp: number | null
+
+  // Completion probability (nflverse xPass model)
+  cp: number | null
+  cpoe: number | null
+
+  // Player attribution - Passer
+  passer_player_id: string | null
+  passer_player_name: string | null
+  passer_jersey_number: number | null
+
+  // Player attribution - Receiver
+  receiver_player_id: string | null
+  receiver_player_name: string | null
+  receiver_jersey_number: number | null
+
+  // Player attribution - Rusher
+  rusher_player_id: string | null
+  rusher_player_name: string | null
+  rusher_jersey_number: number | null
+
+  // Pass details
+  air_yards: number | null
+  yards_after_catch: number | null
+  pass_length: 'short' | 'deep' | null
+  pass_location: 'left' | 'middle' | 'right' | null
+  qb_hit: boolean | null
+  sack: boolean | null
+  interception: boolean | null
+
+  // Rush details
+  run_location: 'left' | 'middle' | 'right' | null
+  run_gap: 'guard' | 'tackle' | 'end' | null
+
+  // Situation context
+  shotgun: boolean | null
+  no_huddle: boolean | null
+  qb_dropback: boolean | null
+  qb_scramble: boolean | null
+  score_differential: number | null
+  half_seconds_remaining: number | null
+  game_seconds_remaining: number | null
+
+  // Scoring flags
+  touchdown: boolean | null
+  pass_touchdown: boolean | null
+  rush_touchdown: boolean | null
+  return_touchdown: boolean | null
+  extra_point_result: string | null
+  two_point_conv_result: string | null
+  field_goal_result: string | null
+  kick_distance: number | null
+  safety: boolean | null
+
+  // Penalty info
+  penalty: boolean | null
+  penalty_team: string | null
+  penalty_yards: number | null
+  penalty_type: string | null
+
+  // Down conversion tracking
+  punt_blocked: boolean | null
+  first_down_rush: boolean | null
+  first_down_pass: boolean | null
+  first_down_penalty: boolean | null
+  third_down_converted: boolean | null
+  third_down_failed: boolean | null
+  fourth_down_converted: boolean | null
+  fourth_down_failed: boolean | null
 }
 
 // ============================================================================
@@ -435,6 +530,42 @@ export interface LivePlay {
   epa: number | null
   win_probability: number | null
 
+  // ESPN fields (WO-HISTORICAL-BACKFILL-001)
+  participant_ids: string[] | null  // Player IDs involved in play
+  end_yard_line: number | null
+  expected_points: number | null
+
+  // nflverse analytics (added Tuesday enrichment)
+  wpa: number | null
+  success: boolean | null
+  air_epa: number | null
+  yac_epa: number | null
+  cp: number | null  // Completion probability (0-1)
+  cpoe: number | null  // Completion percentage over expected
+
+  // Player attribution - Passer
+  passer_player_id: string | null
+  passer_player_name: string | null
+
+  // Player attribution - Receiver
+  receiver_player_id: string | null
+  receiver_player_name: string | null
+
+  // Player attribution - Rusher
+  rusher_player_id: string | null
+  rusher_player_name: string | null
+
+  // Pass details
+  air_yards: number | null
+  yards_after_catch: number | null
+  pass_length: 'short' | 'deep' | null  // <15 yds or 15+ yds
+  pass_location: 'left' | 'middle' | 'right' | null
+
+  // Situation context
+  shotgun: boolean | null
+  no_huddle: boolean | null
+  score_differential: number | null
+
   created_at: string
   updated_at: string
 }
@@ -475,6 +606,13 @@ export interface LiveDrive {
   end_clock: string | null
   end_yard_line: number | null
   end_yard_line_text: string | null
+
+  // Enhanced fields (WO-HISTORICAL-BACKFILL-001)
+  espn_drive_id: string | null   // ESPN internal drive ID
+  penalty_count: number | null
+  first_downs: number | null
+  is_red_zone: boolean | null    // Drive reached inside 20
+  yards_penalized: number | null
 
   created_at: string
   updated_at: string

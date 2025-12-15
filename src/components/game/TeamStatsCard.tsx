@@ -78,18 +78,64 @@ export function TeamStatsCard({ homeStats, awayStats, homeTeam, awayTeam }: Team
             home={homeStats.total_yards}
             {...compareNum(awayStats.total_yards, homeStats.total_yards)}
           />
+
+          {/* Passing Section */}
           <StatRow
             label="Passing Yards"
             away={awayStats.passing_yards}
             home={homeStats.passing_yards}
             {...compareNum(awayStats.passing_yards, homeStats.passing_yards)}
           />
+          {/* Completions/Attempts if available (WO-HISTORICAL-BACKFILL-001) */}
+          {(awayStats.pass_completions != null || homeStats.pass_completions != null) && (
+            <StatRow
+              label="Comp/Att"
+              away={`${awayStats.pass_completions || 0}/${awayStats.pass_attempts || 0}`}
+              home={`${homeStats.pass_completions || 0}/${homeStats.pass_attempts || 0}`}
+            />
+          )}
+          {(awayStats.yards_per_pass != null || homeStats.yards_per_pass != null) && (
+            <StatRow
+              label="Yds/Pass"
+              away={(awayStats.yards_per_pass ?? 0).toFixed(1)}
+              home={(homeStats.yards_per_pass ?? 0).toFixed(1)}
+              {...compareNum(awayStats.yards_per_pass ?? 0, homeStats.yards_per_pass ?? 0)}
+            />
+          )}
+
+          {/* Rushing Section */}
           <StatRow
             label="Rushing Yards"
             away={awayStats.rushing_yards}
             home={homeStats.rushing_yards}
             {...compareNum(awayStats.rushing_yards, homeStats.rushing_yards)}
           />
+          {(awayStats.yards_per_rush != null || homeStats.yards_per_rush != null) && (
+            <StatRow
+              label="Yds/Rush"
+              away={(awayStats.yards_per_rush ?? 0).toFixed(1)}
+              home={(homeStats.yards_per_rush ?? 0).toFixed(1)}
+              {...compareNum(awayStats.yards_per_rush ?? 0, homeStats.yards_per_rush ?? 0)}
+            />
+          )}
+
+          {/* Efficiency Section */}
+          {(awayStats.total_plays != null || homeStats.total_plays != null) && (
+            <>
+              <StatRow
+                label="Total Plays"
+                away={awayStats.total_plays || 0}
+                home={homeStats.total_plays || 0}
+              />
+              <StatRow
+                label="Yds/Play"
+                away={(awayStats.yards_per_play ?? 0).toFixed(1)}
+                home={(homeStats.yards_per_play ?? 0).toFixed(1)}
+                {...compareNum(awayStats.yards_per_play ?? 0, homeStats.yards_per_play ?? 0)}
+              />
+            </>
+          )}
+
           <StatRow
             label="First Downs"
             away={awayStats.first_downs}
@@ -131,12 +177,46 @@ export function TeamStatsCard({ homeStats, awayStats, homeTeam, awayTeam }: Team
             away={`${awayStats.red_zone_scores}/${awayStats.red_zone_attempts}`}
             home={`${homeStats.red_zone_scores}/${homeStats.red_zone_attempts}`}
           />
+
+          {/* Turnovers with breakdown (WO-HISTORICAL-BACKFILL-001) */}
           <StatRow
             label="Turnovers"
             away={awayStats.turnovers}
             home={homeStats.turnovers}
             {...compareNumLower(awayStats.turnovers, homeStats.turnovers)}
           />
+          {(awayStats.interceptions_thrown != null || homeStats.interceptions_thrown != null) && (
+            <>
+              <StatRow
+                label="INTs"
+                away={awayStats.interceptions_thrown || 0}
+                home={homeStats.interceptions_thrown || 0}
+                {...compareNumLower(awayStats.interceptions_thrown ?? 0, homeStats.interceptions_thrown ?? 0)}
+              />
+              <StatRow
+                label="Fumbles Lost"
+                away={awayStats.fumbles_lost || 0}
+                home={homeStats.fumbles_lost || 0}
+                {...compareNumLower(awayStats.fumbles_lost ?? 0, homeStats.fumbles_lost ?? 0)}
+              />
+            </>
+          )}
+
+          {/* Sacks */}
+          <StatRow
+            label="Sacks"
+            away={awayStats.sacks_allowed || 0}
+            home={homeStats.sacks_allowed || 0}
+            {...compareNumLower(awayStats.sacks_allowed || 0, homeStats.sacks_allowed || 0)}
+          />
+          {(awayStats.sack_yards_lost != null || homeStats.sack_yards_lost != null) && (
+            <StatRow
+              label="Sack Yds"
+              away={`-${awayStats.sack_yards_lost || 0}`}
+              home={`-${homeStats.sack_yards_lost || 0}`}
+            />
+          )}
+
           <StatRow
             label="Penalties"
             away={`${awayStats.penalties}-${awayStats.penalty_yards}`}
@@ -148,6 +228,17 @@ export function TeamStatsCard({ homeStats, awayStats, homeTeam, awayTeam }: Team
             home={formatPossession(homeStats.time_of_possession_seconds)}
             {...compareNum(awayStats.time_of_possession_seconds, homeStats.time_of_possession_seconds)}
           />
+
+          {/* Defense highlights (WO-HISTORICAL-BACKFILL-001) */}
+          {(awayStats.defensive_tds != null && awayStats.defensive_tds > 0) ||
+           (homeStats.defensive_tds != null && homeStats.defensive_tds > 0) ? (
+            <StatRow
+              label="Def TDs"
+              away={awayStats.defensive_tds || 0}
+              home={homeStats.defensive_tds || 0}
+              {...compareNum(awayStats.defensive_tds ?? 0, homeStats.defensive_tds ?? 0)}
+            />
+          ) : null}
         </div>
       </CardContent>
     </Card>

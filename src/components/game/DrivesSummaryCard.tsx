@@ -25,6 +25,12 @@ interface Drive {
   endYardLine: string
   startQuarter: number | null
   endQuarter: number | null
+  // Enhanced fields (WO-HISTORICAL-BACKFILL-001)
+  firstDowns: number | null
+  penaltyCount: number | null
+  yardsPenalized: number | null
+  isRedZone: boolean | null
+  timeElapsed: string | null
 }
 
 function getTeamLogoUrl(teamId: string): string {
@@ -186,7 +192,13 @@ function groupPlaysByDrive(plays: LivePlay[], liveDrives?: LiveDrive[]): Drive[]
         ? `${lastPlay.yard_line_side} ${lastPlay.yard_line}`
         : `${lastPlay?.yard_line || ''}`),
       startQuarter: scrapedDrive?.start_quarter || firstPlay?.quarter || null,
-      endQuarter: scrapedDrive?.end_quarter || lastPlay?.quarter || null
+      endQuarter: scrapedDrive?.end_quarter || lastPlay?.quarter || null,
+      // Enhanced fields (WO-HISTORICAL-BACKFILL-001)
+      firstDowns: scrapedDrive?.first_downs ?? null,
+      penaltyCount: scrapedDrive?.penalty_count ?? null,
+      yardsPenalized: scrapedDrive?.yards_penalized ?? null,
+      isRedZone: scrapedDrive?.is_red_zone ?? null,
+      timeElapsed: scrapedDrive?.time_elapsed ?? null
     })
   })
 
@@ -234,11 +246,23 @@ function DriveRow({ drive, teams, isExpanded, onToggle }: {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-xs text-muted-foreground flex-shrink-0">
+        <div className="flex items-center gap-3 text-xs text-muted-foreground flex-shrink-0">
           <span>{drive.playCount} plays</span>
           <span className={drive.totalYards > 0 ? 'text-green-600' : drive.totalYards < 0 ? 'text-red-500' : ''}>
             {drive.totalYards > 0 ? '+' : ''}{drive.totalYards} yds
           </span>
+          {/* Enhanced fields (WO-HISTORICAL-BACKFILL-001) */}
+          {drive.firstDowns != null && drive.firstDowns > 0 && (
+            <span className="text-blue-500">{drive.firstDowns} 1st</span>
+          )}
+          {drive.timeElapsed && (
+            <span>{drive.timeElapsed}</span>
+          )}
+          {drive.isRedZone && (
+            <Badge variant="outline" className="text-xs py-0 border-red-500 text-red-500">
+              RZ
+            </Badge>
+          )}
           {drive.startQuarter && (
             <span>{formatQuarter(drive.startQuarter)}</span>
           )}
@@ -248,6 +272,15 @@ function DriveRow({ drive, teams, isExpanded, onToggle }: {
       {/* Expanded Play-by-Play */}
       {isExpanded && (
         <div className="border-t bg-muted/30 p-3 space-y-2">
+          {/* Drive stats summary (WO-HISTORICAL-BACKFILL-001) */}
+          {(drive.penaltyCount != null && drive.penaltyCount > 0) && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground pb-2 mb-2 border-b">
+              <span className="text-yellow-600">
+                {drive.penaltyCount} {drive.penaltyCount === 1 ? 'penalty' : 'penalties'}
+                {drive.yardsPenalized ? ` (-${drive.yardsPenalized} yds)` : ''}
+              </span>
+            </div>
+          )}
           {drive.plays.map((play, index) => (
             <div
               key={play.play_id}
