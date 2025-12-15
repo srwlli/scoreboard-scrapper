@@ -269,24 +269,28 @@ function buildMetadataDescription(
  * Get recent activity based on updated_at timestamps across tables
  * Since we don't have a dedicated activity log, we infer from recent updates
  * Enhanced with metadata aggregation for contextual descriptions
+ *
+ * Live tables (games, plays, drives, win_prob) only show most recent entry
+ * to prevent flooding the feed during game windows. Daily/weekly scrapers
+ * show full history so users can see YouTube, injuries, transactions activity.
  */
 export async function getRecentActivity(limit: number = 20): Promise<ActivityEntry[]> {
   const supabase = await createClient()
   const activities: ActivityEntry[] = []
 
-  // Check tables with timestamp columns for recent changes
-  // Each table specifies which timestamp column and metadata columns to use
-  // Note: Using actual columns that exist in each table
+  // Tables categorized by update frequency
+  // 'live' = updates every 30s during games, only show most recent
+  // 'scheduled' = daily/weekly scrapers, show full history
   const tablesToCheck = [
-    { name: 'games', display: 'Games', tsColumn: 'updated_at', metaCols: 'week,season' },
-    { name: 'live_plays', display: 'Live Plays', tsColumn: 'updated_at', metaCols: 'season' },
-    { name: 'live_drives', display: 'Live Drives', tsColumn: 'updated_at', metaCols: 'season' },
-    { name: 'win_probability', display: 'Win Probability', tsColumn: 'created_at', metaCols: 'season' },
-    { name: 'player_game_stats', display: 'Player Stats', tsColumn: 'updated_at', metaCols: 'season' },
-    { name: 'team_game_stats', display: 'Team Stats', tsColumn: 'updated_at', metaCols: 'season' },
-    { name: 'game_videos', display: 'YouTube Videos', tsColumn: 'scraped_at', metaCols: 'video_type' },
-    { name: 'player_injuries', display: 'Injuries', tsColumn: 'updated_at', metaCols: 'injury_type' },
-    { name: 'roster_transactions', display: 'Transactions', tsColumn: 'created_at', metaCols: 'transaction_type' },
+    { name: 'games', display: 'Games', tsColumn: 'updated_at', metaCols: 'week,season', category: 'live' },
+    { name: 'live_plays', display: 'Live Plays', tsColumn: 'updated_at', metaCols: 'season', category: 'live' },
+    { name: 'live_drives', display: 'Live Drives', tsColumn: 'updated_at', metaCols: 'season', category: 'live' },
+    { name: 'win_probability', display: 'Win Probability', tsColumn: 'created_at', metaCols: 'season', category: 'live' },
+    { name: 'player_game_stats', display: 'Player Stats', tsColumn: 'updated_at', metaCols: 'season', category: 'scheduled' },
+    { name: 'team_game_stats', display: 'Team Stats', tsColumn: 'updated_at', metaCols: 'season', category: 'scheduled' },
+    { name: 'game_videos', display: 'YouTube Videos', tsColumn: 'scraped_at', metaCols: 'video_type', category: 'scheduled' },
+    { name: 'player_injuries', display: 'Injuries', tsColumn: 'updated_at', metaCols: 'injury_type', category: 'scheduled' },
+    { name: 'roster_transactions', display: 'Transactions', tsColumn: 'created_at', metaCols: 'transaction_type', category: 'scheduled' },
   ]
 
   for (const table of tablesToCheck) {
@@ -316,7 +320,14 @@ export async function getRecentActivity(limit: number = 20): Promise<ActivityEnt
           }
         })
 
+        // For live tables, only add the most recent entry
+        // For scheduled tables, add all entries
+        let entriesAdded = 0
+        const maxEntries = table.category === 'live' ? 1 : grouped.size
+
         grouped.forEach(({ count, rows }, timestamp) => {
+          if (entriesAdded >= maxEntries) return
+
           const metadata = buildMetadataDescription(table.name, count, rows)
           activities.push({
             id: `${table.name}-${timestamp}`,
@@ -327,6 +338,7 @@ export async function getRecentActivity(limit: number = 20): Promise<ActivityEnt
             description: `${count} row${count > 1 ? 's' : ''} updated`,
             metadata,
           })
+          entriesAdded++
         })
       }
     } catch {
