@@ -8,6 +8,7 @@ import { GameDetailsTab } from './GameDetailsTab'
 import { StandingsTab } from './StandingsTab'
 import { InjuriesTab } from './InjuriesTab'
 import { TransactionsTab } from './TransactionsTab'
+import { TeamsTab } from './TeamsTab'
 import {
   getTotalFields,
   getUniqueTables,
@@ -86,6 +87,10 @@ export function DataMapsClient() {
             Transactions
             <Badge variant="secondary" className="ml-1">{fieldCounts.transactions}</Badge>
           </TabsTrigger>
+          <TabsTrigger value="teams" className="gap-2">
+            Teams
+            <Badge variant="secondary" className="ml-1">{fieldCounts.teams}</Badge>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="scoreboard">
@@ -106,6 +111,10 @@ export function DataMapsClient() {
 
         <TabsContent value="transactions">
           <TransactionsTab />
+        </TabsContent>
+
+        <TabsContent value="teams">
+          <TeamsTab />
         </TabsContent>
       </Tabs>
     </main>

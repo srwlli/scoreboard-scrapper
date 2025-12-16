@@ -764,28 +764,77 @@ export const TRANSACTIONS_SECTIONS: SectionDefinition[] = [
 ]
 
 // =============================================================================
+// TEAMS TAB DATA
+// =============================================================================
+
+export const TEAMS_SECTIONS: SectionDefinition[] = [
+  {
+    title: 'Team Directory',
+    table: 'teams',
+    dataType: 'table',
+    scraper: 'seed',
+    schedule: 'One-time seed',
+    source: 'ESPN API',
+    primaryKey: 'team_id',
+    recordCount: '32 teams',
+    displayFormat: 'Grid grouped by division (AFC/NFC East/North/South/West)',
+    fields: [
+      { field: 'team_id', type: 'string', nullable: false, key: 'PK', example: 'KC', description: '2-3 letter team code' },
+      { field: 'team_name', type: 'string', nullable: false, example: 'Kansas City Chiefs', description: 'Full team name' },
+      { field: 'team_abbr', type: 'string', nullable: false, example: 'KC', description: 'Team abbreviation' },
+      { field: 'city', type: 'string', nullable: true, example: 'Kansas City', description: 'Team city' },
+      { field: 'nickname', type: 'string', nullable: true, example: 'Chiefs', description: 'Team nickname' },
+      { field: 'conference', type: 'enum', nullable: true, example: 'AFC', description: 'AFC | NFC' },
+      { field: 'division', type: 'enum', nullable: true, example: 'West', description: 'North | South | East | West' },
+      { field: 'logo_url', type: 'string', nullable: true, example: 'https://a.espncdn.com/...', description: 'Team logo URL' },
+    ],
+  },
+  {
+    title: 'Team Transactions',
+    table: 'roster_transactions',
+    dataType: 'table',
+    scraper: 'roster-updates',
+    schedule: 'Daily',
+    source: 'ESPN API',
+    primaryKey: 'transaction_id',
+    recordCount: '~1,000+/season',
+    displayFormat: 'Filtered by team_id, sorted by date descending',
+    fields: [
+      { field: 'transaction_id', type: 'number', nullable: false, key: 'PK', example: '12345', description: 'Auto-increment ID' },
+      { field: 'player_id', type: 'string', nullable: false, key: 'FK', fkRef: 'players.player_id', example: 'espn-3139477', description: 'Player reference' },
+      { field: 'team_id', type: 'string', nullable: false, key: 'FK', fkRef: 'teams.team_id', example: 'KC', description: 'Team reference (filter key)' },
+      { field: 'transaction_type', type: 'enum', nullable: false, example: 'signed', description: 'signed | released | traded | waived | claimed' },
+      { field: 'transaction_date', type: 'date', nullable: false, example: '2025-10-15', description: 'Date of transaction' },
+      { field: 'details', type: 'string', nullable: true, example: 'Signed to practice squad', description: 'Transaction details' },
+    ],
+  },
+]
+
+// =============================================================================
 // SUMMARY STATS
 // =============================================================================
 
-export function getTotalFields(): { scoreboard: number; gameDetails: number; standings: number; injuries: number; transactions: number; total: number } {
+export function getTotalFields(): { scoreboard: number; gameDetails: number; standings: number; injuries: number; transactions: number; teams: number; total: number } {
   const scoreboard = SCOREBOARD_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
   const gameDetails = GAME_DETAILS_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
   const standings = STANDINGS_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
   const injuries = INJURIES_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
   const transactions = TRANSACTIONS_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
+  const teams = TEAMS_SECTIONS.reduce((sum, s) => sum + s.fields.length, 0)
   return {
     scoreboard,
     gameDetails,
     standings,
     injuries,
     transactions,
-    total: scoreboard + gameDetails + standings + injuries + transactions,
+    teams,
+    total: scoreboard + gameDetails + standings + injuries + transactions + teams,
   }
 }
 
 export function getUniqueTables(): string[] {
   const tables = new Set<string>()
-  ;[...SCOREBOARD_SECTIONS, ...GAME_DETAILS_SECTIONS, ...STANDINGS_SECTIONS, ...INJURIES_SECTIONS, ...TRANSACTIONS_SECTIONS].forEach(s => {
+  ;[...SCOREBOARD_SECTIONS, ...GAME_DETAILS_SECTIONS, ...STANDINGS_SECTIONS, ...INJURIES_SECTIONS, ...TRANSACTIONS_SECTIONS, ...TEAMS_SECTIONS].forEach(s => {
     if (s.table !== 'client') tables.add(s.table)
   })
   return Array.from(tables)
@@ -793,7 +842,7 @@ export function getUniqueTables(): string[] {
 
 export function getUniqueSources(): string[] {
   const sources = new Set<string>()
-  ;[...SCOREBOARD_SECTIONS, ...GAME_DETAILS_SECTIONS, ...STANDINGS_SECTIONS, ...INJURIES_SECTIONS, ...TRANSACTIONS_SECTIONS].forEach(s => {
+  ;[...SCOREBOARD_SECTIONS, ...GAME_DETAILS_SECTIONS, ...STANDINGS_SECTIONS, ...INJURIES_SECTIONS, ...TRANSACTIONS_SECTIONS, ...TEAMS_SECTIONS].forEach(s => {
     sources.add(s.source)
   })
   return Array.from(sources)
