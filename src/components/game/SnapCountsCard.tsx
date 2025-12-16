@@ -96,12 +96,12 @@ export function SnapCountsCard({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {offenseSnaps.map((s) => (
-                    <TableRow key={s.id}>
+                  {offenseSnaps.map((s, idx) => (
+                    <TableRow key={s.id ?? `${s.player_id}-${s.team_id}-off-${idx}`}>
                       <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                       <TableCell>{s.position || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.offense_snaps}</TableCell>
-                      <TableCell className="text-right tabular-nums">{s.offense_pct.toFixed(0)}%</TableCell>
+                      <TableCell className="text-right tabular-nums">{(s.offense_pct * 100).toFixed(0)}%</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -123,12 +123,12 @@ export function SnapCountsCard({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {defenseSnaps.map((s) => (
-                    <TableRow key={s.id}>
+                  {defenseSnaps.map((s, idx) => (
+                    <TableRow key={s.id ?? `${s.player_id}-${s.team_id}-def-${idx}`}>
                       <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                       <TableCell>{s.position || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.defense_snaps}</TableCell>
-                      <TableCell className="text-right tabular-nums">{s.defense_pct.toFixed(0)}%</TableCell>
+                      <TableCell className="text-right tabular-nums">{(s.defense_pct * 100).toFixed(0)}%</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -150,12 +150,12 @@ export function SnapCountsCard({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {stSnaps.map((s) => (
-                    <TableRow key={s.id}>
+                  {stSnaps.map((s, idx) => (
+                    <TableRow key={s.id ?? `${s.player_id}-${s.team_id}-st-${idx}`}>
                       <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                       <TableCell>{s.position || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.st_snaps}</TableCell>
-                      <TableCell className="text-right tabular-nums">{s.st_pct.toFixed(0)}%</TableCell>
+                      <TableCell className="text-right tabular-nums">{(s.st_pct * 100).toFixed(0)}%</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
