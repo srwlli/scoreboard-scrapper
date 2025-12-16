@@ -97,7 +97,7 @@ export function SnapCountsCard({
                 </TableHeader>
                 <TableBody>
                   {offenseSnaps.map((s, idx) => (
-                    <TableRow key={s.id ?? `${s.player_id}-${s.team_id}-off-${idx}`}>
+                    <TableRow key={s.id ?? `${s.player_name}-${s.team_id}-off-${idx}`}>
                       <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                       <TableCell>{s.position || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.offense_snaps}</TableCell>
@@ -124,7 +124,7 @@ export function SnapCountsCard({
                 </TableHeader>
                 <TableBody>
                   {defenseSnaps.map((s, idx) => (
-                    <TableRow key={s.id ?? `${s.player_id}-${s.team_id}-def-${idx}`}>
+                    <TableRow key={s.id ?? `${s.player_name}-${s.team_id}-def-${idx}`}>
                       <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                       <TableCell>{s.position || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.defense_snaps}</TableCell>
@@ -151,7 +151,7 @@ export function SnapCountsCard({
                 </TableHeader>
                 <TableBody>
                   {stSnaps.map((s, idx) => (
-                    <TableRow key={s.id ?? `${s.player_id}-${s.team_id}-st-${idx}`}>
+                    <TableRow key={s.id ?? `${s.player_name}-${s.team_id}-st-${idx}`}>
                       <TableCell className="font-medium">{formatPlayerName(s.player_name)}</TableCell>
                       <TableCell>{s.position || '-'}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.st_snaps}</TableCell>
