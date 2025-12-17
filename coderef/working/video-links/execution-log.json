@@ -1,0 +1,130 @@
+[
+  {
+    "timestamp": "2025-12-11T22:03:46.614404",
+    "workorder_id": "WO-VIDEO-LINKS-001",
+    "feature_name": "video-links",
+    "task_count": 24,
+    "tasks": [
+      {
+        "content": "PHASE-1--001: [ ] Create supabase/migrations/add_game_videos.sql",
+        "activeForm": "PHASE-1--001: [ing ] Create supabase/migrations/add_game_videos.sql",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--002: [ ] Run migration to create game_videos table",
+        "activeForm": "PHASE-1--002: [ing ] Run migration to create game_videos table",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--003: [ ] Add GameVideo interface to src/types/game.ts",
+        "activeForm": "PHASE-1--003: [ing ] Add GameVideo interface to src/types/game.ts",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--004: [ ] Update GameDetailData to include videos array",
+        "activeForm": "PHASE-1--004: [ing ] Update GameDetailData to include videos array",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--005: [ ] Document YOUTUBE_API_KEY in .env.local.example",
+        "activeForm": "PHASE-1--005: [ing ] Document YOUTUBE_API_KEY in .env.local.example",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--001: [ ] Create src/lib/youtube.ts with YouTube client",
+        "activeForm": "PHASE-2--001: [ing ] Create src/lib/youtube.ts with YouTube client",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--002: [ ] Implement TEAM_NICKNAMES mapping object",
+        "activeForm": "PHASE-2--002: [ing ] Implement TEAM_NICKNAMES mapping object",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--003: [ ] Implement searchGameHighlight function",
+        "activeForm": "PHASE-2--003: [ing ] Implement searchGameHighlight function",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--004: [ ] Create src/lib/queries/video-queries.ts",
+        "activeForm": "PHASE-2--004: [ing ] Create src/lib/queries/video-queries.ts",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--005: [ ] Implement getGameVideos, insertGameVideo functions",
+        "activeForm": "PHASE-2--005: [ing ] Implement getGameVideos, insertGameVideo functions",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--006: [ ] Create src/app/api/videos/[gameId]/route.ts",
+        "activeForm": "PHASE-2--006: [ing ] Create src/app/api/videos/[gameId]/route.ts",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--007: [ ] Implement GET handler with cache-first strategy",
+        "activeForm": "PHASE-2--007: [ing ] Implement GET handler with cache-first strategy",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--001: [ ] Create src/components/game/VideoCard.tsx",
+        "activeForm": "PHASE-3--001: [ing ] Create src/components/game/VideoCard.tsx",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--002: [ ] Implement YouTube embed with thumbnail preview",
+        "activeForm": "PHASE-3--002: [ing ] Implement YouTube embed with thumbnail preview",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--003: [ ] Add loading and error states",
+        "activeForm": "PHASE-3--003: [ing ] Add loading and error states",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--004: [ ] Import VideoCard in GameDetailClient.tsx",
+        "activeForm": "PHASE-3--004: [ing ] Import VideoCard in GameDetailClient.tsx",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--005: [ ] Add video query to getGameDetails",
+        "activeForm": "PHASE-3--005: [ing ] Add video query to getGameDetails",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--006: [ ] Position VideoCard after TeamStatsCard",
+        "activeForm": "PHASE-3--006: [ing ] Position VideoCard after TeamStatsCard",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--001: [ ] Create scripts/scrape-videos.ts",
+        "activeForm": "PHASE-4--001: [ing ] Create scripts/scrape-videos.ts",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--002: [ ] Implement batch processing with rate limiting",
+        "activeForm": "PHASE-4--002: [ing ] Implement batch processing with rate limiting",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--003: [ ] Add CLI args for season/week filtering",
+        "activeForm": "PHASE-4--003: [ing ] Add CLI args for season/week filtering",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--004: [ ] Run scraper on sample games",
+        "activeForm": "PHASE-4--004: [ing ] Run scraper on sample games",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--005: [ ] Verify video displays on game detail page",
+        "activeForm": "PHASE-4--005: [ing ] Verify video displays on game detail page",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-4--006: [ ] Check API quota usage",
+        "activeForm": "PHASE-4--006: [ing ] Check API quota usage",
+        "status": "pending"
+      }
+    ]
+  }
+]

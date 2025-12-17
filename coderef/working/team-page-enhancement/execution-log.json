@@ -1,0 +1,65 @@
+[
+  {
+    "timestamp": "2025-12-17T01:09:59.416625",
+    "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+    "feature_name": "team-page-enhancement",
+    "task_count": 11,
+    "tasks": [
+      {
+        "content": "PHASE-1-001: [ ] Add getTeamRoster query to teams-queries.ts",
+        "activeForm": "PHASE-1-001: [ing ] Add getTeamRoster query to teams-queries.ts",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1-002: [ ] Add getTeamStatLeaders query to teams-queries.ts",
+        "activeForm": "PHASE-1-002: [ing ] Add getTeamStatLeaders query to teams-queries.ts",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1-003: [ ] Test queries return correct data",
+        "activeForm": "PHASE-1-003: [ing ] Test queries return correct data",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2-001: [ ] Create TeamRosterCard with position grouping",
+        "activeForm": "PHASE-2-001: [ing ] Create TeamRosterCard with position grouping",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2-002: [ ] Create TeamRecordCard with W-L-T display",
+        "activeForm": "PHASE-2-002: [ing ] Create TeamRecordCard with W-L-T display",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2-003: [ ] Create TeamScheduleCard with game results",
+        "activeForm": "PHASE-2-003: [ing ] Create TeamScheduleCard with game results",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2-004: [ ] Create TeamStatLeadersCard with top players",
+        "activeForm": "PHASE-2-004: [ing ] Create TeamStatLeadersCard with top players",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3-001: [ ] Update page.tsx with grid layout",
+        "activeForm": "PHASE-3-001: [ing ] Update page.tsx with grid layout",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3-002: [ ] Add all components to team page",
+        "activeForm": "PHASE-3-002: [ing ] Add all components to team page",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3-003: [ ] Test with multiple teams",
+        "activeForm": "PHASE-3-003: [ing ] Test with multiple teams",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3-004: [ ] Verify mobile responsiveness",
+        "activeForm": "PHASE-3-004: [ing ] Verify mobile responsiveness",
+        "status": "pending"
+      }
+    ]
+  }
+]

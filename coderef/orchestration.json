@@ -1,0 +1,64 @@
+{
+  "handoff": {
+    "workorder_id": "WO-PLAN-AUDIT-SCRAPPER-001",
+    "type": "audit",
+    "from": "orchestrator-assistant",
+    "to": "scrapper-agent",
+    "initiated_at": "2025-12-16",
+    "status": "pending"
+  },
+  "instructions": {
+    "task": "Plan Status Audit",
+    "description": "Review all plan.json files in this coderef folder and report status",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Scan working folder",
+        "description": "List all features in coderef/working/ with their plan.json status"
+      },
+      {
+        "step": 2,
+        "action": "Assess each plan",
+        "description": "For each plan, determine: Is it active? Stale? Complete? Blocked?"
+      },
+      {
+        "step": 3,
+        "action": "Report status",
+        "description": "Update this communication.json with findings in the audit_results section"
+      },
+      {
+        "step": 4,
+        "action": "Suggest archives",
+        "description": "Identify plans that should be archived (complete or abandoned)"
+      },
+      {
+        "step": 5,
+        "action": "Archive candidates",
+        "description": "Use /archive-feature workflow to move completed features to coderef/archived/"
+      }
+    ],
+    "output_format": {
+      "active_plans": "Plans currently being worked on",
+      "stale_plans": "Plans with no recent activity (>7 days)",
+      "archive_candidates": "Plans ready to archive (complete or abandoned)",
+      "blocked_plans": "Plans waiting on external dependencies"
+    }
+  },
+  "audit_results": {
+    "scanned_at": null,
+    "working_folder_count": 5,
+    "active_plans": [],
+    "stale_plans": [],
+    "archive_candidates": [],
+    "blocked_plans": [],
+    "notes": ""
+  },
+  "communication_log": [
+    {
+      "timestamp": "2025-12-16T00:00:00Z",
+      "from": "orchestrator",
+      "action": "audit_requested",
+      "message": "Requesting plan status audit. Review all working/ plans, report status, suggest archives."
+    }
+  ]
+}

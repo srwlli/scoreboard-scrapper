@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { GameCard } from './GameCard'
 import { SeasonSelector } from './SeasonSelector'
 import { WeekSelector } from './WeekSelector'
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import type { Team, ScoreboardGame, Game } from '@/types/game'
+import { getCurrentWeek } from '@/types/game'
 
 interface ScoreboardClientProps {
   initialTeams: Team[]
@@ -47,6 +48,9 @@ export function ScoreboardClient({
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+
+  // Track if this is initial mount to avoid hash overriding server-calculated week
+  const isInitialMount = useRef(true)
 
   const selectedTeam = teamId ? initialTeams.find(t => t.team_id === teamId) : null
 
@@ -79,11 +83,29 @@ export function ScoreboardClient({
     }
   }, [])
 
-  // Handle season change
-  const handleSeasonChange = (newSeason: number) => {
+  // Handle season change - fetch maxWeek for new season and set appropriate week
+  const handleSeasonChange = async (newSeason: number) => {
     setSeason(newSeason)
-    setWeek(1)
-    updateHash(newSeason, 1, teamId)
+    setLoading(true)
+
+    // Fetch max week for new season
+    const supabase = createClient()
+    const { data } = await supabase
+      .from('games')
+      .select('week')
+      .eq('season', newSeason)
+      .order('week', { ascending: false })
+      .limit(1)
+
+    const newMaxWeek = data?.[0]?.week || 18
+    setMaxWeek(newMaxWeek)
+
+    // Calculate appropriate week for new season
+    const calculatedWeek = getCurrentWeek(newSeason)
+    const newWeek = Math.min(calculatedWeek, newMaxWeek)
+
+    setWeek(newWeek)
+    updateHash(newSeason, newWeek, teamId)
   }
 
   // Handle week change
@@ -187,10 +209,22 @@ export function ScoreboardClient({
     }
   }, [season, week, teamId, fetchGames, initialSeason, initialWeek, initialTeamId])
 
-  // Parse hash on mount
+  // On initial mount, set hash to match server-calculated values (don't read from hash)
+  // This prevents stale hash from overriding fresh server data
   useEffect(() => {
-    const hash = window.location.hash.slice(1)
-    if (hash) {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      // Set hash to match server-calculated initial values
+      updateHash(initialSeason, initialWeek, initialTeamId)
+    }
+  }, [initialSeason, initialWeek, initialTeamId, updateHash])
+
+  // Listen for hash changes (browser back/forward navigation)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1)
+      if (!hash) return
+
       const teamMatch = hash.match(/^(\d+)-team-(\w+)$/)
       const weekMatch = hash.match(/^(\d+)-week(\d+)$/)
 
@@ -205,6 +239,9 @@ export function ScoreboardClient({
         setTeamId(null)
       }
     }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
 
   // Real-time subscription for live game updates

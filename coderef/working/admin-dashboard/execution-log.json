@@ -1,0 +1,80 @@
+[
+  {
+    "timestamp": "2025-12-14T00:51:35.638580",
+    "workorder_id": "WO-ADMIN-DASHBOARD-001",
+    "feature_name": "admin-dashboard",
+    "task_count": 14,
+    "tasks": [
+      {
+        "content": "PHASE-1--001: [ ] Create src/types/admin.ts with interfaces",
+        "activeForm": "PHASE-1--001: [ing ] Create src/types/admin.ts with interfaces",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--002: [ ] Create src/lib/queries/admin-queries.ts with query functions",
+        "activeForm": "PHASE-1--002: [ing ] Create src/lib/queries/admin-queries.ts with query functions",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--003: [ ] Create src/app/admin/page.tsx route",
+        "activeForm": "PHASE-1--003: [ing ] Create src/app/admin/page.tsx route",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-1--004: [ ] Verify /admin URL is accessible",
+        "activeForm": "PHASE-1--004: [ing ] Verify /admin URL is accessible",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--001: [ ] Create DataFreshnessCard component",
+        "activeForm": "PHASE-2--001: [ing ] Create DataFreshnessCard component",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--002: [ ] Create TableStatsCard component",
+        "activeForm": "PHASE-2--002: [ing ] Create TableStatsCard component",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--003: [ ] Create CoverageMapCard component",
+        "activeForm": "PHASE-2--003: [ing ] Create CoverageMapCard component",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--004: [ ] Create RecentActivityCard component",
+        "activeForm": "PHASE-2--004: [ing ] Create RecentActivityCard component",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-2--005: [ ] Verify each component renders with mock/real data",
+        "activeForm": "PHASE-2--005: [ing ] Verify each component renders with mock/real data",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--001: [ ] Create AdminDashboardClient with all cards",
+        "activeForm": "PHASE-3--001: [ing ] Create AdminDashboardClient with all cards",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--002: [ ] Implement 30s auto-refresh with useEffect",
+        "activeForm": "PHASE-3--002: [ing ] Implement 30s auto-refresh with useEffect",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--003: [ ] Add Admin link to site-header.tsx navigation",
+        "activeForm": "PHASE-3--003: [ing ] Add Admin link to site-header.tsx navigation",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--004: [ ] Test full flow from nav link to dashboard",
+        "activeForm": "PHASE-3--004: [ing ] Test full flow from nav link to dashboard",
+        "status": "pending"
+      },
+      {
+        "content": "PHASE-3--005: [ ] Verify responsive layout on mobile",
+        "activeForm": "PHASE-3--005: [ing ] Verify responsive layout on mobile",
+        "status": "pending"
+      }
+    ]
+  }
+]

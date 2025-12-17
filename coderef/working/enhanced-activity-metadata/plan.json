@@ -1,0 +1,286 @@
+{
+  "META_DOCUMENTATION": {
+    "feature_name": "enhanced-activity-metadata",
+    "schema_version": "1.0.0",
+    "version": "1.0.0",
+    "status": "complete",
+    "generated_by": "AI Assistant",
+    "has_context": true,
+    "has_analysis": false
+  },
+  "UNIVERSAL_PLANNING_STRUCTURE": {
+    "0_preparation": {
+      "foundation_docs": [
+        "src/types/admin.ts",
+        "src/lib/queries/admin-queries.ts",
+        "src/components/admin/RecentActivityCard.tsx"
+      ],
+      "coding_standards": "TypeScript with Next.js App Router patterns",
+      "reference_components": [
+        "src/components/admin/RecentActivityCard.tsx",
+        "src/components/admin/ScrapersStatusClient.tsx"
+      ]
+    },
+    "1_executive_summary": {
+      "objective": "Enhance Recent Activity card to show meaningful metadata for ALL scraper types instead of generic 'X rows updated' messages",
+      "scope": "Admin dashboard Recent Activity component and supporting queries",
+      "deliverables": [
+        "Updated ActivityEntry type with metadata field",
+        "Enhanced getRecentActivity query with table-specific metadata aggregation",
+        "Updated RecentActivityCard UI to display contextual descriptions"
+      ],
+      "estimated_complexity": "medium"
+    },
+    "2_risk_assessment": {
+      "complexity_score": 5,
+      "risks": [
+        {
+          "risk": "Performance impact from fetching more rows",
+          "mitigation": "Limit to 100 rows per table, use efficient aggregation"
+        },
+        {
+          "risk": "Missing metadata columns in some tables",
+          "mitigation": "Graceful fallback to generic description"
+        }
+      ],
+      "dependencies": []
+    },
+    "3_current_state_analysis": {
+      "files_to_modify": [
+        {
+          "path": "src/types/admin.ts",
+          "changes": "Add metadata field to ActivityEntry interface"
+        },
+        {
+          "path": "src/lib/queries/admin-queries.ts",
+          "changes": "Update getRecentActivity to fetch and aggregate metadata per table type"
+        },
+        {
+          "path": "src/components/admin/RecentActivityCard.tsx",
+          "changes": "Display metadata in description area"
+        }
+      ],
+      "files_to_create": []
+    },
+    "4_key_features": {
+      "features": [
+        {
+          "id": "FEAT-001",
+          "name": "Week Range Metadata",
+          "description": "Show week ranges for game-related tables (games, live_plays, live_drives, win_probability)"
+        },
+        {
+          "id": "FEAT-002",
+          "name": "Video Type Counts",
+          "description": "Show video_type counts for game_videos (e.g., '90 highlights')"
+        },
+        {
+          "id": "FEAT-003",
+          "name": "Team Counts",
+          "description": "Show team counts for player_injuries"
+        },
+        {
+          "id": "FEAT-004",
+          "name": "Transaction Breakdown",
+          "description": "Show transaction_type breakdown for roster_transactions"
+        },
+        {
+          "id": "FEAT-005",
+          "name": "Batch Aggregation",
+          "description": "Aggregate metadata from batch updates (not just 5 rows)"
+        },
+        {
+          "id": "FEAT-006",
+          "name": "Contextual Descriptions",
+          "description": "Display contextual descriptions like '90 highlights (Weeks 5-11)' instead of '90 rows updated'"
+        }
+      ]
+    },
+    "5_task_id_system": {
+      "workorder": {
+        "id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+        "name": "Enhanced Activity Metadata",
+        "feature_dir": "coderef/working/enhanced-activity-metadata"
+      },
+      "tasks": [
+        {
+          "id": "TYPE-001",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Add metadata field to ActivityEntry interface in src/types/admin.ts",
+          "file": "src/types/admin.ts",
+          "estimated_lines": 5,
+          "phase": 1
+        },
+        {
+          "id": "QUERY-001",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Update tablesToCheck config with metadata columns for each table",
+          "file": "src/lib/queries/admin-queries.ts",
+          "estimated_lines": 20,
+          "phase": 2
+        },
+        {
+          "id": "QUERY-002",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Implement game_videos metadata aggregation (video_type, week range)",
+          "file": "src/lib/queries/admin-queries.ts",
+          "estimated_lines": 30,
+          "phase": 2
+        },
+        {
+          "id": "QUERY-003",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Implement games metadata aggregation (week, team info)",
+          "file": "src/lib/queries/admin-queries.ts",
+          "estimated_lines": 25,
+          "phase": 2
+        },
+        {
+          "id": "QUERY-004",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Implement live_plays/live_drives metadata aggregation (game_id to week mapping)",
+          "file": "src/lib/queries/admin-queries.ts",
+          "estimated_lines": 30,
+          "phase": 2
+        },
+        {
+          "id": "QUERY-005",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Implement player_injuries metadata aggregation (team counts)",
+          "file": "src/lib/queries/admin-queries.ts",
+          "estimated_lines": 20,
+          "phase": 2
+        },
+        {
+          "id": "QUERY-006",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Implement roster_transactions metadata aggregation (transaction_type breakdown)",
+          "file": "src/lib/queries/admin-queries.ts",
+          "estimated_lines": 25,
+          "phase": 2
+        },
+        {
+          "id": "QUERY-007",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Create helper function to build contextual description strings",
+          "file": "src/lib/queries/admin-queries.ts",
+          "estimated_lines": 40,
+          "phase": 2
+        },
+        {
+          "id": "UI-001",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Update RecentActivityCard to display metadata in description area",
+          "file": "src/components/admin/RecentActivityCard.tsx",
+          "estimated_lines": 15,
+          "phase": 3
+        },
+        {
+          "id": "TEST-001",
+          "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+          "description": "Manual testing of all table types in Recent Activity card",
+          "file": "N/A",
+          "estimated_lines": 0,
+          "phase": 4
+        }
+      ]
+    },
+    "6_implementation_phases": {
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Type Updates",
+          "description": "Add metadata field to ActivityEntry type",
+          "tasks": ["TYPE-001"],
+          "deliverables": ["Updated ActivityEntry interface with optional metadata string field"]
+        },
+        {
+          "phase": 2,
+          "name": "Query Enhancement",
+          "description": "Update getRecentActivity to fetch and aggregate metadata per table type",
+          "tasks": ["QUERY-001", "QUERY-002", "QUERY-003", "QUERY-004", "QUERY-005", "QUERY-006", "QUERY-007"],
+          "deliverables": [
+            "Updated tablesToCheck with metadata column configs",
+            "Table-specific metadata aggregation logic",
+            "Helper function for contextual description building"
+          ]
+        },
+        {
+          "phase": 3,
+          "name": "UI Integration",
+          "description": "Display metadata in RecentActivityCard",
+          "tasks": ["UI-001"],
+          "deliverables": ["Updated RecentActivityCard showing contextual descriptions"]
+        },
+        {
+          "phase": 4,
+          "name": "Testing",
+          "description": "Verify all table types display correct metadata",
+          "tasks": ["TEST-001"],
+          "deliverables": ["Verified metadata display for all 9 table types"]
+        }
+      ]
+    },
+    "7_testing_strategy": {
+      "unit_tests": [],
+      "integration_tests": [],
+      "manual_tests": [
+        "Verify game_videos shows '90 highlights (Weeks 5-11)' format",
+        "Verify games shows '16 games updated (Week 14)' format",
+        "Verify live_plays shows week context",
+        "Verify player_injuries shows team counts",
+        "Verify roster_transactions shows type breakdown",
+        "Verify filter pills still work correctly",
+        "Verify graceful fallback when metadata unavailable"
+      ]
+    },
+    "8_success_criteria": {
+      "acceptance_criteria": [
+        "Recent Activity shows contextual metadata for all 9 monitored table types",
+        "Descriptions include week ranges, type counts, or team counts as appropriate",
+        "Performance remains acceptable (page loads within 2 seconds)",
+        "Existing filter functionality preserved",
+        "Graceful fallback to generic description when metadata unavailable"
+      ]
+    },
+    "9_implementation_checklist": {
+      "phase_1_checklist": [
+        "[ ] Add metadata?: string to ActivityEntry interface"
+      ],
+      "phase_2_checklist": [
+        "[ ] Update tablesToCheck with metadata columns",
+        "[ ] Increase row limit from 5 to 100",
+        "[ ] Implement game_videos aggregation",
+        "[ ] Implement games aggregation",
+        "[ ] Implement live_plays aggregation",
+        "[ ] Implement live_drives aggregation",
+        "[ ] Implement win_probability aggregation",
+        "[ ] Implement player_game_stats aggregation",
+        "[ ] Implement team_game_stats aggregation",
+        "[ ] Implement player_injuries aggregation",
+        "[ ] Implement roster_transactions aggregation",
+        "[ ] Create buildMetadataDescription helper"
+      ],
+      "phase_3_checklist": [
+        "[ ] Display metadata in activity entry",
+        "[ ] Style metadata appropriately"
+      ],
+      "phase_4_checklist": [
+        "[ ] Test all 9 table types",
+        "[ ] Verify filter functionality",
+        "[ ] Check performance"
+      ]
+    }
+  },
+  "METADATA_FORMAT_EXAMPLES": {
+    "game_videos": "90 highlights (Weeks 5-11)",
+    "games": "16 games updated (Week 14)",
+    "live_plays": "245 plays (Week 14 games)",
+    "live_drives": "32 drives (Week 14)",
+    "win_probability": "1,200 entries (Week 14)",
+    "player_game_stats": "512 player stats (Week 13)",
+    "team_game_stats": "32 team stats (Week 13)",
+    "player_injuries": "45 injuries (8 teams)",
+    "roster_transactions": "12 transactions (3 signings, 9 IR)"
+  }
+}

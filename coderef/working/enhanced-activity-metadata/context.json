@@ -1,0 +1,26 @@
+{
+  "feature_name": "enhanced-activity-metadata",
+  "description": "Enhance Recent Activity card to show meaningful metadata for ALL scraper types instead of just generic \"X rows updated\" messages",
+  "goal": "Users can see what was actually scraped (weeks, teams, types) in the Recent Activity card for all table types",
+  "requirements": [
+    "Show week ranges for game-related tables (games, live_plays, live_drives, win_probability)",
+    "Show video_type counts for game_videos (e.g., '90 highlights')",
+    "Show team counts for player_injuries",
+    "Show transaction_type breakdown for roster_transactions",
+    "Aggregate metadata from batch updates (not just 5 rows)",
+    "Display contextual descriptions like '90 highlights (Weeks 5-11)' instead of '90 rows updated'"
+  ],
+  "out_of_scope": [],
+  "constraints": [
+    "Must maintain existing filter functionality",
+    "Keep performance reasonable (don't fetch entire tables)",
+    "Handle missing metadata gracefully"
+  ],
+  "decisions": {},
+  "success_criteria": {},
+  "_metadata": {
+    "workorder_id": "WO-ENHANCED-ACTIVITY-METADATA-001",
+    "workorder_assigned_at": "2025-12-14T08:21:16.445419+00:00",
+    "workorder_assigned_by": "gather_context"
+  }
+}

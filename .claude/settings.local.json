@@ -1,7 +1,25 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(node scripts/scrapers/backfill-historical.js:*)",
+      "Bash(node -e:*)",
+      "Bash(node scripts/scrapers/player-stats-scraper.js:*)",
+      "Bash(npm run build)",
+      "Bash(python -m pytest:*)",
+      "Bash(python:*)",
+      "Bash(SUPABASE_URL=\"https://fuzouuxhxluqjmiyabal.supabase.co\" SUPABASE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1em91dXhoeGx1cWptaXlhYmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NjkxNjUsImV4cCI6MjA3NjM0NTE2NX0.Y-OhXrOHHiM9fkZh6LQgBjD1SS9dsctdl4zQcTrSj-g\" python:*)",
+      "mcp__docs-mcp__create_plan",
+      "mcp__docs-mcp__generate_deliverables_template",
+      "Bash(timeout 30 python:*)",
+      "Bash(npx supabase migration:*)",
+      "Bash(npx supabase:*)",
+      "Bash(timeout 300 python:*)",
+      "mcp__docs-mcp__gather_context",
+      "mcp__docs-mcp__analyze_project_for_planning"
     ],
     "deny": [],
     "ask": []

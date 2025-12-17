@@ -4,42 +4,53 @@
   "category": "fix",
   "priority": "high",
   "created": "2025-12-16T20:15:00Z",
-  "status": "stub",
+  "status": "completed",
+  "completed": "2025-12-16T22:30:00Z",
   "tasks": [
     {
       "id": 1,
       "name": "Fix defensive stats mapping bug",
       "description": "Remove duplicate defensive branch; map FF/FR/PD/QB hits/TFL correctly",
       "impact": "critical",
-      "effort": "30 min"
+      "effort": "30 min",
+      "status": "completed",
+      "commit": "cbc74e3"
     },
     {
       "id": 2,
       "name": "Standardize game_id normalization",
       "description": "Enforce espn-${id} format across all records/paths including roster fallback",
       "impact": "high",
-      "effort": "1 hour"
+      "effort": "1 hour",
+      "status": "completed",
+      "commit": "71c839e"
     },
     {
       "id": 3,
       "name": "Add retries + exponential backoff",
       "description": "Wrap ESPN + Supabase calls with retry helper, jitter, clear failure modes",
       "impact": "high",
-      "effort": "1 hour"
+      "effort": "1 hour",
+      "status": "completed",
+      "commit": "89dc9d3"
     },
     {
       "id": 4,
       "name": "Replace execSync with async spawn",
       "description": "Prevent live scraper from blocking when multiple games finish simultaneously",
       "impact": "high",
-      "effort": "30 min"
+      "effort": "30 min",
+      "status": "completed",
+      "commit": "a787551"
     },
     {
       "id": 5,
       "name": "Remove fabricated values",
       "description": "Set sack_yards_lost to null instead of sacks * 7 estimate",
       "impact": "medium",
-      "effort": "5 min"
+      "effort": "5 min",
+      "status": "completed",
+      "commit": "61285eb"
     }
   ],
   "post_fix_action": "Re-backfill 2024 season after all fixes applied",
