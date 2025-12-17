@@ -1,0 +1,27 @@
+{
+  "feature_name": "team-page-enhancement",
+  "description": "Enhance the individual team page (/teams/[teamId]) to show team roster, stats, schedule, and player leaders using the new current_team_id field",
+  "goal": "Transform minimal team page into comprehensive team hub with roster, stats, schedule, and depth information",
+  "requirements": [
+    "Display current team roster using current_team_id from players table",
+    "Show team record and standings info",
+    "Display upcoming and recent games schedule",
+    "Show team stat leaders (passing, rushing, receiving)",
+    "Add team stats summary card",
+    "Responsive layout with tabbed or sectioned interface"
+  ],
+  "out_of_scope": [],
+  "constraints": [
+    "Must use existing Supabase database schema",
+    "Reuse existing UI components where possible",
+    "Server-side rendering for SEO",
+    "Match existing app styling patterns"
+  ],
+  "decisions": {},
+  "success_criteria": {},
+  "_metadata": {
+    "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+    "workorder_assigned_at": "2025-12-17T05:51:10.319346+00:00",
+    "workorder_assigned_by": "gather_context"
+  }
+}

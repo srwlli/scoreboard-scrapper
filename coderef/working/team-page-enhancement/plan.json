@@ -1,0 +1,302 @@
+{
+  "META_DOCUMENTATION": {
+    "feature_name": "team-page-enhancement",
+    "schema_version": "1.0.0",
+    "version": "1.0.0",
+    "status": "complete",
+    "generated_by": "AI Assistant",
+    "has_context": true,
+    "has_analysis": true,
+    "created_at": "2025-12-17"
+  },
+  "UNIVERSAL_PLANNING_STRUCTURE": {
+    "0_preparation": {
+      "foundation_docs": {
+        "architecture": "Next.js 16 App Router with server-side rendering",
+        "schema": "Supabase PostgreSQL - players.current_team_id now available",
+        "components": "src/components/ - shadcn/ui primitives + custom components"
+      },
+      "coding_standards": {
+        "naming": "camelCase for functions/vars, PascalCase for components",
+        "patterns": "Server components default, 'use client' for interactivity",
+        "queries": "src/lib/queries/*.ts for all Supabase queries"
+      },
+      "reference_components": {
+        "page_pattern": "src/app/game/[gameId]/page.tsx - dynamic route with data fetching",
+        "card_pattern": "src/components/game/TeamStatsCard.tsx - stats display card",
+        "query_pattern": "src/lib/queries/teams-queries.ts - existing team queries"
+      }
+    },
+    "1_executive_summary": {
+      "goal": "Transform minimal team page into comprehensive team hub with roster, stats, schedule, and player leaders",
+      "scope": "Enhance /teams/[teamId] page with 5 new sections: roster, record, schedule, stat leaders, team stats",
+      "impact": "Enables users to view complete team information in one place, leveraging new current_team_id field",
+      "estimated_complexity": "medium"
+    },
+    "2_risk_assessment": {
+      "risks": [
+        {
+          "risk": "Large roster queries may be slow",
+          "severity": "low",
+          "mitigation": "Use indexed current_team_id column, limit fields selected"
+        },
+        {
+          "risk": "Stat leader calculations complex",
+          "severity": "medium",
+          "mitigation": "Use existing player_game_stats aggregation patterns"
+        }
+      ],
+      "overall_risk": "low"
+    },
+    "3_current_state_analysis": {
+      "existing_files": [
+        {
+          "path": "src/app/teams/[teamId]/page.tsx",
+          "changes": "Add roster, schedule, stats sections to page layout"
+        },
+        {
+          "path": "src/lib/queries/teams-queries.ts",
+          "changes": "Add getTeamRoster, getTeamStatLeaders queries"
+        }
+      ],
+      "files_to_create": [
+        {
+          "path": "src/components/teams/TeamRosterCard.tsx",
+          "purpose": "Display team roster grouped by position"
+        },
+        {
+          "path": "src/components/teams/TeamScheduleCard.tsx",
+          "purpose": "Display team schedule with results"
+        },
+        {
+          "path": "src/components/teams/TeamStatLeadersCard.tsx",
+          "purpose": "Display team stat leaders (pass/rush/rec)"
+        },
+        {
+          "path": "src/components/teams/TeamRecordCard.tsx",
+          "purpose": "Display team record and standings info"
+        }
+      ]
+    },
+    "4_key_features": {
+      "features": [
+        {
+          "id": "F1",
+          "name": "Team Roster Display",
+          "description": "Show current roster using current_team_id, grouped by position (QB, RB, WR, TE, etc.)",
+          "priority": "high"
+        },
+        {
+          "id": "F2",
+          "name": "Team Record & Standings",
+          "description": "Display W-L-T record and division standing",
+          "priority": "high"
+        },
+        {
+          "id": "F3",
+          "name": "Team Schedule",
+          "description": "Show full season schedule with game results and upcoming games",
+          "priority": "high"
+        },
+        {
+          "id": "F4",
+          "name": "Team Stat Leaders",
+          "description": "Display team leaders in passing, rushing, receiving yards and TDs",
+          "priority": "medium"
+        },
+        {
+          "id": "F5",
+          "name": "Enhanced Page Layout",
+          "description": "Responsive grid layout with all team sections",
+          "priority": "high"
+        }
+      ]
+    },
+    "5_task_id_system": {
+      "workorder": {
+        "id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+        "name": "Team Page Enhancement",
+        "feature_dir": "coderef/working/team-page-enhancement"
+      },
+      "tasks": [
+        {
+          "id": "QUERY-001",
+          "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+          "description": "Add getTeamRoster query using current_team_id",
+          "feature_id": "F1",
+          "file_path": "src/lib/queries/teams-queries.ts",
+          "action": "modify",
+          "function_name": "getTeamRoster",
+          "estimated_loc": 25,
+          "dependencies": []
+        },
+        {
+          "id": "QUERY-002",
+          "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+          "description": "Add getTeamStatLeaders query for pass/rush/rec leaders",
+          "feature_id": "F4",
+          "file_path": "src/lib/queries/teams-queries.ts",
+          "action": "modify",
+          "function_name": "getTeamStatLeaders",
+          "estimated_loc": 60,
+          "dependencies": []
+        },
+        {
+          "id": "COMP-001",
+          "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+          "description": "Create TeamRosterCard component with position grouping",
+          "feature_id": "F1",
+          "file_path": "src/components/teams/TeamRosterCard.tsx",
+          "action": "create",
+          "component_name": "TeamRosterCard",
+          "props": ["roster: Player[]", "teamAbbr: string"],
+          "estimated_loc": 80,
+          "dependencies": ["QUERY-001"]
+        },
+        {
+          "id": "COMP-002",
+          "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+          "description": "Create TeamRecordCard component with W-L-T display",
+          "feature_id": "F2",
+          "file_path": "src/components/teams/TeamRecordCard.tsx",
+          "action": "create",
+          "component_name": "TeamRecordCard",
+          "props": ["record: { wins: number, losses: number, ties: number }", "team: Team"],
+          "estimated_loc": 40,
+          "dependencies": []
+        },
+        {
+          "id": "COMP-003",
+          "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+          "description": "Create TeamScheduleCard component with game results",
+          "feature_id": "F3",
+          "file_path": "src/components/teams/TeamScheduleCard.tsx",
+          "action": "create",
+          "component_name": "TeamScheduleCard",
+          "props": ["schedule: Game[]", "teamId: string"],
+          "estimated_loc": 100,
+          "dependencies": []
+        },
+        {
+          "id": "COMP-004",
+          "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+          "description": "Create TeamStatLeadersCard component",
+          "feature_id": "F4",
+          "file_path": "src/components/teams/TeamStatLeadersCard.tsx",
+          "action": "create",
+          "component_name": "TeamStatLeadersCard",
+          "props": ["leaders: { passing: PlayerStat[], rushing: PlayerStat[], receiving: PlayerStat[] }"],
+          "estimated_loc": 80,
+          "dependencies": ["QUERY-002"]
+        },
+        {
+          "id": "PAGE-001",
+          "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+          "description": "Update team page with new components and grid layout",
+          "feature_id": "F5",
+          "file_path": "src/app/teams/[teamId]/page.tsx",
+          "action": "modify",
+          "imports_to_add": [
+            "TeamRosterCard from '@/components/teams/TeamRosterCard'",
+            "TeamRecordCard from '@/components/teams/TeamRecordCard'",
+            "TeamScheduleCard from '@/components/teams/TeamScheduleCard'",
+            "TeamStatLeadersCard from '@/components/teams/TeamStatLeadersCard'",
+            "getTeamRoster, getTeamStatLeaders from '@/lib/queries/teams-queries'"
+          ],
+          "estimated_loc": 60,
+          "dependencies": ["COMP-001", "COMP-002", "COMP-003", "COMP-004"]
+        },
+        {
+          "id": "VERIFY-001",
+          "workorder_id": "WO-TEAM-PAGE-ENHANCEMENT-001",
+          "description": "Test team page with multiple teams, verify data accuracy",
+          "feature_id": "F5",
+          "file_path": null,
+          "action": "test",
+          "test_teams": ["KC", "BUF", "PHI", "SF"],
+          "estimated_loc": 0,
+          "dependencies": ["PAGE-001"]
+        }
+      ]
+    },
+    "6_implementation_phases": {
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Data Layer",
+          "description": "Add new queries for roster and stat leaders",
+          "tasks": ["QUERY-001", "QUERY-002"],
+          "deliverables": ["getTeamRoster query", "getTeamStatLeaders query"]
+        },
+        {
+          "phase": 2,
+          "name": "Components",
+          "description": "Create all team page components",
+          "tasks": ["COMP-001", "COMP-002", "COMP-003", "COMP-004"],
+          "deliverables": ["TeamRosterCard", "TeamRecordCard", "TeamScheduleCard", "TeamStatLeadersCard"]
+        },
+        {
+          "phase": 3,
+          "name": "Page Integration",
+          "description": "Update team page with new layout and components",
+          "tasks": ["PAGE-001", "VERIFY-001"],
+          "deliverables": ["Enhanced team page", "Verified functionality"]
+        }
+      ]
+    },
+    "7_testing_strategy": {
+      "unit_tests": [],
+      "integration_tests": [
+        {
+          "test": "Roster displays all players with current_team_id",
+          "expected": "All players on team roster shown grouped by position"
+        },
+        {
+          "test": "Schedule shows correct game results",
+          "expected": "W/L indicated, scores shown for completed games"
+        }
+      ],
+      "manual_tests": [
+        "Load KC team page - verify Mahomes appears on roster",
+        "Check stat leaders match actual season stats",
+        "Verify responsive layout on mobile viewport",
+        "Test team with few players (expansion/new team scenario)"
+      ]
+    },
+    "8_success_criteria": {
+      "criteria": [
+        {
+          "metric": "Roster completeness",
+          "target": "All players with current_team_id shown on roster"
+        },
+        {
+          "metric": "Page load time",
+          "target": "Under 2 seconds with all data"
+        },
+        {
+          "metric": "Data accuracy",
+          "target": "Stat leaders match actual season totals"
+        }
+      ]
+    },
+    "9_implementation_checklist": {
+      "phase_1": [
+        "[ ] Add getTeamRoster query to teams-queries.ts",
+        "[ ] Add getTeamStatLeaders query to teams-queries.ts",
+        "[ ] Test queries return correct data"
+      ],
+      "phase_2": [
+        "[ ] Create TeamRosterCard with position grouping",
+        "[ ] Create TeamRecordCard with W-L-T display",
+        "[ ] Create TeamScheduleCard with game results",
+        "[ ] Create TeamStatLeadersCard with top players"
+      ],
+      "phase_3": [
+        "[ ] Update page.tsx with grid layout",
+        "[ ] Add all components to team page",
+        "[ ] Test with multiple teams",
+        "[ ] Verify mobile responsiveness"
+      ]
+    }
+  }
+}

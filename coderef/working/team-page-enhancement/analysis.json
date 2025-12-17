@@ -1,0 +1,200 @@
+{
+  "foundation_docs": {
+    "available": [
+      "README.md (root)",
+      "API.md (coderef/foundation-docs)",
+      "ARCHITECTURE.md (coderef/foundation-docs)",
+      "COMPONENTS.md (coderef/foundation-docs)",
+      "SCHEMA.md (coderef/foundation-docs)"
+    ],
+    "missing": [
+      "USER-GUIDE.md"
+    ]
+  },
+  "foundation_doc_content": {
+    "ARCHITECTURE.md": {
+      "location": "coderef\\foundation-docs",
+      "preview": "# Architecture - NFL Stats App\n\n**Last Updated:** 2025-12-06\n**Version:** 1.0.0\n\n---\n\n## System Overview\n\nNFL Stats App is a Next.js 16 application using the App Router pattern with server-side rendering and Supabase as the data layer.\n\n```\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502                        Client Browser                        \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                              \u2502\n                              \u25bc\n\u250c\u2500",
+      "headers": [
+        "Architecture - NFL Stats App",
+        "System Overview",
+        "Technology Stack",
+        "Directory Structure",
+        "Data Flow",
+        "Server-Side Rendering (Primary Pattern)",
+        "Client-Side Interactivity",
+        "Component Patterns",
+        "Server Components (Default)",
+        "Client Components (Interactive)"
+      ],
+      "size": 8960
+    },
+    "API.md": {
+      "location": "coderef\\foundation-docs",
+      "preview": "# API Reference - NFL Stats App\n\n**Last Updated:** 2025-12-06\n**Version:** 1.0.0\n\n---\n\n## Overview\n\nNFL Stats App uses server-side data fetching functions (not REST endpoints). All data is fetched via Supabase queries in Next.js server components.\n\n## Query Functions\n\n### Location\n```\nsrc/lib/queries/\n\u251c\u2500\u2500 game-queries.ts      # Game detail data\n\u251c\u2500\u2500 scoreboard-queries.ts # Scoreboard & team data\n\u2514\u2500\u2500 standings-queries.ts  # Standings data\n```\n\n---\n\n## Game Queries\n\n### `getGameDetails(gameId: stri",
+      "headers": [
+        "API Reference - NFL Stats App",
+        "Overview",
+        "Query Functions",
+        "Location",
+        "Game Queries",
+        "`getGameDetails(gameId: string)`",
+        "`getGameMetadata(gameId: string)`",
+        "`getAllGameIds()`",
+        "Scoreboard Queries",
+        "`getTeams()`"
+      ],
+      "size": 7568
+    },
+    "COMPONENTS.md": {
+      "location": "coderef\\foundation-docs",
+      "preview": "# Components Reference - NFL Stats App\n\n**Framework:** Next.js 16 / React 19\n**Version:** 1.0.0\n**Last Updated:** 2025-12-06\n\n---\n\n## Component Organization\n\n```\nsrc/components/\n\u251c\u2500\u2500 game/                    # Game detail page components\n\u251c\u2500\u2500 scoreboard/              # Scoreboard page components\n\u251c\u2500\u2500 standings/               # Standings page components\n\u251c\u2500\u2500 ui/                      # shadcn/ui primitives\n\u251c\u2500\u2500 site-header.tsx          # Global header\n\u251c\u2500\u2500 theme-provider.tsx       # Dark/light mode\n\u251c\u2500\u2500 ",
+      "headers": [
+        "Components Reference - NFL Stats App",
+        "Component Organization",
+        "Game Components",
+        "GameHeader",
+        "TeamStatsCard",
+        "PlayerStatsCard",
+        "ScoringPlays",
+        "TopEPAPlays",
+        "SnapCountsCard",
+        "NGSStatsCard"
+      ],
+      "size": 9549
+    },
+    "SCHEMA.md": {
+      "location": "coderef\\foundation-docs",
+      "preview": "# Schema Reference - NFL Stats App\n\n**Last Updated:** 2025-12-08\n**Schema Version:** 1.1.0\n\n---\n\n## Overview\n\nThe NFL Stats App uses Supabase (PostgreSQL) with 15+ tables covering games, teams, players, and statistics from ESPN and nflverse data sources.\n\n## TypeScript Interfaces\n\nAll types are defined in `src/types/game.ts` (684 lines, 15 interfaces, 146+ fields).\n\n---\n\n## Core Tables\n\n### `games`\n\nMain game records with ESPN game IDs.\n\n```typescript\ninterface Game {\n  game_id: string          ",
+      "headers": [
+        "Schema Reference - NFL Stats App",
+        "Overview",
+        "TypeScript Interfaces",
+        "Core Tables",
+        "`games`",
+        "`teams`",
+        "`players`",
+        "`stadiums`",
+        "Statistics Tables",
+        "`team_game_stats`"
+      ],
+      "size": 16723
+    },
+    "README.md": {
+      "location": "root",
+      "preview": "# NFL Stats App\n\n> Next.js application for viewing NFL game statistics, scores, and standings\n\n**Version:** 0.1.0\n**Last Updated:** 2025-12-06\n**Maintainer:** Development Team\n\n---\n\n## Overview\n\nNFL Stats App is a modern web application built with Next.js 16 that provides comprehensive NFL game data including:\n\n- Live and historical game scores\n- Detailed game statistics (team and player level)\n- Division and conference standings\n- Advanced analytics (EPA, WPA, NGS data)\n- Play-by-play breakdown",
+      "headers": [
+        "NFL Stats App",
+        "Overview",
+        "Tech Stack",
+        "Quick Start",
+        "Prerequisites",
+        "Installation",
+        "Clone the repository",
+        "Install dependencies",
+        "Set up environment variables",
+        "Edit .env.local with your Supabase credentials"
+      ],
+      "size": 4296
+    }
+  },
+  "inventory_data": {
+    "file_inventory": {
+      "total_files": 87,
+      "categories": [],
+      "high_risk_files": 1
+    },
+    "dependencies": {
+      "total_dependencies": 28,
+      "ecosystems": [],
+      "security_vulnerabilities": 0,
+      "outdated_count": 9
+    },
+    "api_endpoints": {
+      "total_endpoints": 0,
+      "frameworks": [],
+      "undocumented_endpoints": 0
+    },
+    "configuration": {
+      "total_files": 0,
+      "formats_detected": [],
+      "sensitive_values_found": 0
+    },
+    "test_infrastructure": {
+      "total_test_files": 0,
+      "frameworks": [],
+      "coverage": "unknown",
+      "test_readiness_score": 0
+    },
+    "documentation": {
+      "total_files": 715,
+      "formats": [
+        "html",
+        "markdown"
+      ],
+      "quality_score": 100,
+      "coverage_percentage": 45
+    },
+    "available": [
+      "manifest.json",
+      "dependencies.json",
+      "api.json",
+      "config.json",
+      "tests.json",
+      "documentation.json"
+    ],
+    "missing": [
+      "database.json"
+    ]
+  },
+  "coding_standards": {
+    "available": [],
+    "missing": [
+      "BEHAVIOR-STANDARDS.md",
+      "COMPONENT-PATTERN.md",
+      "UI-STANDARDS.md",
+      "UX-PATTERNS.md",
+      "COMPONENT-INDEX.md"
+    ]
+  },
+  "reference_components": {
+    "primary": null,
+    "secondary": [],
+    "note": "Reference component matching requires feature name - not yet implemented"
+  },
+  "key_patterns_identified": [
+    "Error handling: try-catch blocks found in 12 files"
+  ],
+  "technology_stack": {
+    "language": "JavaScript/TypeScript",
+    "framework": "React",
+    "database": "unknown",
+    "testing": "unknown",
+    "build": "npm scripts"
+  },
+  "project_structure": {
+    "main_directories": [
+      "src\\components\\game",
+      "src\\components\\ui"
+    ],
+    "file_counts": {
+      "src\\components\\game": 22,
+      "src\\components\\ui": 13,
+      "public": 9,
+      "supabase\\.temp": 8,
+      "src\\components\\data-maps": 8,
+      "src\\components\\scoreboard": 8,
+      "src\\lib\\queries": 8,
+      "src\\components\\admin": 7,
+      "coderef\\inventory": 6,
+      "src\\app": 6
+    },
+    "organization_pattern": "component-based"
+  },
+  "gaps_and_risks": [
+    "Missing foundation docs: USER-GUIDE.md",
+    "No coding standards directory found (coderef/standards/)",
+    "No test directory found (tests/, test/, or __tests__/)",
+    "No CI configuration found (.github/workflows/, .gitlab-ci.yml, etc.)"
+  ]
+}
